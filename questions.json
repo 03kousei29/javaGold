@@ -1,0 +1,962 @@
+[
+  {
+    "id": 1,
+    "chapter": 1,
+    "question": "Java SE 17 Developer試験で扱うテキストブロックの開始と終了に使う記号はどれか。",
+    "choices": {
+      "A": "三重ダブルクォート（\"\"\"）",
+      "B": "バッククォート3つ（```）",
+      "C": "シングルクォート3つ（'''）",
+      "D": "二重中括弧（{{ }}）"
+    },
+    "correctChoice": "A",
+    "correctText": "三重ダブルクォート（\"\"\"）",
+    "explanation": "テキストブロックはJava 15で正式機能となった複数行文字列リテラルで、\"\"\"で開始・終了する。",
+    "topic": "text-block",
+    "difficulty": "easy"
+  },
+  {
+    "id": 2,
+    "chapter": 1,
+    "question": "Stringは不変である。replace()を呼び出したときの説明として正しいものはどれか。",
+    "choices": {
+      "A": "元のString自身が変更される",
+      "B": "元のStringは変更されず、新しいStringが返る",
+      "C": "StringBuilderへ自動変換される",
+      "D": "常に同じ参照が返る"
+    },
+    "correctChoice": "B",
+    "correctText": "元のStringは変更されず、新しいStringが返る",
+    "explanation": "Stringはimmutableなので、文字列操作は原則として新しい結果オブジェクトを返す。",
+    "topic": "string",
+    "difficulty": "easy"
+  },
+  {
+    "id": 3,
+    "chapter": 1,
+    "question": "LocalDate.now() が返すものとして最も適切なものはどれか。",
+    "choices": {
+      "A": "時刻のみを表すLocalTime",
+      "B": "日付と時刻とタイムゾーンを持つZonedDateTime",
+      "C": "日付のみを表すLocalDate",
+      "D": "旧来のjava.util.Date"
+    },
+    "correctChoice": "C",
+    "correctText": "日付のみを表すLocalDate",
+    "explanation": "LocalDateは年月日を扱い、時刻やタイムゾーン情報は持たない。",
+    "topic": "date-time",
+    "difficulty": "easy"
+  },
+  {
+    "id": 4,
+    "chapter": 1,
+    "question": "BigDecimalを金額計算で使う主な理由として適切なものはどれか。",
+    "choices": {
+      "A": "intより必ず高速に計算できる",
+      "B": "nullを自動的に0として扱える",
+      "C": "全ての計算でスケール指定が不要になる",
+      "D": "2進浮動小数点による丸め誤差を避けやすい"
+    },
+    "correctChoice": "D",
+    "correctText": "2進浮動小数点による丸め誤差を避けやすい",
+    "explanation": "double/floatは2進浮動小数点のため10進小数を正確に表せない場合がある。",
+    "topic": "numeric",
+    "difficulty": "easy"
+  },
+  {
+    "id": 5,
+    "chapter": 1,
+    "question": "DateTimeFormatterの役割として最も適切なものはどれか。",
+    "choices": {
+      "A": "日付・時刻の文字列変換や解析を行う",
+      "B": "日付同士を必ず加算する",
+      "C": "タイムゾーンをOSから削除する",
+      "D": "DateをLocalDateへ暗黙変換する"
+    },
+    "correctChoice": "A",
+    "correctText": "日付・時刻の文字列変換や解析を行う",
+    "explanation": "DateTimeFormatterは日付時刻オブジェクトと文字列のformat/parseに使う。",
+    "topic": "date-time",
+    "difficulty": "easy"
+  },
+  {
+    "id": 6,
+    "chapter": 1,
+    "question": "varを使える場所として正しいものはどれか。",
+    "choices": {
+      "A": "フィールド宣言",
+      "B": "ローカル変数宣言",
+      "C": "メソッドの戻り値型",
+      "D": "クラス宣言のextends句"
+    },
+    "correctChoice": "B",
+    "correctText": "ローカル変数宣言",
+    "explanation": "varはローカル変数の型推論に使う。フィールドや戻り値型には使えない。",
+    "topic": "var",
+    "difficulty": "easy"
+  },
+  {
+    "id": 7,
+    "chapter": 2,
+    "question": "switch式の特徴として正しいものはどれか。",
+    "choices": {
+      "A": "必ずフォールスルーする",
+      "B": "caseにStringは使えない",
+      "C": "値を返せる",
+      "D": "すべてのcaseでbreakが必須"
+    },
+    "correctChoice": "C",
+    "correctText": "値を返せる",
+    "explanation": "switch式は値を返せるため、変数への代入にも利用できる。",
+    "topic": "switch",
+    "difficulty": "easy"
+  },
+  {
+    "id": 8,
+    "chapter": 2,
+    "question": "switch式でコロン形式を使って値を返す場合に使うキーワードはどれか。",
+    "choices": {
+      "A": "return",
+      "B": "throws",
+      "C": "continue",
+      "D": "yield"
+    },
+    "correctChoice": "D",
+    "correctText": "yield",
+    "explanation": "switch式のコロン形式では、caseブロックから値を返すためにyieldを使う。",
+    "topic": "switch",
+    "difficulty": "easy"
+  },
+  {
+    "id": 9,
+    "chapter": 2,
+    "question": "instanceofのパターンマッチングの説明として正しいものはどれか。",
+    "choices": {
+      "A": "型判定とキャスト後の変数宣言をまとめて書ける",
+      "B": "Java 17では削除された機能である",
+      "C": "recordでしか使えない",
+      "D": "必ずswitch式と組み合わせる必要がある"
+    },
+    "correctChoice": "A",
+    "correctText": "型判定とキャスト後の変数宣言をまとめて書ける",
+    "explanation": "Java 16で正式化され、Java 17試験でも重要。if (obj instanceof String s) のように書ける。",
+    "topic": "pattern-matching",
+    "difficulty": "easy"
+  },
+  {
+    "id": 10,
+    "chapter": 2,
+    "question": "次のコードの説明として正しいものはどれか。\nif (obj instanceof String s) { System.out.println(s.length()); }",
+    "choices": {
+      "A": "sはifブロック外で必ず使える",
+      "B": "ifブロック内でsをStringとして使える",
+      "C": "sの型はObjectである",
+      "D": "instanceofでは変数宣言できない"
+    },
+    "correctChoice": "B",
+    "correctText": "ifブロック内でsをStringとして使える",
+    "explanation": "パターン変数sは条件が成立した範囲でStringとして利用できる。",
+    "topic": "pattern-matching",
+    "difficulty": "easy"
+  },
+  {
+    "id": 11,
+    "chapter": 2,
+    "question": "for(;;) の説明として正しいものはどれか。",
+    "choices": {
+      "A": "コンパイルエラーになる",
+      "B": "1回だけ実行される",
+      "C": "条件式が省略されており、break等がなければ無限ループになる",
+      "D": "条件式は自動的にfalseになる"
+    },
+    "correctChoice": "C",
+    "correctText": "条件式が省略されており、break等がなければ無限ループになる",
+    "explanation": "for文では初期化式・条件式・更新式を省略でき、条件式省略はtrue相当になる。",
+    "topic": "loop",
+    "difficulty": "easy"
+  },
+  {
+    "id": 12,
+    "chapter": 2,
+    "question": "短絡評価を行う論理演算子の組み合わせとして正しいものはどれか。",
+    "choices": {
+      "A": "& と |",
+      "B": "^ と ~",
+      "C": "<< と >>",
+      "D": "&& と ||"
+    },
+    "correctChoice": "D",
+    "correctText": "&& と ||",
+    "explanation": "&&と||は左辺だけで結果が確定すると右辺を評価しない。",
+    "topic": "operator",
+    "difficulty": "easy"
+  },
+  {
+    "id": 13,
+    "chapter": 3,
+    "question": "recordの主な用途として最も適切なものはどれか。",
+    "choices": {
+      "A": "不変データキャリアを簡潔に定義する",
+      "B": "スレッドを起動する",
+      "C": "DB接続を管理する",
+      "D": "例外だけを定義する"
+    },
+    "correctChoice": "A",
+    "correctText": "不変データキャリアを簡潔に定義する",
+    "explanation": "recordはデータ保持クラスを簡潔に書くための機能で、アクセサやequals等が自動生成される。",
+    "topic": "record",
+    "difficulty": "easy"
+  },
+  {
+    "id": 14,
+    "chapter": 3,
+    "question": "recordで自動生成されるものとして正しいものはどれか。",
+    "choices": {
+      "A": "全フィールドのsetter",
+      "B": "構成要素名と同名のアクセサメソッド",
+      "C": "引数なしコンストラクタのみ",
+      "D": "finalizeメソッド"
+    },
+    "correctChoice": "B",
+    "correctText": "構成要素名と同名のアクセサメソッド",
+    "explanation": "recordではname()のようなアクセサ、equals、hashCode、toStringなどが生成される。",
+    "topic": "record",
+    "difficulty": "easy"
+  },
+  {
+    "id": 15,
+    "chapter": 3,
+    "question": "recordの構成要素フィールドについて正しい説明はどれか。",
+    "choices": {
+      "A": "暗黙的にpublicになる",
+      "B": "必ずstaticになる",
+      "C": "暗黙的にprivate finalになる",
+      "D": "setterから変更できる"
+    },
+    "correctChoice": "C",
+    "correctText": "暗黙的にprivate finalになる",
+    "explanation": "recordの構成要素に対応するフィールドはprivate finalとして扱われる。",
+    "topic": "record",
+    "difficulty": "easy"
+  },
+  {
+    "id": 16,
+    "chapter": 3,
+    "question": "sealed classの目的として最も適切なものはどれか。",
+    "choices": {
+      "A": "全メソッドをstaticにする",
+      "B": "インスタンス生成を禁止する",
+      "C": "ガベージコレクションを停止する",
+      "D": "継承できるクラスを制限する"
+    },
+    "correctChoice": "D",
+    "correctText": "継承できるクラスを制限する",
+    "explanation": "sealed class/interfaceはpermitsで直接のサブタイプを制限できるJava 17の正式機能。",
+    "topic": "sealed",
+    "difficulty": "easy"
+  },
+  {
+    "id": 17,
+    "chapter": 3,
+    "question": "sealed class A permits B, C と書いた場合の説明として正しいものはどれか。",
+    "choices": {
+      "A": "BとCだけがAを直接継承できる",
+      "B": "Aはどのクラスからも継承できない",
+      "C": "BとCは必ずabstractでなければならない",
+      "D": "permitsに書いたクラスは同じファイルに必ず書く必要がある"
+    },
+    "correctChoice": "A",
+    "correctText": "BとCだけがAを直接継承できる",
+    "explanation": "permits句は直接の継承・実装を許可する型を列挙する。",
+    "topic": "sealed",
+    "difficulty": "easy"
+  },
+  {
+    "id": 18,
+    "chapter": 3,
+    "question": "sealedクラスを継承するサブクラスに必要な指定として正しい組み合わせはどれか。",
+    "choices": {
+      "A": "public、private、protectedのいずれか",
+      "B": "final、sealed、non-sealedのいずれか",
+      "C": "static、abstract、nativeのいずれか",
+      "D": "synchronized、volatile、transientのいずれか"
+    },
+    "correctChoice": "B",
+    "correctText": "final、sealed、non-sealedのいずれか",
+    "explanation": "sealedの直接サブクラスは継承方針をfinal/sealed/non-sealedで明示する。",
+    "topic": "sealed",
+    "difficulty": "easy"
+  },
+  {
+    "id": 19,
+    "chapter": 3,
+    "question": "interfaceのprivateメソッドの主な用途として適切なものはどれか。",
+    "choices": {
+      "A": "実装クラスから直接呼び出すAPIにする",
+      "B": "必ず抽象メソッドにする",
+      "C": "defaultメソッドなどから使う共通処理を隠蔽する",
+      "D": "フィールドを変更する"
+    },
+    "correctChoice": "C",
+    "correctText": "defaultメソッドなどから使う共通処理を隠蔽する",
+    "explanation": "インターフェースのprivateメソッドは内部共通処理の切り出しに使える。",
+    "topic": "interface",
+    "difficulty": "easy"
+  },
+  {
+    "id": 20,
+    "chapter": 3,
+    "question": "enumについて正しい説明はどれか。",
+    "choices": {
+      "A": "自由にnewできる",
+      "B": "必ずint型に変換される",
+      "C": "継承して定数を追加できる",
+      "D": "定数ごとに唯一のインスタンスを持つ型として扱える"
+    },
+    "correctChoice": "D",
+    "correctText": "定数ごとに唯一のインスタンスを持つ型として扱える",
+    "explanation": "enum定数は型安全な定数オブジェクトであり、外部からnewできない。",
+    "topic": "enum",
+    "difficulty": "easy"
+  },
+  {
+    "id": 21,
+    "chapter": 4,
+    "question": "try-with-resourcesで扱えるリソースの条件として正しいものはどれか。",
+    "choices": {
+      "A": "AutoCloseableを実装している",
+      "B": "Serializableを実装している",
+      "C": "Comparableを実装している",
+      "D": "Cloneableを実装している"
+    },
+    "correctChoice": "A",
+    "correctText": "AutoCloseableを実装している",
+    "explanation": "try-with-resourcesのリソースはAutoCloseableまたはそのサブインターフェースのCloseableを実装する。",
+    "topic": "try-with-resources",
+    "difficulty": "easy"
+  },
+  {
+    "id": 22,
+    "chapter": 4,
+    "question": "try-with-resourcesで複数リソースを宣言した場合のクローズ順はどれか。",
+    "choices": {
+      "A": "宣言した順",
+      "B": "宣言した順と逆順",
+      "C": "ランダム",
+      "D": "ガベージコレクションの順"
+    },
+    "correctChoice": "B",
+    "correctText": "宣言した順と逆順",
+    "explanation": "リソースは後に宣言したものから先にcloseされる。",
+    "topic": "try-with-resources",
+    "difficulty": "easy"
+  },
+  {
+    "id": 23,
+    "chapter": 4,
+    "question": "マルチキャッチ catch (A | B e) について正しい説明はどれか。",
+    "choices": {
+      "A": "AとBは必ず同じクラスでなければならない",
+      "B": "eには必ず再代入できる",
+      "C": "AとBに継承関係がある組み合わせは書けない",
+      "D": "チェック例外には使えない"
+    },
+    "correctChoice": "C",
+    "correctText": "AとBに継承関係がある組み合わせは書けない",
+    "explanation": "マルチキャッチでは片方がもう片方のサブクラスだと冗長となりコンパイルエラーになる。",
+    "topic": "exception",
+    "difficulty": "easy"
+  },
+  {
+    "id": 24,
+    "chapter": 4,
+    "question": "RuntimeExceptionのサブクラスについて正しい説明はどれか。",
+    "choices": {
+      "A": "必ずcatchしなければコンパイルエラー",
+      "B": "Errorのサブクラスである",
+      "C": "IOExceptionのサブクラスである",
+      "D": "非チェック例外であり、throws宣言は必須ではない"
+    },
+    "correctChoice": "D",
+    "correctText": "非チェック例外であり、throws宣言は必須ではない",
+    "explanation": "RuntimeExceptionとそのサブクラスは非チェック例外として扱われる。",
+    "topic": "exception",
+    "difficulty": "easy"
+  },
+  {
+    "id": 25,
+    "chapter": 4,
+    "question": "finallyブロックについて正しい説明はどれか。",
+    "choices": {
+      "A": "通常はtry/catchを抜ける前に実行される",
+      "B": "例外が発生した場合だけ実行される",
+      "C": "catchより前に書く",
+      "D": "tryなしで単独記述できる"
+    },
+    "correctChoice": "A",
+    "correctText": "通常はtry/catchを抜ける前に実行される",
+    "explanation": "finallyは正常終了・例外発生のどちらでも原則実行される。",
+    "topic": "exception",
+    "difficulty": "easy"
+  },
+  {
+    "id": 26,
+    "chapter": 5,
+    "question": "ListとSetの違いとして正しいものはどれか。",
+    "choices": {
+      "A": "Listは重複不可、Setは重複可である",
+      "B": "Listは順序を扱い、Setは重複なしを扱う代表的なコレクションである",
+      "C": "どちらも必ずキーと値を持つ",
+      "D": "どちらもプリミティブだけを格納する"
+    },
+    "correctChoice": "B",
+    "correctText": "Listは順序を扱い、Setは重複なしを扱う代表的なコレクションである",
+    "explanation": "Listは順序付き、Setは重複を許さない集合として使われる。",
+    "topic": "collections",
+    "difficulty": "easy"
+  },
+  {
+    "id": 27,
+    "chapter": 5,
+    "question": "Mapの説明として最も適切なものはどれか。",
+    "choices": {
+      "A": "値だけを順番に保持する",
+      "B": "重複しない値だけを保持する",
+      "C": "キーと値の対応を保持する",
+      "D": "配列専用のラッパーである"
+    },
+    "correctChoice": "C",
+    "correctText": "キーと値の対応を保持する",
+    "explanation": "MapはCollectionインターフェースのサブタイプではなく、キーと値の対応を扱う。",
+    "topic": "collections",
+    "difficulty": "easy"
+  },
+  {
+    "id": 28,
+    "chapter": 5,
+    "question": "ジェネリクスのダイヤモンド演算子 <> の説明として正しいものはどれか。",
+    "choices": {
+      "A": "実行時に型情報を完全保持する",
+      "B": "プリミティブ型を直接指定するために使う",
+      "C": "配列長を省略するために使う",
+      "D": "右辺の型引数を文脈から推論できる"
+    },
+    "correctChoice": "D",
+    "correctText": "右辺の型引数を文脈から推論できる",
+    "explanation": "new ArrayList<>() のように型引数を省略できる。",
+    "topic": "generics",
+    "difficulty": "easy"
+  },
+  {
+    "id": 29,
+    "chapter": 5,
+    "question": "List<?> の説明として正しいものはどれか。",
+    "choices": {
+      "A": "要素型が不明なListを表す",
+      "B": "String専用のListを表す",
+      "C": "nullを含められないListを表す",
+      "D": "書き込み専用Listを表す"
+    },
+    "correctChoice": "A",
+    "correctText": "要素型が不明なListを表す",
+    "explanation": "非境界ワイルドカードは要素型が未知であることを表す。",
+    "topic": "generics",
+    "difficulty": "easy"
+  },
+  {
+    "id": 30,
+    "chapter": 5,
+    "question": "List<? extends Number> について正しい説明はどれか。",
+    "choices": {
+      "A": "Numberの親クラスだけを受け取れる",
+      "B": "Numberまたはそのサブクラス要素のListを受け取れる",
+      "C": "StringのListも必ず受け取れる",
+      "D": "intのListを直接受け取れる"
+    },
+    "correctChoice": "B",
+    "correctText": "Numberまたはそのサブクラス要素のListを受け取れる",
+    "explanation": "extends境界は上限境界で、NumberのサブタイプのListを柔軟に受け取れる。",
+    "topic": "generics",
+    "difficulty": "easy"
+  },
+  {
+    "id": 31,
+    "chapter": 5,
+    "question": "Collections.sort(list)を使うために要素に求められる代表的な条件はどれか。",
+    "choices": {
+      "A": "必ずMapである",
+      "B": "必ずrecordである",
+      "C": "自然順序を持つ、またはComparatorを指定する",
+      "D": "必ずfinalである"
+    },
+    "correctChoice": "C",
+    "correctText": "自然順序を持つ、またはComparatorを指定する",
+    "explanation": "sortにはComparableによる自然順序、またはComparatorによる比較規則が必要。",
+    "topic": "collections",
+    "difficulty": "easy"
+  },
+  {
+    "id": 32,
+    "chapter": 5,
+    "question": "ArrayListと配列の違いとして正しいものはどれか。",
+    "choices": {
+      "A": "配列は要素数を自由に変更できる",
+      "B": "ArrayListはプリミティブ型専用である",
+      "C": "配列はジェネリクスを使う",
+      "D": "ArrayListは要素数を動的に増減しやすい"
+    },
+    "correctChoice": "D",
+    "correctText": "ArrayListは要素数を動的に増減しやすい",
+    "explanation": "ArrayListは内部配列を使いつつサイズ変更を扱いやすくしたList実装。",
+    "topic": "collections",
+    "difficulty": "easy"
+  },
+  {
+    "id": 33,
+    "chapter": 6,
+    "question": "ラムダ式が代入できる対象として正しいものはどれか。",
+    "choices": {
+      "A": "関数型インターフェース",
+      "B": "通常のクラスだけ",
+      "C": "抽象メソッドを2つ以上持つインターフェースだけ",
+      "D": "enum定数だけ"
+    },
+    "correctChoice": "A",
+    "correctText": "関数型インターフェース",
+    "explanation": "ラムダ式は抽象メソッドを1つ持つ関数型インターフェースの実装として扱われる。",
+    "topic": "lambda",
+    "difficulty": "easy"
+  },
+  {
+    "id": 34,
+    "chapter": 6,
+    "question": "Predicate<T>の代表的な用途として正しいものはどれか。",
+    "choices": {
+      "A": "Tを受け取りvoidだけを返す処理",
+      "B": "Tを受け取りbooleanを返す条件判定",
+      "C": "引数なしでTを生成する処理",
+      "D": "2つのTを比較してintを返す処理"
+    },
+    "correctChoice": "B",
+    "correctText": "Tを受け取りbooleanを返す条件判定",
+    "explanation": "Predicateはtestメソッドで条件判定を表す関数型インターフェース。",
+    "topic": "functional-interface",
+    "difficulty": "easy"
+  },
+  {
+    "id": 35,
+    "chapter": 6,
+    "question": "Streamの中間操作に関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "呼んだ瞬間に必ず全件処理される",
+      "B": "中間操作は1つしか書けない",
+      "C": "終端操作が呼ばれるまで遅延評価される",
+      "D": "中間操作は戻り値を持たない"
+    },
+    "correctChoice": "C",
+    "correctText": "終端操作が呼ばれるまで遅延評価される",
+    "explanation": "filterやmapなどの中間操作はパイプラインを作り、終端操作で実行される。",
+    "topic": "stream",
+    "difficulty": "easy"
+  },
+  {
+    "id": 36,
+    "chapter": 6,
+    "question": "Streamの終端操作として正しいものはどれか。",
+    "choices": {
+      "A": "filter",
+      "B": "map",
+      "C": "peek",
+      "D": "collect"
+    },
+    "correctChoice": "D",
+    "correctText": "collect",
+    "explanation": "collectはストリームを結果にまとめる終端操作。filter/map/peekは中間操作。",
+    "topic": "stream",
+    "difficulty": "easy"
+  },
+  {
+    "id": 37,
+    "chapter": 6,
+    "question": "mapとflatMapの違いとして正しい説明はどれか。",
+    "choices": {
+      "A": "flatMapは複数のストリームを平坦化できる",
+      "B": "mapは必ず要素を削除する",
+      "C": "flatMapは終端操作である",
+      "D": "mapはOptional専用である"
+    },
+    "correctChoice": "A",
+    "correctText": "flatMapは複数のストリームを平坦化できる",
+    "explanation": "flatMapは各要素から生成されたStreamを1つのStreamへ平坦化する。",
+    "topic": "stream",
+    "difficulty": "easy"
+  },
+  {
+    "id": 38,
+    "chapter": 6,
+    "question": "Optionalの主な目的として適切なものはどれか。",
+    "choices": {
+      "A": "nullを完全に禁止する言語機能",
+      "B": "値が存在しない可能性を明示的に扱う",
+      "C": "例外を必ず握りつぶす仕組み",
+      "D": "Listの高速版"
+    },
+    "correctChoice": "B",
+    "correctText": "値が存在しない可能性を明示的に扱う",
+    "explanation": "Optionalは値の有無を表すコンテナで、nullチェックの意図を明確にしやすい。",
+    "topic": "optional",
+    "difficulty": "easy"
+  },
+  {
+    "id": 39,
+    "chapter": 6,
+    "question": "Optional.of(null)を実行した場合の説明として正しいものはどれか。",
+    "choices": {
+      "A": "空のOptionalが返る",
+      "B": "Optionalにnullが格納される",
+      "C": "NullPointerExceptionが発生する",
+      "D": "コンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "NullPointerExceptionが発生する",
+    "explanation": "nullの可能性がある場合はofNullableを使う。of(null)はNPEになる。",
+    "topic": "optional",
+    "difficulty": "easy"
+  },
+  {
+    "id": 40,
+    "chapter": 6,
+    "question": "parallelStream()の説明として正しいものはどれか。",
+    "choices": {
+      "A": "必ず単一スレッドで処理する",
+      "B": "順序を常に完全保証して高速化する",
+      "C": "DB接続専用のStreamである",
+      "D": "並列処理される可能性があるStreamを作る"
+    },
+    "correctChoice": "D",
+    "correctText": "並列処理される可能性があるStreamを作る",
+    "explanation": "parallelStreamは共通ForkJoinPoolなどを使って並列実行される可能性がある。",
+    "topic": "stream",
+    "difficulty": "easy"
+  },
+  {
+    "id": 41,
+    "chapter": 7,
+    "question": "Threadを開始するために通常呼び出すメソッドはどれか。",
+    "choices": {
+      "A": "start()",
+      "B": "run()",
+      "C": "executeNow()",
+      "D": "begin()"
+    },
+    "correctChoice": "A",
+    "correctText": "start()",
+    "explanation": "start()を呼ぶと新しいスレッドでrun()が実行される。run()直接呼び出しは通常のメソッド呼び出し。",
+    "topic": "thread",
+    "difficulty": "easy"
+  },
+  {
+    "id": 42,
+    "chapter": 7,
+    "question": "ExecutorServiceの主な役割として適切なものはどれか。",
+    "choices": {
+      "A": "文字列を結合する",
+      "B": "スレッドプールを使ってタスク実行を管理する",
+      "C": "SQLを解析する",
+      "D": "ファイルパスを正規化する"
+    },
+    "correctChoice": "B",
+    "correctText": "スレッドプールを使ってタスク実行を管理する",
+    "explanation": "ExecutorServiceはタスクの投入・実行・終了管理を抽象化する。",
+    "topic": "concurrency",
+    "difficulty": "easy"
+  },
+  {
+    "id": 43,
+    "chapter": 7,
+    "question": "CallableとRunnableの違いとして正しいものはどれか。",
+    "choices": {
+      "A": "Runnableは必ず結果を返す",
+      "B": "Callableは引数を必ず1つ取る",
+      "C": "Callableは結果を返しチェック例外を投げられる",
+      "D": "Runnableは非推奨である"
+    },
+    "correctChoice": "C",
+    "correctText": "Callableは結果を返しチェック例外を投げられる",
+    "explanation": "Callable<V>のcallはVを返し、例外をthrowsできる。",
+    "topic": "concurrency",
+    "difficulty": "easy"
+  },
+  {
+    "id": 44,
+    "chapter": 7,
+    "question": "synchronizedの目的として適切なものはどれか。",
+    "choices": {
+      "A": "すべての処理を非同期化する",
+      "B": "例外処理を省略する",
+      "C": "Streamを必ず並列化する",
+      "D": "共有データへの同時アクセスを制御する"
+    },
+    "correctChoice": "D",
+    "correctText": "共有データへの同時アクセスを制御する",
+    "explanation": "synchronizedはモニタロックを使って排他制御を行う。",
+    "topic": "concurrency",
+    "difficulty": "easy"
+  },
+  {
+    "id": 45,
+    "chapter": 7,
+    "question": "volatileの説明として正しいものはどれか。",
+    "choices": {
+      "A": "変数の可視性を確保するために使われる",
+      "B": "複合操作を必ずアトミックにする",
+      "C": "Listを不変にする",
+      "D": "例外を無視する"
+    },
+    "correctChoice": "A",
+    "correctText": "変数の可視性を確保するために使われる",
+    "explanation": "volatileはスレッド間の可視性に関わるが、インクリメントのような複合操作の原子性までは保証しない。",
+    "topic": "concurrency",
+    "difficulty": "easy"
+  },
+  {
+    "id": 46,
+    "chapter": 8,
+    "question": "Pathインターフェースの主な用途として適切なものはどれか。",
+    "choices": {
+      "A": "文字列の正規表現を表す",
+      "B": "ファイルやディレクトリのパスを表す",
+      "C": "DBの接続先を表す",
+      "D": "スレッドの状態を表す"
+    },
+    "correctChoice": "B",
+    "correctText": "ファイルやディレクトリのパスを表す",
+    "explanation": "java.nio.file.Pathはファイルシステム上のパスを表す。",
+    "topic": "nio",
+    "difficulty": "easy"
+  },
+  {
+    "id": 47,
+    "chapter": 8,
+    "question": "Files.readString(path)の説明として正しいものはどれか。",
+    "choices": {
+      "A": "ディレクトリを削除する",
+      "B": "PathをURLへ必ず変換する",
+      "C": "ファイル内容を文字列として読み込む",
+      "D": "ファイルサイズだけを返す"
+    },
+    "correctChoice": "C",
+    "correctText": "ファイル内容を文字列として読み込む",
+    "explanation": "FilesクラスにはPathを使った便利なファイル操作メソッドがある。",
+    "topic": "nio",
+    "difficulty": "easy"
+  },
+  {
+    "id": 48,
+    "chapter": 8,
+    "question": "Pathのnormalize()の説明として正しいものはどれか。",
+    "choices": {
+      "A": "実ファイルを必ず作成する",
+      "B": "ファイルを圧縮する",
+      "C": "文字コードをUTF-8に変換する",
+      "D": "余分な . や .. を整理したパスを返す"
+    },
+    "correctChoice": "D",
+    "correctText": "余分な . や .. を整理したパスを返す",
+    "explanation": "normalizeはパス表現を整理するが、ファイルの存在確認とは別。",
+    "topic": "nio",
+    "difficulty": "easy"
+  },
+  {
+    "id": 49,
+    "chapter": 8,
+    "question": "InputStreamとReaderの違いとして正しいものはどれか。",
+    "choices": {
+      "A": "InputStreamはバイト、Readerは文字を扱う",
+      "B": "InputStreamは文字専用、Readerはバイト専用",
+      "C": "どちらもSQL専用である",
+      "D": "ReaderはJava 17で削除された"
+    },
+    "correctChoice": "A",
+    "correctText": "InputStreamはバイト、Readerは文字を扱う",
+    "explanation": "バイト単位のI/Oと文字単位のI/Oを区別することが重要。",
+    "topic": "io",
+    "difficulty": "easy"
+  },
+  {
+    "id": 50,
+    "chapter": 8,
+    "question": "serializationに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "Stream APIの中間操作だけを指す",
+      "B": "オブジェクトをバイト列として保存・転送可能な形にする仕組み",
+      "C": "recordでは常に禁止される",
+      "D": "JDBC接続を作る仕組み"
+    },
+    "correctChoice": "B",
+    "correctText": "オブジェクトをバイト列として保存・転送可能な形にする仕組み",
+    "explanation": "Serializableを実装したオブジェクトを保存・復元する仕組みとして扱われる。",
+    "topic": "io",
+    "difficulty": "easy"
+  },
+  {
+    "id": 51,
+    "chapter": 9,
+    "question": "JDBCのPreparedStatementを使う利点として適切なものはどれか。",
+    "choices": {
+      "A": "Javaコードを自動生成する",
+      "B": "SQLをJavaScriptへ変換する",
+      "C": "パラメータを安全にバインドしやすい",
+      "D": "DBを必ずメモリ上に作る"
+    },
+    "correctChoice": "C",
+    "correctText": "パラメータを安全にバインドしやすい",
+    "explanation": "PreparedStatementはプレースホルダに値を設定でき、SQLインジェクション対策にもつながる。",
+    "topic": "jdbc",
+    "difficulty": "easy"
+  },
+  {
+    "id": 52,
+    "chapter": 9,
+    "question": "ResultSetの役割として最も適切なものはどれか。",
+    "choices": {
+      "A": "DB接続情報だけを保存する",
+      "B": "SQL文をコンパイルする",
+      "C": "トランザクションを常に開始する",
+      "D": "SQLの検索結果を行単位で扱う"
+    },
+    "correctChoice": "D",
+    "correctText": "SQLの検索結果を行単位で扱う",
+    "explanation": "ResultSetはSELECT結果をカーソルで走査するために使う。",
+    "topic": "jdbc",
+    "difficulty": "easy"
+  },
+  {
+    "id": 53,
+    "chapter": 9,
+    "question": "ConnectionのsetAutoCommit(false)を使う主な目的はどれか。",
+    "choices": {
+      "A": "複数処理をまとめてcommit/rollbackできるようにする",
+      "B": "DB接続を即座に閉じる",
+      "C": "検索結果を文字列に変換する",
+      "D": "SQLログを自動翻訳する"
+    },
+    "correctChoice": "A",
+    "correctText": "複数処理をまとめてcommit/rollbackできるようにする",
+    "explanation": "自動コミットを無効にすると、明示的なcommit/rollbackでトランザクションを制御できる。",
+    "topic": "jdbc",
+    "difficulty": "easy"
+  },
+  {
+    "id": 54,
+    "chapter": 9,
+    "question": "Localeの説明として適切なものはどれか。",
+    "choices": {
+      "A": "ファイルの絶対パスだけを表す",
+      "B": "言語や国・地域などの地域情報を表す",
+      "C": "スレッドの優先度を表す",
+      "D": "SQLの実行計画を表す"
+    },
+    "correctChoice": "B",
+    "correctText": "言語や国・地域などの地域情報を表す",
+    "explanation": "Localeは国際化対応で言語・地域に応じた表示切替などに使う。",
+    "topic": "localization",
+    "difficulty": "easy"
+  },
+  {
+    "id": 55,
+    "chapter": 9,
+    "question": "ResourceBundleの主な用途として正しいものはどれか。",
+    "choices": {
+      "A": "リソースを必ずcloseする",
+      "B": "JARを暗号化する",
+      "C": "Localeに応じたメッセージ等を取得する",
+      "D": "スレッドを作成する"
+    },
+    "correctChoice": "C",
+    "correctText": "Localeに応じたメッセージ等を取得する",
+    "explanation": "ResourceBundleはプロパティファイル等からロケール別のリソースを取得する。",
+    "topic": "localization",
+    "difficulty": "easy"
+  },
+  {
+    "id": 56,
+    "chapter": 10,
+    "question": "JPMSのmodule-info.javaに書くものとして正しいものはどれか。",
+    "choices": {
+      "A": "mainメソッドの実装だけ",
+      "B": "SQL文だけ",
+      "C": "HTMLテンプレートだけ",
+      "D": "module宣言やrequires/exportsなど"
+    },
+    "correctChoice": "D",
+    "correctText": "module宣言やrequires/exportsなど",
+    "explanation": "module-info.javaにはモジュール名、依存関係、公開パッケージなどを記述する。",
+    "topic": "module",
+    "difficulty": "easy"
+  },
+  {
+    "id": 57,
+    "chapter": 10,
+    "question": "requiresの意味として正しいものはどれか。",
+    "choices": {
+      "A": "他モジュールへの依存を宣言する",
+      "B": "パッケージを外部公開する",
+      "C": "クラスをsealedにする",
+      "D": "JARを実行する"
+    },
+    "correctChoice": "A",
+    "correctText": "他モジュールへの依存を宣言する",
+    "explanation": "requiresはモジュール依存を表すディレクティブ。",
+    "topic": "module",
+    "difficulty": "easy"
+  },
+  {
+    "id": 58,
+    "chapter": 10,
+    "question": "exportsの意味として正しいものはどれか。",
+    "choices": {
+      "A": "他モジュールを読み込む",
+      "B": "指定パッケージを他モジュールから利用可能にする",
+      "C": "サービス実装を提供する",
+      "D": "実行時引数を設定する"
+    },
+    "correctChoice": "B",
+    "correctText": "指定パッケージを他モジュールから利用可能にする",
+    "explanation": "exportsはモジュール外へ公開するパッケージを指定する。",
+    "topic": "module",
+    "difficulty": "easy"
+  },
+  {
+    "id": 59,
+    "chapter": 10,
+    "question": "opensの主な用途として正しいものはどれか。",
+    "choices": {
+      "A": "パッケージをコンパイル時APIとして必ず公開する",
+      "B": "mainメソッドを生成する",
+      "C": "リフレクションによるアクセスを許可する",
+      "D": "JARを展開する"
+    },
+    "correctChoice": "C",
+    "correctText": "リフレクションによるアクセスを許可する",
+    "explanation": "opensは深いリフレクションアクセスを許可するために使われる。",
+    "topic": "module",
+    "difficulty": "easy"
+  },
+  {
+    "id": 60,
+    "chapter": 10,
+    "question": "jarコマンドの用途として最も適切なものはどれか。",
+    "choices": {
+      "A": "Javaソースを直接編集する",
+      "B": "DBへ接続する",
+      "C": "スレッドを停止する",
+      "D": "クラスやリソースをJARファイルにまとめる"
+    },
+    "correctChoice": "D",
+    "correctText": "クラスやリソースをJARファイルにまとめる",
+    "explanation": "jarコマンドはJavaアプリケーションやライブラリの配布単位であるJARを作成・操作する。",
+    "topic": "packaging",
+    "difficulty": "easy"
+  }
+]

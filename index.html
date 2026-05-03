@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#161008" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-title" content="Java Gold SE 17 対策" />
+<title>Java Gold SE 17 対策</title>
+<style>
+:root {
+  --bg:#161008;
+  --panel:#21180c;
+  --panel2:#30230f;
+  --text:#fff8e8;
+  --muted:#d8c390;
+  --accent:#d4af37;
+  --accent2:#ffe08a;
+  --ok:#82e6bd;
+  --ng:#ff9b9b;
+  --border:rgba(255,224,138,.22);
+  --shadow:0 16px 38px rgba(0,0,0,.42);
+  --gold-glow:rgba(212,175,55,.26);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic",sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(255,224,138,.18), transparent 28%),
+    radial-gradient(circle at top left, rgba(212,175,55,.12), transparent 24%),
+    linear-gradient(135deg, #0f0b06 0%, #161008 48%, #25190a 100%);
+  color:var(--text);
+}
+.wrap{max-width:1000px;margin:0 auto;padding:24px 16px 56px}
+h1{margin:0;font-size:2rem;line-height:1.2;color:var(--text);text-shadow:0 0 24px var(--gold-glow)}
+.sub{margin-top:8px;color:var(--muted)}
+.panel{
+  background:
+    linear-gradient(180deg, rgba(255,224,138,.08), rgba(255,255,255,.025)),
+    rgba(33,24,12,.88);
+  border:1px solid var(--border);
+  border-radius:22px;
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.06);
+  padding:20px;
+}
+.hidden{display:none !important}
+
+.progress-shell{
+  position:sticky;top:12px;z-index:5;
+  margin:18px 0;
+  backdrop-filter:blur(12px);
+  background:rgba(22,16,8,.82);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:12px 14px;
+}
+.progress-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.progress-label{font-size:.95rem;color:var(--muted)}
+.progress-bar{height:16px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
+
+.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.pill{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:.88rem}
+.question-text{font-size:1.18rem;line-height:1.75;white-space:pre-wrap;margin:10px 0 18px}
+
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+button.primary,button.secondary,.choice,.linkbtn{
+  font:inherit;
+}
+button.primary,button.secondary{
+  border:0;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer;
+}
+button.primary{background:linear-gradient(90deg,#b88716,var(--accent2));color:#1b1205;box-shadow:0 10px 24px rgba(212,175,55,.22)}
+button.secondary{background:rgba(255,224,138,.07);color:var(--text);border:1px solid var(--border)}
+
+.choices{display:grid;grid-template-columns:1fr;gap:12px}
+.choice{
+  width:100%;
+  text-align:left;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.04);
+  color:var(--text);
+  border-radius:16px;
+  padding:14px 16px;
+  cursor:pointer;
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.choice:hover{border-color:rgba(255,224,138,.62);background:rgba(212,175,55,.10)}
+.choice[disabled]{cursor:default}
+.choice-key{width:30px;min-width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+.choice.correct{border-color:rgba(142,240,192,.55);background:rgba(142,240,192,.12)}
+.choice.incorrect{border-color:rgba(255,141,141,.55);background:rgba(255,141,141,.12)}
+
+.explanation{margin-top:18px;padding:16px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.04)}
+.badge{display:inline-block;font-weight:700;padding:6px 10px;border-radius:999px;margin-bottom:10px}
+.badge.ok{background:rgba(142,240,192,.16);color:var(--ok)}
+.badge.ng{background:rgba(255,141,141,.16);color:var(--ng)}
+
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:18px 0 24px}
+.metric{padding:16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--border)}
+.metric-label{color:var(--muted);font-size:.92rem;margin-bottom:8px}
+.metric-value{font-size:1.8rem;font-weight:800}
+
+.donut-wrap{display:flex;justify-content:center;align-items:center;min-height:180px}
+.donut-chart{
+  --pct:0;
+  width:150px;height:150px;border-radius:50%;
+  background:conic-gradient(var(--accent) calc(var(--pct) * 1%), rgba(255,255,255,.08) 0);
+  display:grid;place-items:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
+}
+.donut-inner{width:98px;height:98px;border-radius:50%;background:var(--panel);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-percent{font-size:1.35rem;font-weight:800;line-height:1}
+.donut-caption{margin-top:6px;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
+
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:14px;background:rgba(255,255,255,.03);border-radius:16px;overflow:hidden}
+th,td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;vertical-align:top;font-size:.95rem}
+th{color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:0}
+.status-ok{color:var(--ok);font-weight:700}
+.status-ng{color:var(--ng);font-weight:700}
+.status-mid{color:var(--warning,#ffd27a);font-weight:700}
+.linkbtn{background:none;border:0;padding:0;color:#ffe08a;text-decoration:underline;cursor:pointer}
+
+.footer-note{margin-top:20px;color:var(--muted);font-size:.9rem;line-height:1.7}
+@media (max-width:640px){
+  .wrap{padding:16px 12px 48px}
+  h1{font-size:1.65rem}
+  .question-text{font-size:1.05rem}
+  th:nth-child(3),td:nth-child(3){display:none}
+}
+
+.timer-box {
+  width: 110px;
+  min-width: 110px;
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+.timer-ring {
+  --pct: 100;
+  width: 110px;
+  height: 110px;
+  border-radius: 24px;
+  background:
+    conic-gradient(from -90deg, var(--accent) calc(var(--pct) * 1%), rgba(255,255,255,.08) 0);
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+.timer-inner {
+  width: 78px;
+  height: 78px;
+  border-radius: 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.timer-seconds {
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+}
+.timer-unit {
+  margin-top: 4px;
+  font-size: .78rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+@media (max-width: 760px) {
+  .quiz-top-row {
+    flex-direction: column;
+  }
+  .timer-box {
+    width: 100%;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+}
+
+.question-text .code-block{
+  display:block;
+  margin:14px 0 4px;
+  padding:14px 16px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.24);
+  color:#f6f8ff;
+  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+  font-size:.95rem;
+  line-height:1.65;
+  white-space:pre;
+  overflow-x:auto;
+}
+.question-text .question-lead{display:block;}
+
+
+/* ===== Mobile friendly adjustments ===== */
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+body {
+  min-height: 100dvh;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+button, .choice, .linkbtn {
+  -webkit-tap-highlight-color: rgba(212,175,55,.22);
+  touch-action: manipulation;
+}
+.choice {
+  min-height: 56px;
+}
+.choice span:last-child {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.question-text {
+  overflow-wrap: anywhere;
+}
+.question-text .code-block{
+  max-width: 100%;
+  -webkit-overflow-scrolling: touch;
+  tab-size: 2;
+}
+@media (hover: none) {
+  .choice:hover{
+    border-color: var(--border);
+    background: rgba(255,255,255,.04);
+  }
+}
+@media (max-width: 640px){
+  body{
+    background:
+      radial-gradient(circle at top right, rgba(255,224,138,.16), transparent 24%),
+      linear-gradient(135deg, #0f0b06 0%, #161008 58%, #211608 100%);
+  }
+  .wrap{
+    width: 100%;
+    max-width: none;
+    padding: 14px 10px calc(40px + env(safe-area-inset-bottom));
+  }
+  h1{
+    font-size: 1.35rem;
+    letter-spacing: .01em;
+  }
+  .sub{
+    font-size: .88rem;
+    line-height: 1.55;
+  }
+  .panel{
+    border-radius: 18px;
+    padding: 14px;
+  }
+  .progress-shell{
+    top: 6px;
+    margin: 12px 0;
+    padding: 10px;
+    border-radius: 16px;
+  }
+  .progress-head{
+    gap: 6px;
+    margin-bottom: 7px;
+  }
+  .progress-label{
+    font-size: .82rem;
+  }
+  .progress-bar{
+    height: 12px;
+  }
+  .quiz-top-row{
+    gap: 10px !important;
+    margin-bottom: 10px !important;
+  }
+  .meta-row{
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .pill{
+    font-size: .78rem;
+    padding: 5px 8px;
+  }
+  .actions{
+    gap: 8px;
+  }
+  button.primary, button.secondary{
+    width: 100%;
+    min-height: 46px;
+    padding: 11px 12px;
+    border-radius: 13px;
+    font-size: .95rem;
+  }
+  #shuffleBtn, #menuBtnInQuiz{
+    width: calc(50% - 4px);
+  }
+  .timer-box{
+    justify-content: center;
+  }
+  .timer-ring{
+    width: 86px;
+    height: 86px;
+    border-radius: 20px;
+  }
+  .timer-inner{
+    width: 62px;
+    height: 62px;
+    border-radius: 16px;
+  }
+  .timer-seconds{
+    font-size: 1.18rem;
+  }
+  .timer-unit{
+    font-size: .66rem;
+  }
+  .question-text{
+    font-size: 1rem;
+    line-height: 1.7;
+    margin: 10px 0 14px;
+  }
+  .question-text .code-block{
+    margin: 10px 0 2px;
+    padding: 11px 12px;
+    border-radius: 12px;
+    font-size: .78rem;
+    line-height: 1.55;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .choices{
+    gap: 9px;
+  }
+  .choice{
+    padding: 12px 12px;
+    border-radius: 14px;
+    gap: 10px;
+    font-size: .95rem;
+    line-height: 1.55;
+  }
+  .choice-key{
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+  }
+  .explanation{
+    margin-top: 14px;
+    padding: 13px;
+    border-radius: 16px;
+  }
+  #correctAnswerText{
+    font-size: .95rem;
+    line-height: 1.55;
+  }
+  #explanationText{
+    font-size: .92rem;
+    line-height: 1.75 !important;
+  }
+  .summary-grid{
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 14px 0 18px;
+  }
+  .metric{
+    padding: 13px;
+    border-radius: 16px;
+  }
+  .metric-value{
+    font-size: 1.45rem;
+  }
+  .donut-wrap{
+    min-height: 140px;
+  }
+  .donut-chart{
+    width: 124px;
+    height: 124px;
+  }
+  .donut-inner{
+    width: 82px;
+    height: 82px;
+  }
+  .donut-percent{
+    font-size: 1.1rem;
+  }
+  table{
+    min-width: 560px;
+  }
+  th,td{
+    padding: 10px 8px;
+    font-size: .86rem;
+  }
+  .footer-note{
+    font-size: .82rem;
+  }
+}
+@media (max-width: 380px){
+  #shuffleBtn, #menuBtnInQuiz{
+    width: 100%;
+  }
+  .question-text .code-block{
+    font-size: .72rem;
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div>
+    <h1>Java Gold SE 17 対策</h1>
+    <div class="sub">章ごと、または全章から問題を選んで解けます</div>
+  </div>
+
+  <section id="menuView" class="panel" style="margin-top:18px;">
+    <h2 style="margin-top:0;">メインメニュー</h2>
+    <div class="sub" style="margin-bottom:18px;">出題範囲を選択してください。</div>
+    <div id="menuButtons" class="choices"></div>
+  </section>
+
+  <div id="progressShell" class="progress-shell hidden">
+    <div class="progress-head">
+      <div id="progressLabel" class="progress-label">0 / 60問 正解</div>
+      <div id="progressRight" class="progress-label">0 / 60問 回答済み</div>
+    </div>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+  </div>
+
+  <section id="quizView" class="panel hidden">
+    <div class="quiz-top-row" style="display:flex; gap:16px; align-items:stretch; margin-bottom:14px;">
+      <div style="flex:1;">
+        <div class="meta-row">
+          <div id="metaQuestionNo" class="pill">第1問 / 60問</div>
+          <div id="metaChapter" class="pill">第1章</div>
+          <div id="metaTopic" class="pill">基礎</div>
+        </div>
+
+        <div class="actions" style="margin-bottom:0">
+          <button id="finishBtn" class="secondary">回答を終了してサマリーへ</button>
+          <button id="shuffleBtn" class="secondary">シャッフル: OFF</button>
+          <button id="menuBtnInQuiz" class="secondary">メインメニューへ戻る</button>
+        </div>
+      </div>
+
+      <div id="timerBox" class="timer-box" aria-label="制限時間">
+        <div id="timerRing" class="timer-ring">
+          <div class="timer-inner">
+            <div id="timerPill" class="timer-seconds">90</div>
+            <div class="timer-unit">sec</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="questionText" class="question-text"></div>
+    <div id="choices" class="choices"></div>
+
+    <div id="explanationBox" class="explanation hidden">
+      <div id="resultBadge" class="badge"></div>
+      <div id="correctAnswerText" style="font-weight:700;margin-bottom:8px;"></div>
+      <div id="explanationText" style="line-height:1.8;white-space:pre-wrap;"></div>
+      <div class="actions" style="margin-top:18px">
+        <button id="nextBtn" class="primary">次の問題へ</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="summaryView" class="panel hidden">
+    <h2 style="margin-top:0">結果サマリー</h2>
+
+    <div class="summary-grid">
+      <div class="metric">
+        <div class="metric-label">正解数</div>
+        <div id="summaryCorrect" class="metric-value">0 / 60</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">正答率</div>
+        <div id="summaryRate" class="metric-value">0%</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">正解率グラフ</div>
+        <div class="donut-wrap">
+          <div id="donutChart" class="donut-chart">
+            <div class="donut-inner">
+              <div id="donutPercent" class="donut-percent">0%</div>
+              <div class="donut-caption">correct</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>判定</th>
+            <th>章</th>
+            <th>問題</th>
+            <th>リンク</th>
+          </tr>
+        </thead>
+        <tbody id="summaryTableBody"></tbody>
+      </table>
+    </div>
+
+    <div class="actions" id="summaryActions" style="margin-top:18px">
+      <button id="retryWrongBtn" class="secondary">不正解だけ復習する</button>
+      <button id="retryWrongUnansweredBtn" class="secondary">不正解＋未回答を復習する</button>
+      <button id="restartBtn" class="secondary">最初からやり直す</button>
+      <button id="menuBtnInSummary" class="secondary">メインメニューへ戻る</button>
+    </div>
+
+    <div class="footer-note">
+      途中で「回答を終了してサマリーへ」を押すと、その時点までの結果でサマリーを表示できます。<br>
+      「問題を見る」を押すと、その問題と解説を再表示します。<br>
+      サマリー画面の「不正解だけ復習する」「不正解＋未回答を復習する」で、対象問題だけを続けて解けます。<br>
+      このHTMLは単体で動くので、そのままローカルで開いて使えます。
+    </div>
+  </section>
+</div>
+
+<script>
+let QUESTIONS = [];
+
+async function loadQuestions() {
+  const response = await fetch("./questions.json", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`questions.json の読み込みに失敗しました: ${response.status}`);
+  }
+  QUESTIONS = await response.json();
+}
+
+
+const state = {
+  currentIndex: 0,
+  answers: Array(QUESTIONS.length).fill(null),
+  order: Array.from({length: QUESTIONS.length}, (_, i) => i),
+  shuffle: false,
+  reviewOnlyWrong: false,
+  reviewWrongAndUnanswered: false,
+  baseOrderBeforeWrongReview: null,
+  reviewAnswers: {},
+  selectedChapters: [1,2,3,4,5,6],
+  timerSeconds: 90,
+  timerId: null,
+  timerStopped: false
+};
+
+const menuView = document.getElementById("menuView");
+const menuButtons = document.getElementById("menuButtons");
+const quizView = document.getElementById("quizView");
+const summaryView = document.getElementById("summaryView");
+const progressShell = document.getElementById("progressShell");
+const progressLabel = document.getElementById("progressLabel");
+const progressRight = document.getElementById("progressRight");
+const progressFill = document.getElementById("progressFill");
+const metaQuestionNo = document.getElementById("metaQuestionNo");
+const metaChapter = document.getElementById("metaChapter");
+const metaTopic = document.getElementById("metaTopic");
+const timerPill = document.getElementById("timerPill");
+const timerRing = document.getElementById("timerRing");
+const questionText = document.getElementById("questionText");
+const choicesEl = document.getElementById("choices");
+const explanationBox = document.getElementById("explanationBox");
+const resultBadge = document.getElementById("resultBadge");
+const correctAnswerText = document.getElementById("correctAnswerText");
+const explanationText = document.getElementById("explanationText");
+const nextBtn = document.getElementById("nextBtn");
+const finishBtn = document.getElementById("finishBtn");
+const shuffleBtn = document.getElementById("shuffleBtn");
+const summaryCorrect = document.getElementById("summaryCorrect");
+const summaryRate = document.getElementById("summaryRate");
+const donutChart = document.getElementById("donutChart");
+const donutPercent = document.getElementById("donutPercent");
+const summaryTableBody = document.getElementById("summaryTableBody");
+const restartBtn = document.getElementById("restartBtn");
+const retryWrongBtn = document.getElementById("retryWrongBtn");
+const retryWrongUnansweredBtn = document.getElementById("retryWrongUnansweredBtn");
+const summaryActions = document.getElementById("summaryActions");
+
+function answeredCount() {
+  return state.answers.filter(v => v !== null).length;
+}
+function correctCount() {
+  return state.answers.filter(v => v && v.isCorrect).length;
+}
+function shuffledArray(arr) {
+  const copy = [...arr];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+function resetOrder() {
+  state.order = Array.from({length: QUESTIONS.length}, (_, i) => i)
+    .filter(i => state.selectedChapters.includes(QUESTIONS[i].chapter));
+  if (state.shuffle) {
+    state.order = shuffledArray(state.order);
+  }
+}
+function orderedQuestionAt(displayIndex) {
+  return QUESTIONS[state.order[displayIndex]];
+}
+function actualIndexAt(displayIndex) {
+  return state.order[displayIndex];
+}
+function updateShuffleButton() {
+  shuffleBtn.textContent = `シャッフル: ${state.shuffle ? "ON" : "OFF"}`;
+}
+function currentVisibleQuestionsLength() {
+  return state.order.length;
+}
+function visibleAnsweredCount() {
+  if (isAnyReviewMode()) {
+    return state.order.filter(idx => state.reviewAnswers[idx] != null).length;
+  }
+  return state.order.filter(idx => state.answers[idx] !== null).length;
+}
+function visibleCorrectCount() {
+  if (isAnyReviewMode()) {
+    return state.order.filter(idx => state.reviewAnswers[idx] && state.reviewAnswers[idx].isCorrect).length;
+  }
+  return state.order.filter(idx => state.answers[idx] && state.answers[idx].isCorrect).length;
+}
+function buildWrongOnlyOrder() {
+  return state.order.filter(idx => state.answers[idx] && !state.answers[idx].isCorrect);
+}
+function buildWrongAndUnansweredOrder() {
+  return state.order.filter(idx => state.answers[idx] === null || (state.answers[idx] && !state.answers[idx].isCorrect));
+}
+function isWrongReviewMode() {
+  return state.reviewOnlyWrong;
+}
+function isWrongUnansweredReviewMode() {
+  return state.reviewWrongAndUnanswered;
+}
+function isAnyReviewMode() {
+  return state.reviewOnlyWrong || state.reviewWrongAndUnanswered;
+}
+function chapterLabel(chapter) {
+  if (chapter === 99) return "模擬試験";
+  if (chapter === 98) return "模擬試験2";
+  return `第${chapter}章`;
+}
+function currentModeTitle() {
+  if (state.selectedChapters.length === 6 && state.selectedChapters.every(n => n >= 1 && n <= 6)) {
+    return "全章";
+  }
+  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 99) {
+    return "模擬試験";
+  }
+  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 98) {
+    return "模擬試験2";
+  }
+  return state.selectedChapters.map(n => chapterLabel(n)).join("・");
+}
+function showMenu() {
+  stopTimer();
+  timerPill.textContent = "90";
+  timerRing.style.setProperty("--pct", 100);
+  menuView.classList.remove("hidden");
+  quizView.classList.add("hidden");
+  summaryView.classList.add("hidden");
+  progressShell.classList.add("hidden");
+}
+function startMode(chapters) {
+  state.selectedChapters = [...chapters];
+  state.answers = Array(QUESTIONS.length).fill(null);
+  state.currentIndex = 0;
+  state.reviewOnlyWrong = false;
+  state.reviewWrongAndUnanswered = false;
+  state.baseOrderBeforeWrongReview = null;
+  state.reviewAnswers = {};
+  resetOrder();
+  updateShuffleButton();
+  renderQuestion(0);
+}
+function buildMenu() {
+  const items = [
+    { label: "全章", chapters: [1,2,3,4,5,6,7,8,9,10], desc: "Java Gold SE 17の基礎問題を全範囲から出題" },
+    { label: "第1章", chapters: [1], desc: "文字列・数値・日付時刻・var" },
+    { label: "第2章", chapters: [2], desc: "制御構文・switch式・パターンマッチング" },
+    { label: "第3章", chapters: [3], desc: "OOP・record・sealed class・interface" },
+    { label: "第4章", chapters: [4], desc: "例外処理・try-with-resources" },
+    { label: "第5章", chapters: [5], desc: "コレクション・ジェネリクス" },
+    { label: "第6章", chapters: [6], desc: "ラムダ式・Stream API・Optional" },
+    { label: "第7章", chapters: [7], desc: "並行処理・ExecutorService" },
+    { label: "第8章", chapters: [8], desc: "I/O・NIO.2" },
+    { label: "第9章", chapters: [9], desc: "JDBC・ローカライズ" },
+    { label: "第10章", chapters: [10], desc: "JPMS・パッケージング" },
+  ];
+  menuButtons.innerHTML = "";
+  items.forEach(item => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice";
+    btn.innerHTML = `<span class="choice-key">▶</span><span><strong>${item.label}</strong><br><span style="color:var(--muted)">${item.desc}</span></span>`;
+    btn.addEventListener("click", () => startMode(item.chapters));
+    menuButtons.appendChild(btn);
+  });
+}
+
+function stopTimer() {
+  if (state.timerId) {
+    clearInterval(state.timerId);
+    state.timerId = null;
+  }
+}
+function updateTimerDisplay() {
+  timerPill.textContent = String(Math.max(0, state.timerSeconds));
+  const pct = Math.max(0, (state.timerSeconds / 90) * 100);
+  timerRing.style.setProperty("--pct", pct);
+}
+function startTimer() {
+  stopTimer();
+  state.timerStopped = false;
+  state.timerSeconds = 90;
+  updateTimerDisplay();
+  state.timerId = setInterval(() => {
+    state.timerSeconds -= 1;
+    updateTimerDisplay();
+
+    if (state.timerSeconds > 0) return;
+
+    stopTimer();
+    const keepGoing = confirm("制限時間が経過しました。このまま回答を続けますか");
+    if (keepGoing) {
+      state.timerStopped = true;
+      timerPill.textContent = "停止";
+      timerRing.style.setProperty("--pct", 0);
+      return;
+    }
+
+    state.timerStopped = true;
+    timerPill.textContent = "停止";
+    timerRing.style.setProperty("--pct", 0);
+    autoRevealCorrectAnswer();
+  }, 1000);
+}
+function resetTimerForQuestion() {
+  startTimer();
+}
+function autoRevealCorrectAnswer() {
+  const actualIndex = actualIndexAt(state.currentIndex);
+  const isCorrect = false;
+
+  if (isAnyReviewMode()) {
+    state.reviewAnswers[actualIndex] = {
+      selected: null,
+      isCorrect,
+      timedOut: true
+    };
+  } else {
+    state.answers[actualIndex] = {
+      selected: null,
+      isCorrect,
+      timedOut: true
+    };
+  }
+
+  renderQuestion(state.currentIndex);
+}
+function updateProgress() {
+  const total = currentVisibleQuestionsLength();
+  const answered = visibleAnsweredCount();
+  const correct = visibleCorrectCount();
+  progressLabel.textContent = `${correct} / ${total}問 正解`;
+  progressRight.textContent = `${answered} / ${total}問 回答済み`;
+  progressFill.style.width = total === 0 ? "0%" : `${(answered / total) * 100}%`;
+  progressShell.classList.toggle("hidden", summaryView.classList.contains("hidden") === false);
+}
+
+function prettyJavaCode(code) {
+  const normalized = code.replace(/\s+/g, " ").trim();
+  const spaced = normalized
+    .replace(/\s*\{\s*/g, " {\n")
+    .replace(/\s*;\s*/g, ";\n")
+    .replace(/\s*\}\s*/g, "\n}\n")
+    .replace(/\s+(?=(?:class|interface|record|sealed|non-sealed|abstract|public|import)\b)/g, "\n")
+    .replace(/\n\s*\n/g, "\n")
+    .trim();
+  const lines = spaced.split("\n").map(line => line.trim()).filter(Boolean);
+  let level = 0;
+  return lines.map(line => {
+    if (line.startsWith("}")) level = Math.max(0, level - 1);
+    const out = "  ".repeat(level) + line;
+    const opens = (line.match(/\{/g) || []).length;
+    const closes = (line.match(/\}/g) || []).length;
+    level = Math.max(0, level + opens - closes);
+    return out;
+  }).join("\n");
+}
+function formatQuestionText(text) {
+  const source = String(text ?? "");
+  const match = source.match(/^(.*?。)\s*((?:import|class|interface|record|sealed|non-sealed|abstract|public)\b[\s\S]*)$/);
+  if (!match) return escapeHtml(source);
+  const lead = escapeHtml(match[1]);
+  const code = escapeHtml(prettyJavaCode(match[2]));
+  return `<span class="question-lead">${lead}</span><pre class="code-block"><code>${code}</code></pre>`;
+}
+
+function renderQuestion(index) {
+  const q = orderedQuestionAt(index);
+  const actualIndex = actualIndexAt(index);
+  state.currentIndex = index;
+
+  menuView.classList.add("hidden");
+  quizView.classList.remove("hidden");
+  summaryView.classList.add("hidden");
+  progressShell.classList.remove("hidden");
+
+  const total = currentVisibleQuestionsLength();
+  metaQuestionNo.textContent = `第${index + 1}問 / ${total}問` + (isWrongReviewMode() ? "（不正解復習）" : isWrongUnansweredReviewMode() ? "（不正解＋未回答復習）" : "");
+  metaChapter.textContent = `${currentModeTitle()} / ${chapterLabel(q.chapter)}`;
+  metaTopic.textContent = q.topic || "基礎";
+  questionText.innerHTML = formatQuestionText(q.question);
+
+  let ans = isAnyReviewMode()
+    ? state.reviewAnswers[actualIndex] || null
+    : state.answers[actualIndex];
+  choicesEl.innerHTML = "";
+  ["A", "B", "C", "D"].forEach(key => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice";
+    btn.innerHTML = `<span class="choice-key">${key}</span><span>${escapeHtml(q.choices[key])}</span>`;
+    if (ans) {
+      btn.disabled = true;
+      if (key === q.correctChoice) btn.classList.add("correct");
+      if (ans.selected && key === ans.selected && key !== q.correctChoice) btn.classList.add("incorrect");
+    } else {
+      btn.addEventListener("click", () => submitAnswer(key));
+    }
+    choicesEl.appendChild(btn);
+  });
+
+  if (ans) {
+    showExplanation(ans.isCorrect, q, false);
+  } else {
+    explanationBox.classList.add("hidden");
+  }
+  nextBtn.textContent = index === currentVisibleQuestionsLength() - 1 ? "結果を見る" : "次の問題へ";
+  updateProgress();
+
+  if (!ans) {
+    resetTimerForQuestion();
+  } else {
+    stopTimer();
+    state.timerStopped = true;
+    timerPill.textContent = "停止";
+    timerRing.style.setProperty("--pct", 0);
+  }
+}
+
+function submitAnswer(selected) {
+  const actualIndex = actualIndexAt(state.currentIndex);
+  const q = QUESTIONS[actualIndex];
+  const isCorrect = selected === q.correctChoice;
+
+  if (isAnyReviewMode()) {
+    state.reviewAnswers[actualIndex] = {
+      selected,
+      isCorrect
+    };
+  } else {
+    state.answers[actualIndex] = {
+      selected,
+      isCorrect
+    };
+  }
+
+  renderQuestion(state.currentIndex);
+}
+
+function showExplanation(isCorrect, q, reviewMode) {
+  stopTimer();
+  state.timerStopped = true;
+  timerPill.textContent = "停止";
+  timerRing.style.setProperty("--pct", 0);
+
+  explanationBox.classList.remove("hidden");
+  const actualIndex = state.order[state.currentIndex];
+  const currentAnswer = isAnyReviewMode()
+    ? state.reviewAnswers[actualIndex] || null
+    : state.answers[actualIndex];
+
+  if (!currentAnswer) {
+    resultBadge.textContent = "未回答";
+    resultBadge.className = "badge ng";
+  } else if (isCorrect) {
+    resultBadge.textContent = "正解";
+    resultBadge.className = "badge ok";
+  } else {
+    resultBadge.textContent = "不正解";
+    resultBadge.className = "badge ng";
+  }
+
+  correctAnswerText.textContent = `正解: ${q.correctChoice}. ${q.correctText}`;
+  explanationText.textContent = q.explanation;
+}
+
+function renderSummary() {
+  stopTimer();
+  menuView.classList.add("hidden");
+  quizView.classList.add("hidden");
+  summaryView.classList.remove("hidden");
+  progressShell.classList.add("hidden");
+
+  const total = currentVisibleQuestionsLength();
+  const answered = visibleAnsweredCount();
+  const correct = visibleCorrectCount();
+  const rate = total === 0 ? 0 : Math.round((correct / total) * 1000) / 10;
+
+  summaryCorrect.textContent = `${correct} / ${total}`;
+  summaryRate.textContent = `${rate}%`;
+  donutChart.style.setProperty("--pct", rate);
+  donutPercent.textContent = `${rate}%`;
+
+  summaryTableBody.innerHTML = "";
+  state.order.forEach((actualIdx, visibleIdx) => {
+    const q = QUESTIONS[actualIdx];
+    const ans = isAnyReviewMode()
+      ? state.reviewAnswers[actualIdx] || null
+      : state.answers[actualIdx];
+    const tr = document.createElement("tr");
+
+    const td1 = document.createElement("td");
+    td1.textContent = String(visibleIdx + 1);
+
+    const td2 = document.createElement("td");
+    if (!ans) {
+      td2.textContent = "未回答";
+    } else if (ans.isCorrect) {
+      td2.textContent = "正解";
+      td2.className = "status-ok";
+    } else {
+      td2.textContent = "不正解";
+      td2.className = "status-ng";
+    }
+
+    const td3 = document.createElement("td");
+    td3.textContent = chapterLabel(q.chapter);
+
+    const td4 = document.createElement("td");
+    td4.textContent = q.question;
+
+    const td5 = document.createElement("td");
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "linkbtn";
+    btn.textContent = "問題を見る";
+    btn.addEventListener("click", () => renderReview(actualIdx, visibleIdx));
+    td5.appendChild(btn);
+
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tr.appendChild(td4);
+    tr.appendChild(td5);
+    summaryTableBody.appendChild(tr);
+  });
+
+  if (isAnyReviewMode()) {
+    retryWrongBtn.style.display = "none";
+    retryWrongUnansweredBtn.style.display = "none";
+  } else {
+    retryWrongBtn.style.display = "";
+    retryWrongUnansweredBtn.style.display = "";
+
+    retryWrongBtn.textContent = "不正解だけ復習する";
+    retryWrongUnansweredBtn.textContent = "不正解＋未回答を復習する";
+  }
+}
+function renderReview(actualIndex, displayIndex = state.order.indexOf(actualIndex)) {
+  state.currentIndex = displayIndex;
+  const q = QUESTIONS[actualIndex];
+  let ans = isAnyReviewMode()
+    ? state.reviewAnswers[actualIndex] || null
+    : state.answers[actualIndex];
+
+  quizView.classList.remove("hidden");
+  summaryView.classList.add("hidden");
+  progressShell.classList.add("hidden");
+
+  metaQuestionNo.textContent = `第${displayIndex + 1}問 / ${currentVisibleQuestionsLength()}（復習）`;
+  metaChapter.textContent = `${currentModeTitle()} / ${chapterLabel(q.chapter)}`;
+  metaTopic.textContent = q.topic || "基礎";
+  timerPill.textContent = "解説";
+  timerRing.style.setProperty("--pct", 0);
+  questionText.innerHTML = formatQuestionText(q.question);
+
+  choicesEl.innerHTML = "";
+  ["A", "B", "C", "D"].forEach(key => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "choice";
+    btn.disabled = true;
+    btn.innerHTML = `<span class="choice-key">${key}</span><span>${escapeHtml(q.choices[key])}</span>`;
+    if (key === q.correctChoice) btn.classList.add("correct");
+    if (ans && ans.selected && key === ans.selected && key !== q.correctChoice) btn.classList.add("incorrect");
+    choicesEl.appendChild(btn);
+  });
+
+  showExplanation(ans ? ans.isCorrect : false, q, true);
+  nextBtn.textContent = "サマリーへ戻る";
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+nextBtn.addEventListener("click", () => {
+  if (!summaryView.classList.contains("hidden")) return;
+
+  const isReview = progressShell.classList.contains("hidden") && !quizView.classList.contains("hidden") && metaQuestionNo.textContent.includes("復習");
+  if (isReview) {
+    renderSummary();
+    return;
+  }
+  if (state.currentIndex >= currentVisibleQuestionsLength() - 1) {
+    renderSummary();
+    return;
+  }
+  renderQuestion(state.currentIndex + 1);
+});
+
+finishBtn.addEventListener("click", renderSummary);
+
+menuBtnInQuiz.addEventListener("click", () => {
+  const ok = confirm("この時点でメインメニューへ戻ると、現在のサマリーは表示されません。メインメニューへ戻りますか？");
+  if (!ok) return;
+  state.answers = Array(QUESTIONS.length).fill(null);
+  state.currentIndex = 0;
+  state.reviewOnlyWrong = false;
+  state.reviewWrongAndUnanswered = false;
+  state.baseOrderBeforeWrongReview = null;
+  state.reviewAnswers = {};
+  showMenu();
+});
+
+menuBtnInSummary.addEventListener("click", () => {
+  state.answers = Array(QUESTIONS.length).fill(null);
+  state.currentIndex = 0;
+  state.reviewOnlyWrong = false;
+  state.reviewWrongAndUnanswered = false;
+  state.baseOrderBeforeWrongReview = null;
+  state.reviewAnswers = {};
+  showMenu();
+});
+
+shuffleBtn.addEventListener("click", () => {
+  if (answeredCount() > 0) {
+    const ok = confirm("現在の回答状況をリセットして、出題順を切り替えます。よろしいですか？");
+    if (!ok) return;
+    state.answers = Array(QUESTIONS.length).fill(null);
+    state.currentIndex = 0;
+  }
+  state.reviewOnlyWrong = false;
+  state.reviewWrongAndUnanswered = false;
+  state.baseOrderBeforeWrongReview = null;
+  state.reviewAnswers = {};
+  state.shuffle = !state.shuffle;
+  resetOrder();
+  updateShuffleButton();
+  renderQuestion(0);
+});
+
+retryWrongBtn.addEventListener("click", () => {
+  if (!isWrongReviewMode()) {
+    const wrongOrder = buildWrongOnlyOrder();
+    if (wrongOrder.length === 0) {
+      alert("現在、不正解の問題はありません。");
+      return;
+    }
+    state.baseOrderBeforeWrongReview = [...state.order];
+    state.order = wrongOrder;
+    state.reviewOnlyWrong = true;
+    state.reviewWrongAndUnanswered = false;
+    state.reviewAnswers = {};
+    state.currentIndex = 0;
+    renderQuestion(0);
+    return;
+  }
+
+  if (state.baseOrderBeforeWrongReview && state.baseOrderBeforeWrongReview.length > 0) {
+    state.order = [...state.baseOrderBeforeWrongReview];
+  } else {
+    resetOrder();
+  }
+  state.baseOrderBeforeWrongReview = null;
+  state.reviewOnlyWrong = false;
+  state.reviewWrongAndUnanswered = false;
+  state.reviewAnswers = {};
+  state.currentIndex = 0;
+  renderSummary();
+});
+
+retryWrongUnansweredBtn.addEventListener("click", () => {
+  if (!isWrongUnansweredReviewMode()) {
+    const targetOrder = buildWrongAndUnansweredOrder();
+    if (targetOrder.length === 0) {
+      alert("現在、不正解または未回答の問題はありません。");
+      return;
+    }
+    state.baseOrderBeforeWrongReview = [...state.order];
+    state.order = targetOrder;
+    state.reviewOnlyWrong = false;
+    state.reviewWrongAndUnanswered = true;
+    state.reviewAnswers = {};
+    state.currentIndex = 0;
+    renderQuestion(0);
+    return;
+  }
+
+  if (state.baseOrderBeforeWrongReview && state.baseOrderBeforeWrongReview.length > 0) {
+    state.order = [...state.baseOrderBeforeWrongReview];
+  } else {
+    resetOrder();
+  }
+  state.baseOrderBeforeWrongReview = null;
+  state.reviewOnlyWrong = false;
+  state.reviewWrongAndUnanswered = false;
+  state.reviewAnswers = {};
+  state.currentIndex = 0;
+  renderSummary();
+});
+
+restartBtn.addEventListener("click", () => {
+  state.answers = Array(QUESTIONS.length).fill(null);
+  state.currentIndex = 0;
+  state.reviewOnlyWrong = false;
+  state.reviewWrongAndUnanswered = false;
+  state.baseOrderBeforeWrongReview = null;
+  state.reviewAnswers = {};
+  resetOrder();
+  updateShuffleButton();
+  renderQuestion(0);
+});
+
+async function initApp() {
+  try {
+    await loadQuestions();
+    buildMenu();
+    resetOrder();
+    updateShuffleButton();
+    showMenu();
+  } catch (error) {
+    console.error(error);
+    document.getElementById("menuButtons").innerHTML = `
+      <div class="explanation">
+        <div class="badge ng">読み込みエラー</div>
+        <div style="line-height:1.8;">
+          questions.json を読み込めませんでした。<br>
+          HTMLファイルを直接開いている場合は、READMEの手順に沿って localhost で開いてください。<br>
+          詳細: ${error.message}
+        </div>
+      </div>`;
+    showMenu();
+  }
+}
+
+initApp();
+</script>
+</body>
+</html>
