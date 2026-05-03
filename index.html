@@ -410,6 +410,85 @@ button, .choice, .linkbtn {
   }
 }
 
+
+
+/* ===== Extra smartphone stability patch for Java Gold prototype ===== */
+@media (max-width: 640px){
+  .panel,
+  .progress-shell{
+    width: 100%;
+  }
+  .choices{
+    width: 100%;
+  }
+  .choice{
+    align-items: flex-start;
+  }
+  .choice span:last-child{
+    display: block;
+    width: 100%;
+    word-break: break-word;
+  }
+  .meta-row{
+    align-items: flex-start;
+  }
+  #metaQuestionNo,
+  #metaChapter,
+  #metaTopic{
+    max-width: 100%;
+    white-space: normal;
+  }
+  #questionText{
+    max-width: 100%;
+  }
+  .explanation{
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+  .table-wrap{
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  #summaryActions button{
+    width: 100%;
+  }
+}
+@media (max-width: 480px){
+  .wrap{
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .panel{
+    padding: 12px;
+  }
+  h2{
+    font-size: 1.15rem;
+  }
+  .question-text .code-block{
+    font-size: .70rem;
+    line-height: 1.5;
+  }
+}
+
+
+/* ===== localStorage progress panel ===== */
+.save-box{
+  margin:14px 0 18px;
+  padding:14px;
+  border-radius:18px;
+  border:1px solid rgba(245,215,110,.22);
+  background:rgba(212,175,55,.08);
+}
+.save-title{font-weight:800;margin-bottom:6px}
+.save-text{color:var(--muted);font-size:.92rem;line-height:1.65;margin-bottom:12px}
+.save-actions{display:flex;gap:10px;flex-wrap:wrap}
+.save-mini{margin-top:10px;color:var(--muted);font-size:.8rem;line-height:1.5}
+@media (max-width:640px){
+  .save-box{padding:12px;border-radius:16px}
+  .save-actions button{width:100%}
+}
+
 </style>
 </head>
 <body>
@@ -422,6 +501,17 @@ button, .choice, .linkbtn {
   <section id="menuView" class="panel" style="margin-top:18px;">
     <h2 style="margin-top:0;">メインメニュー</h2>
     <div class="sub" style="margin-bottom:18px;">出題範囲を選択してください。</div>
+
+    <div id="savedProgressBox" class="save-box hidden">
+      <div class="save-title">前回の続きがあります</div>
+      <div id="savedProgressText" class="save-text">保存済みの学習履歴を読み込みできます。</div>
+      <div class="save-actions">
+        <button id="resumeSavedBtn" class="primary" type="button">続きから再開する</button>
+        <button id="clearSavedBtn" class="secondary" type="button">保存履歴を削除する</button>
+      </div>
+      <div class="save-mini">回答状況はこの端末のブラウザ内に保存されます。GitHubには送信されません。</div>
+    </div>
+
     <div id="menuButtons" class="choices"></div>
   </section>
 
@@ -523,7 +613,8 @@ button, .choice, .linkbtn {
       途中で「回答を終了してサマリーへ」を押すと、その時点までの結果でサマリーを表示できます。<br>
       「問題を見る」を押すと、その問題と解説を再表示します。<br>
       サマリー画面の「不正解だけ復習する」「不正解＋未回答を復習する」で、対象問題だけを続けて解けます。<br>
-      このHTMLは単体で動くので、そのままローカルで開いて使えます。
+      回答状況はlocalStorageに自動保存されるため、同じ端末・同じブラウザなら続きから再開できます。<br>
+      GitHub Pagesで公開した場合も、学習履歴はGitHubではなくスマホ側のブラウザに保存されます。
     </div>
   </section>
 </div>
@@ -552,11 +643,16 @@ const state = {
   selectedChapters: [1,2,3,4,5,6],
   timerSeconds: 90,
   timerId: null,
-  timerStopped: false
+  timerStopped: false,
+  lastView: "menu"
 };
 
 const menuView = document.getElementById("menuView");
 const menuButtons = document.getElementById("menuButtons");
+const savedProgressBox = document.getElementById("savedProgressBox");
+const savedProgressText = document.getElementById("savedProgressText");
+const resumeSavedBtn = document.getElementById("resumeSavedBtn");
+const clearSavedBtn = document.getElementById("clearSavedBtn");
 const quizView = document.getElementById("quizView");
 const summaryView = document.getElementById("summaryView");
 const progressShell = document.getElementById("progressShell");
@@ -586,6 +682,97 @@ const restartBtn = document.getElementById("restartBtn");
 const retryWrongBtn = document.getElementById("retryWrongBtn");
 const retryWrongUnansweredBtn = document.getElementById("retryWrongUnansweredBtn");
 const summaryActions = document.getElementById("summaryActions");
+
+const STORAGE_KEY = "javaGoldSe17StudyProgress.v1";
+
+function questionSignature() {
+  return QUESTIONS.map(q => q.id).join(",");
+}
+
+function safeReadSavedProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.warn("保存済みデータの読み込みに失敗しました", e);
+    return null;
+  }
+}
+
+function saveStudyProgress(view = "quiz") {
+  try {
+    if (!QUESTIONS.length) return;
+    const payload = {
+      version: 1,
+      savedAt: new Date().toISOString(),
+      questionCount: QUESTIONS.length,
+      signature: questionSignature(),
+      view,
+      currentIndex: state.currentIndex,
+      answers: state.answers,
+      order: state.order,
+      shuffle: state.shuffle,
+      reviewOnlyWrong: state.reviewOnlyWrong,
+      reviewWrongAndUnanswered: state.reviewWrongAndUnanswered,
+      baseOrderBeforeWrongReview: state.baseOrderBeforeWrongReview,
+      reviewAnswers: state.reviewAnswers,
+      selectedChapters: state.selectedChapters
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    updateSavedProgressBox();
+  } catch (e) {
+    console.warn("学習履歴の保存に失敗しました", e);
+  }
+}
+
+function clearStudyProgress() {
+  localStorage.removeItem(STORAGE_KEY);
+  updateSavedProgressBox();
+}
+
+function isSavedProgressCompatible(saved) {
+  return saved
+    && saved.version === 1
+    && saved.questionCount === QUESTIONS.length
+    && saved.signature === questionSignature()
+    && Array.isArray(saved.answers)
+    && Array.isArray(saved.order);
+}
+
+function updateSavedProgressBox() {
+  const saved = safeReadSavedProgress();
+  if (!isSavedProgressCompatible(saved)) {
+    savedProgressBox.classList.add("hidden");
+    return;
+  }
+  const answered = saved.answers.filter(v => v !== null).length;
+  const correct = saved.answers.filter(v => v && v.isCorrect).length;
+  const total = saved.order.length || QUESTIONS.length;
+  const savedDate = new Date(saved.savedAt);
+  const dateText = Number.isNaN(savedDate.getTime()) ? "保存日時不明" : savedDate.toLocaleString("ja-JP");
+  savedProgressText.textContent = `${answered} / ${total}問 回答済み、${correct}問 正解。最終保存: ${dateText}`;
+  savedProgressBox.classList.remove("hidden");
+}
+
+function restoreStudyProgress() {
+  const saved = safeReadSavedProgress();
+  if (!isSavedProgressCompatible(saved)) {
+    alert("保存済みデータが現在の問題データと一致しないため、読み込めませんでした。");
+    clearStudyProgress();
+    return;
+  }
+  state.currentIndex = Math.min(saved.currentIndex || 0, Math.max(0, saved.order.length - 1));
+  state.answers = saved.answers;
+  state.order = saved.order;
+  state.shuffle = !!saved.shuffle;
+  state.reviewOnlyWrong = !!saved.reviewOnlyWrong;
+  state.reviewWrongAndUnanswered = !!saved.reviewWrongAndUnanswered;
+  state.baseOrderBeforeWrongReview = saved.baseOrderBeforeWrongReview || null;
+  state.reviewAnswers = saved.reviewAnswers || {};
+  state.selectedChapters = Array.isArray(saved.selectedChapters) ? saved.selectedChapters : [1,2,3,4,5,6,7,8,9,10];
+  updateShuffleButton();
+  renderQuestion(state.currentIndex);
+}
 
 function answeredCount() {
   return state.answers.filter(v => v !== null).length;
@@ -653,7 +840,7 @@ function chapterLabel(chapter) {
   return `第${chapter}章`;
 }
 function currentModeTitle() {
-  if (state.selectedChapters.length === 6 && state.selectedChapters.every(n => n >= 1 && n <= 6)) {
+  if (state.selectedChapters.length === 10 && state.selectedChapters.every(n => n >= 1 && n <= 10)) {
     return "全章";
   }
   if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 99) {
@@ -672,6 +859,7 @@ function showMenu() {
   quizView.classList.add("hidden");
   summaryView.classList.add("hidden");
   progressShell.classList.add("hidden");
+  updateSavedProgressBox();
 }
 function startMode(chapters) {
   state.selectedChapters = [...chapters];
@@ -684,6 +872,7 @@ function startMode(chapters) {
   resetOrder();
   updateShuffleButton();
   renderQuestion(0);
+  saveStudyProgress("quiz");
 }
 function buildMenu() {
   const items = [
@@ -860,6 +1049,7 @@ function renderQuestion(index) {
     timerPill.textContent = "停止";
     timerRing.style.setProperty("--pct", 0);
   }
+  saveStudyProgress("quiz");
 }
 
 function submitAnswer(selected) {
@@ -980,6 +1170,7 @@ function renderSummary() {
     retryWrongBtn.textContent = "不正解だけ復習する";
     retryWrongUnansweredBtn.textContent = "不正解＋未回答を復習する";
   }
+  saveStudyProgress("summary");
 }
 function renderReview(actualIndex, displayIndex = state.order.indexOf(actualIndex)) {
   state.currentIndex = displayIndex;
@@ -1023,6 +1214,14 @@ function escapeHtml(str) {
     .replaceAll('"', "&quot;");
 }
 
+resumeSavedBtn.addEventListener("click", restoreStudyProgress);
+
+clearSavedBtn.addEventListener("click", () => {
+  const ok = confirm("保存されている学習履歴を削除します。よろしいですか？");
+  if (!ok) return;
+  clearStudyProgress();
+});
+
 nextBtn.addEventListener("click", () => {
   if (!summaryView.classList.contains("hidden")) return;
 
@@ -1038,27 +1237,20 @@ nextBtn.addEventListener("click", () => {
   renderQuestion(state.currentIndex + 1);
 });
 
-finishBtn.addEventListener("click", renderSummary);
+finishBtn.addEventListener("click", () => {
+  renderSummary();
+  saveStudyProgress("summary");
+});
 
 menuBtnInQuiz.addEventListener("click", () => {
-  const ok = confirm("この時点でメインメニューへ戻ると、現在のサマリーは表示されません。メインメニューへ戻りますか？");
+  const ok = confirm("現在の回答状況を保存したまま、メインメニューへ戻りますか？");
   if (!ok) return;
-  state.answers = Array(QUESTIONS.length).fill(null);
-  state.currentIndex = 0;
-  state.reviewOnlyWrong = false;
-  state.reviewWrongAndUnanswered = false;
-  state.baseOrderBeforeWrongReview = null;
-  state.reviewAnswers = {};
+  saveStudyProgress("menu");
   showMenu();
 });
 
 menuBtnInSummary.addEventListener("click", () => {
-  state.answers = Array(QUESTIONS.length).fill(null);
-  state.currentIndex = 0;
-  state.reviewOnlyWrong = false;
-  state.reviewWrongAndUnanswered = false;
-  state.baseOrderBeforeWrongReview = null;
-  state.reviewAnswers = {};
+  saveStudyProgress("menu");
   showMenu();
 });
 
@@ -1149,15 +1341,19 @@ restartBtn.addEventListener("click", () => {
   resetOrder();
   updateShuffleButton();
   renderQuestion(0);
+  saveStudyProgress("quiz");
 });
 
 async function initApp() {
   try {
     await loadQuestions();
+    state.answers = Array(QUESTIONS.length).fill(null);
+    state.order = Array.from({length: QUESTIONS.length}, (_, i) => i);
     buildMenu();
     resetOrder();
     updateShuffleButton();
     showMenu();
+    updateSavedProgressBox();
   } catch (error) {
     console.error(error);
     document.getElementById("menuButtons").innerHTML = `
