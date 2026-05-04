@@ -640,7 +640,7 @@ const state = {
   reviewWrongAndUnanswered: false,
   baseOrderBeforeWrongReview: null,
   reviewAnswers: {},
-  selectedChapters: [1,2,3,4,5,6],
+  selectedChapters: [1,2,3,4,5,6,7,8],
   timerSeconds: 90,
   timerId: null,
   timerStopped: false,
@@ -683,7 +683,21 @@ const retryWrongBtn = document.getElementById("retryWrongBtn");
 const retryWrongUnansweredBtn = document.getElementById("retryWrongUnansweredBtn");
 const summaryActions = document.getElementById("summaryActions");
 
-const STORAGE_KEY = "javaGoldSe17StudyProgress.v1";
+const STORAGE_KEY = "javaGoldSe17StudyProgress.v2";
+
+const CHAPTER_TITLES = {
+  1: "コレクションとジェネリクス",
+  2: "関数型インターフェースとラムダ式",
+  3: "ストリームAPI",
+  4: "モジュールシステム",
+  5: "並列処理",
+  6: "ファイルI/O",
+  7: "JDBC",
+  8: "ローカライズ",
+  99: "模擬試験"
+};
+const GOLD_CHAPTERS = [1,2,3,4,5,6,7,8];
+
 
 function questionSignature() {
   return QUESTIONS.map(q => q.id).join(",");
@@ -769,7 +783,7 @@ function restoreStudyProgress() {
   state.reviewWrongAndUnanswered = !!saved.reviewWrongAndUnanswered;
   state.baseOrderBeforeWrongReview = saved.baseOrderBeforeWrongReview || null;
   state.reviewAnswers = saved.reviewAnswers || {};
-  state.selectedChapters = Array.isArray(saved.selectedChapters) ? saved.selectedChapters : [1,2,3,4,5,6,7,8,9,10];
+  state.selectedChapters = Array.isArray(saved.selectedChapters) ? saved.selectedChapters : [1,2,3,4,5,6,7,8];
   updateShuffleButton();
   renderQuestion(state.currentIndex);
 }
@@ -836,18 +850,15 @@ function isAnyReviewMode() {
 }
 function chapterLabel(chapter) {
   if (chapter === 99) return "模擬試験";
-  if (chapter === 98) return "模擬試験2";
-  return `第${chapter}章`;
+  const title = CHAPTER_TITLES[chapter];
+  return title ? `第${chapter}章：${title}` : `第${chapter}章`;
 }
 function currentModeTitle() {
-  if (state.selectedChapters.length === 10 && state.selectedChapters.every(n => n >= 1 && n <= 10)) {
+  if (state.selectedChapters.length === GOLD_CHAPTERS.length && GOLD_CHAPTERS.every(n => state.selectedChapters.includes(n))) {
     return "全章";
   }
   if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 99) {
     return "模擬試験";
-  }
-  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 98) {
-    return "模擬試験2";
   }
   return state.selectedChapters.map(n => chapterLabel(n)).join("・");
 }
@@ -870,23 +881,27 @@ function startMode(chapters) {
   state.baseOrderBeforeWrongReview = null;
   state.reviewAnswers = {};
   resetOrder();
+  if (state.order.length === 0) {
+    alert("この出題範囲にはまだ問題が登録されていません。");
+    showMenu();
+    return;
+  }
   updateShuffleButton();
   renderQuestion(0);
   saveStudyProgress("quiz");
 }
 function buildMenu() {
   const items = [
-    { label: "全章", chapters: [1,2,3,4,5,6,7,8,9,10], desc: "Java Gold SE 17の基礎問題を全範囲から出題" },
-    { label: "第1章", chapters: [1], desc: "文字列・数値・日付時刻・var" },
-    { label: "第2章", chapters: [2], desc: "制御構文・switch式・パターンマッチング" },
-    { label: "第3章", chapters: [3], desc: "OOP・record・sealed class・interface" },
-    { label: "第4章", chapters: [4], desc: "例外処理・try-with-resources" },
-    { label: "第5章", chapters: [5], desc: "コレクション・ジェネリクス" },
-    { label: "第6章", chapters: [6], desc: "ラムダ式・Stream API・Optional" },
-    { label: "第7章", chapters: [7], desc: "並行処理・ExecutorService" },
-    { label: "第8章", chapters: [8], desc: "I/O・NIO.2" },
-    { label: "第9章", chapters: [9], desc: "JDBC・ローカライズ" },
-    { label: "第10章", chapters: [10], desc: "JPMS・パッケージング" },
+    { label: "全章", chapters: GOLD_CHAPTERS, desc: "Java Gold SE 17の通常8章から出題" },
+    { label: "第1章", chapters: [1], desc: "コレクションとジェネリクス" },
+    { label: "第2章", chapters: [2], desc: "関数型インターフェースとラムダ式" },
+    { label: "第3章", chapters: [3], desc: "ストリームAPI" },
+    { label: "第4章", chapters: [4], desc: "モジュールシステム" },
+    { label: "第5章", chapters: [5], desc: "並列処理" },
+    { label: "第6章", chapters: [6], desc: "ファイルI/O" },
+    { label: "第7章", chapters: [7], desc: "JDBC" },
+    { label: "第8章", chapters: [8], desc: "ローカライズ" },
+    { label: "模擬試験", chapters: [99], desc: "本番形式を意識した総合演習" },
   ];
   menuButtons.innerHTML = "";
   items.forEach(item => {
