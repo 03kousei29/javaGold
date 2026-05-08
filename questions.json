@@ -321,320 +321,320 @@
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample21 {\n    static void printAll(List<?> list) {\n        for (Object obj : list) {\n            System.out.print(obj + \" \");\n        }\n\n        // list.add(10);\n        list.add(null);\n    }\n\n    public static void main(String[] args) {\n        printAll(new ArrayList<String>(List.of(\"A\", \"B\")));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample21 {\n    static void addValue(List<?> list) {\n        list.add(10);\n        list.add(null);\n    }\n\n    public static void main(String[] args) {\n        addValue(new ArrayList<String>());\n    }\n}",
     "choices": {
-      "A": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-      "B": "class Box<?>のように型パラメータ宣言へ使える",
-      "C": "new ArrayList<?>としてインスタンス生成できる",
-      "D": "List<?>にはStringでもIntegerでも自由に追加できる"
+      "A": "list.add(10); の行でコンパイルエラーになる",
+      "B": "list.add(null); の行でコンパイルエラーになる",
+      "C": "10 と null が追加され、正常終了する",
+      "D": "実行時にClassCastExceptionが発生する"
     },
     "correctChoice": "A",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctText": "list.add(10); の行でコンパイルエラーになる",
+    "explanation": "正解：A\n\n結論：\nList<?> は要素の具体的な型が不明なリスト。読み取りはObjectとして可能だが、具体的な非null値を安全に追加できない。そのため list.add(10); はコンパイルエラーになる。一方、nullはどの参照型にも代入可能なので追加できる。\n\n選択肢の切り方：\nA：正しい。List<?>にIntegerを安全に追加できる保証がない。\nB：誤り。nullだけはList<?>にも追加できる。\nC：誤り。10の追加でコンパイルエラーになる。\nD：誤り。実行時ではなく、コンパイル時に止まる。\n\n間違えやすいポイント：\nList<?>は「何でも入れられるリスト」ではない。『どんな型のリストか分からない』ため、具体値は入れられない。",
     "topic": "wildcard-21",
     "difficulty": "hard",
     "id": 21
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample22 {\n    // class Box<?> {}\n\n    public static void main(String[] args) {\n        List<?> list;\n\n        // list = new ArrayList<?>();\n        list = new ArrayList<String>();\n\n        System.out.println(list.size());\n    }\n}",
+    "question": "次のうち、ワイルドカードの使い方としてコンパイルできるものはどれか。\nimport java.util.*;",
     "choices": {
-      "A": "class Box<?>のように型パラメータ宣言へ使える",
-      "B": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-      "C": "new ArrayList<?>としてインスタンス生成できる",
-      "D": "List<?>にはStringでもIntegerでも自由に追加できる"
+      "A": "class Box<?> {}",
+      "B": "List<?> list = new ArrayList<String>();",
+      "C": "ArrayList<?> list = new ArrayList<?>();",
+      "D": "class Box<T super Number> {}"
     },
     "correctChoice": "B",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctText": "List<?> list = new ArrayList<String>();",
+    "explanation": "正解：B\n\n結論：\nワイルドカードは使用側の型指定で使える。List<?> list = new ArrayList<String>(); のように、具体的な型のリストを未知の型として受けることはできる。\n\n選択肢の切り方：\nA：誤り。型パラメータ宣言に?は使えない。class Box<T>のように宣言する。\nB：正しい。List<?> は任意の要素型のListを参照できる。\nC：誤り。new ArrayList<?> のようにワイルドカードでインスタンス生成はできない。\nD：誤り。型パラメータ宣言にsuperは使わない。superは主にワイルドカードの下限境界で使う。\n\n間違えやすいポイント：\n?は『宣言する型変数』ではなく『使う側で未知の型を表す記号』。class Box<?> や new ArrayList<?> は頻出の誤り。",
     "topic": "wildcard-22",
     "difficulty": "hard",
     "id": 22
   },
   {
     "chapter": 1,
-    "question": "型パラメータ境界について正しいものはどれか。\nimport java.util.*;\n\nclass Sample23 {\n    static void read(List<? extends Number> list) {\n        Number n = list.get(0);\n\n        // list.add(Integer.valueOf(10));\n        list.add(null);\n\n        System.out.println(n);\n    }\n\n    public static void main(String[] args) {\n        read(List.of(10, 20));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample23 {\n    static void read(List<? extends Number> list) {\n        Number n = list.get(0);\n        list.add(Integer.valueOf(10));\n        System.out.println(n);\n    }\n\n    public static void main(String[] args) {\n        read(new ArrayList<Integer>(List.of(1, 2)));\n    }\n}",
     "choices": {
-      "A": "インターフェース境界にはimplementsを使う",
-      "B": "複数境界ではインターフェースを必ず先に書く",
-      "C": "型パラメータ境界ではクラスにもインターフェースにもextendsを使い、複数境界ではクラス境界を先に書く",
-      "D": "superは型パラメータ宣言の上限境界に使う"
+      "A": "1 が出力される",
+      "B": "list.add(Integer.valueOf(10)); の行でコンパイルエラーになる",
+      "C": "Number n = list.get(0); の行でコンパイルエラーになる",
+      "D": "実行時にUnsupportedOperationExceptionが発生する"
     },
-    "correctChoice": "C",
-    "correctText": "型パラメータ境界ではクラスにもインターフェースにもextendsを使い、複数境界ではクラス境界を先に書く",
-    "explanation": "T extends Number & Runnable のように書く。implementsではなくextends、クラス境界は先頭、superはワイルドカードで使う。",
+    "correctChoice": "B",
+    "correctText": "list.add(Integer.valueOf(10)); の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nList<? extends Number> はNumberのサブタイプを要素に持つリストを読む用途に向く。取り出した値はNumberとして扱えるが、実際の要素型がIntegerなのかDoubleなのか不明なので、Integerを追加することは安全ではなくコンパイルエラーになる。\n\n選択肢の切り方：\nA：誤り。addの行でコンパイルできないため実行されない。\nB：正しい。? extends Number には具体的なNumberサブタイプを追加できない。\nC：誤り。取り出しはNumberとして安全に受け取れる。\nD：誤り。List.ofではなくArrayListを渡しているうえ、そもそもコンパイルエラー。\n\n間違えやすいポイント：\nextendsは『読む』には強いが『書く』には弱い。PECSのProducer extendsを意識する。",
     "topic": "bounded-type-parameter-23",
     "difficulty": "hard",
     "id": 23
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample24 {\n    static void write(List<? super Number> list) {\n        list.add(Integer.valueOf(10));\n        list.add(Double.valueOf(2.5));\n\n        Object obj = list.get(0);\n\n        System.out.println(obj);\n    }\n\n    public static void main(String[] args) {\n        List<Object> list = new ArrayList<>();\n        write(list);\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample24 {\n    static void write(List<? super Number> list) {\n        list.add(Integer.valueOf(10));\n        list.add(Double.valueOf(2.5));\n        Number n = list.get(0);\n        System.out.println(n);\n    }\n\n    public static void main(String[] args) {\n        write(new ArrayList<Object>());\n    }\n}",
     "choices": {
-      "A": "class Box<?>のように型パラメータ宣言へ使える",
-      "B": "new ArrayList<?>としてインスタンス生成できる",
-      "C": "List<?>にはStringでもIntegerでも自由に追加できる",
-      "D": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない"
+      "A": "10 が出力される",
+      "B": "Number n = list.get(0); の行でコンパイルエラーになる",
+      "C": "list.add(Double.valueOf(2.5)); の行でコンパイルエラーになる",
+      "D": "write(new ArrayList<Object>()); の行でコンパイルエラーになる"
     },
-    "correctChoice": "D",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctChoice": "B",
+    "correctText": "Number n = list.get(0); の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nList<? super Number> にはNumberやそのサブタイプを追加できる。一方、取り出すときは実際のリストがList<Number>なのかList<Object>なのか分からないため、戻り値はObjectとしてしか安全に扱えない。Number n = list.get(0); はコンパイルエラーになる。\n\n選択肢の切り方：\nA：誤り。Numberとして受け取る行でコンパイルできない。\nB：正しい。? super Number から読める型は基本的にObject。\nC：誤り。DoubleはNumberのサブタイプなので追加できる。\nD：誤り。List<Object>は? super Numberの条件を満たす。\n\n間違えやすいポイント：\nsuperは『書く』には強いが『読む』ときはObjectになる。Consumer superを意識する。",
     "topic": "wildcard-24",
     "difficulty": "hard",
     "id": 24
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample25 {\n    static void method(List<? extends Number> list) {\n        Number n = list.get(0);\n        System.out.println(n);\n    }\n\n    public static void main(String[] args) {\n        method(List.of(1, 2, 3));\n        method(List.of(1.5, 2.5));\n\n        // method(List.of(new Object()));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample25 {\n    static void method(List<? extends Number> list) {\n        System.out.println(list.get(0));\n    }\n\n    public static void main(String[] args) {\n        method(List.of(1, 2, 3));\n        method(List.of(1.5, 2.5));\n        method(List.of(new Object()));\n    }\n}",
     "choices": {
-      "A": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-      "B": "class Box<?>のように型パラメータ宣言へ使える",
-      "C": "new ArrayList<?>としてインスタンス生成できる",
-      "D": "List<?>にはStringでもIntegerでも自由に追加できる"
+      "A": "1 と 1.5 と Objectの文字列表現が出力される",
+      "B": "method(List.of(1, 2, 3)); の行でコンパイルエラーになる",
+      "C": "method(List.of(1.5, 2.5)); の行でコンパイルエラーになる",
+      "D": "method(List.of(new Object())); の行でコンパイルエラーになる"
     },
-    "correctChoice": "A",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctChoice": "D",
+    "correctText": "method(List.of(new Object())); の行でコンパイルエラーになる",
+    "explanation": "正解：D\n\n結論：\nList<? extends Number> は、List<Integer> や List<Double> のようにNumberのサブタイプを要素に持つリストを受け取れる。しかし Object は Number のサブタイプではないため、List<Object> は渡せない。\n\n選択肢の切り方：\nA：誤り。Objectのリストは受け取れない。\nB：誤り。IntegerはNumberのサブタイプなので渡せる。\nC：誤り。DoubleもNumberのサブタイプなので渡せる。\nD：正しい。ObjectはNumberのサブタイプではない。\n\n間違えやすいポイント：\n? extends Number は『Number以上』ではなく『Number以下の型』を受ける。継承方向を逆にしない。",
     "topic": "wildcard-25",
     "difficulty": "hard",
     "id": 25
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample26 {\n    static void method(List<? super Number> list) {\n        list.add(10);\n        list.add(2.5);\n        System.out.println(list.size());\n    }\n\n    public static void main(String[] args) {\n        method(new ArrayList<Number>());\n        method(new ArrayList<Object>());\n\n        // method(new ArrayList<Integer>());\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample26 {\n    static void method(List<? super Number> list) {\n        list.add(10);\n        list.add(2.5);\n        System.out.println(list.size());\n    }\n\n    public static void main(String[] args) {\n        method(new ArrayList<Number>());\n        method(new ArrayList<Object>());\n        method(new ArrayList<Integer>());\n    }\n}",
     "choices": {
-      "A": "class Box<?>のように型パラメータ宣言へ使える",
-      "B": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-      "C": "new ArrayList<?>としてインスタンス生成できる",
-      "D": "List<?>にはStringでもIntegerでも自由に追加できる"
+      "A": "2\n2 が出力される",
+      "B": "method(new ArrayList<Integer>()); の行でコンパイルエラーになる",
+      "C": "list.add(10); の行でコンパイルエラーになる",
+      "D": "method(new ArrayList<Object>()); の行でコンパイルエラーになる"
     },
     "correctChoice": "B",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctText": "method(new ArrayList<Integer>()); の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nList<? super Number> は、Numberまたはそのスーパータイプのリストを受け取る。List<Number>とList<Object>は渡せるが、List<Integer>はNumberのサブタイプなので条件を満たさない。\n\n選択肢の切り方：\nA：誤り。3つ目の呼び出しがコンパイルエラーになるため実行されない。\nB：正しい。IntegerはNumberのスーパータイプではない。\nC：誤り。IntegerはNumberのサブタイプなので追加できる。\nD：誤り。ObjectはNumberのスーパータイプなので渡せる。\n\n間違えやすいポイント：\n? super Number は『Number以上の型』のリストを受ける。List<Integer>は一見近いが逆方向なので不可。",
     "topic": "wildcard-26",
     "difficulty": "hard",
     "id": 26
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample27 {\n    static double sum(List<? extends Number> list) {\n        double total = 0;\n        for (Number n : list) {\n            total += n.doubleValue();\n        }\n        return total;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(sum(List.of(1, 2, 3)));\n        System.out.println(sum(List.of(1.5, 2.5)));\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nimport java.util.*;\n\nclass Sample27 {\n    static double sum(List<? extends Number> list) {\n        double total = 0;\n        for (Number n : list) {\n            total += n.doubleValue();\n        }\n        return total;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(sum(List.of(1, 2, 3)));\n        System.out.println(sum(List.of(1.5, 2.5)));\n    }\n}",
     "choices": {
-      "A": "class Box<?>のように型パラメータ宣言へ使える",
-      "B": "new ArrayList<?>としてインスタンス生成できる",
-      "C": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-      "D": "List<?>にはStringでもIntegerでも自由に追加できる"
+      "A": "6.0\n4.0",
+      "B": "6\n4",
+      "C": "コンパイルエラーになる",
+      "D": "ClassCastExceptionが発生する"
     },
-    "correctChoice": "C",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctChoice": "A",
+    "correctText": "6.0\n4.0",
+    "explanation": "正解：A\n\n結論：\nList<? extends Number> から取り出した要素はNumberとして扱える。各要素にdoubleValue()を呼び、double型のtotalに加算するため、出力は6.0と4.0になる。\n\n選択肢の切り方：\nA：正しい。IntegerリストもDoubleリストも読み取り可能。\nB：誤り。戻り値はdoubleなので小数形式で表示される。\nC：誤り。? extends Numberは読み取り処理ならコンパイルできる。\nD：誤り。型不一致のキャストは行っていない。\n\n間違えやすいポイント：\nextendsワイルドカードは読み取り中心の処理に向く。Numberとして読んで共通メソッドを呼ぶ形は本番でも狙われやすい。",
     "topic": "wildcard-27",
     "difficulty": "hard",
     "id": 27
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample28 {\n    static void method(List<?> list) {\n        Object obj = list.get(0);\n\n        // String s = list.get(0);\n\n        System.out.println(obj);\n    }\n\n    public static void main(String[] args) {\n        method(List.of(\"Java\"));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample28 {\n    static void method(List<?> list) {\n        Object obj = list.get(0);\n        String s = list.get(0);\n        System.out.println(obj + s);\n    }\n\n    public static void main(String[] args) {\n        method(List.of(\"Java\"));\n    }\n}",
     "choices": {
-      "A": "class Box<?>のように型パラメータ宣言へ使える",
-      "B": "new ArrayList<?>としてインスタンス生成できる",
-      "C": "List<?>にはStringでもIntegerでも自由に追加できる",
-      "D": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない"
+      "A": "JavaJava が出力される",
+      "B": "String s = list.get(0); の行でコンパイルエラーになる",
+      "C": "Object obj = list.get(0); の行でコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionが発生する"
     },
-    "correctChoice": "D",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctChoice": "B",
+    "correctText": "String s = list.get(0); の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nList<?> から取り出した要素は、具体的な型が不明なためObjectとして扱われる。Object obj = list.get(0); は可能だが、明示キャストなしにStringへ代入することはできない。\n\n選択肢の切り方：\nA：誤り。Stringへの代入でコンパイルできない。\nB：正しい。list.get(0) の静的型はObject。\nC：誤り。Objectとして受け取るのは安全。\nD：誤り。明示キャストをしていないので、実行時ではなくコンパイル時に止まる。\n\n間違えやすいポイント：\n実体がStringでも、コンパイラが見る型はList<?>からのObject。実体型と静的型を分けて考える。",
     "topic": "wildcard-28",
     "difficulty": "hard",
     "id": 28
   },
   {
     "chapter": 1,
-    "question": "次の第1章範囲のコードまたは説明について、最も正しいものはどれか。\nimport java.util.*;\n\nclass Sample29 {\n    public static void main(String[] args) {\n        List<String> s = new ArrayList<>();\n        List<Integer> i = new ArrayList<>();\n\n        System.out.println(s.getClass() == i.getClass());\n        System.out.println(s.getClass().getName());\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nimport java.util.*;\n\nclass Sample29 {\n    public static void main(String[] args) {\n        List<String> s = new ArrayList<>();\n        List<Integer> i = new ArrayList<>();\n\n        System.out.println(s.getClass() == i.getClass());\n        System.out.println(s.getClass().getSimpleName());\n    }\n}",
     "choices": {
-      "A": "ジェネリック型の実体は型消去により、実行時には型引数情報が基本的に消える。",
-      "B": "このコードはJava SE 17では常にコンパイルエラーになる",
-      "C": "実行結果は必ずnullだけになり、例外は発生しない",
-      "D": "このAPIの戻り値は常にbooleanであり、型推論やオーバーロード解決とは無関係である"
+      "A": "true\nArrayList",
+      "B": "false\nArrayList",
+      "C": "true\nList",
+      "D": "コンパイルエラーになる"
     },
     "correctChoice": "A",
-    "correctText": "ジェネリック型の実体は型消去により、実行時には型引数情報が基本的に消える。",
-    "explanation": "・ジェネリクスは主にコンパイル時の型安全性\n・実行時にはList<String>とList<Integer>は同じArrayListクラス\n・これを型消去という\n・instanceof List<String> は不可\n・実行時型情報に依存する問題で頻出",
+    "correctText": "true\nArrayList",
+    "explanation": "正解：A\n\n結論：\nジェネリクスの型引数は実行時には基本的に消える。List<String>とList<Integer>でも、実体はどちらもArrayListなのでgetClass()の結果は同じになる。\n\n選択肢の切り方：\nA：正しい。型消去により実行時クラスは同じArrayList。\nB：誤り。型引数の違いだけでは実行時クラスは分かれない。\nC：誤り。実体として生成しているのはArrayList。\nD：誤り。List<String>とList<Integer>の生成自体は問題ない。\n\n間違えやすいポイント：\nジェネリクスは主にコンパイル時の型安全性。実行時にList<String>かList<Integer>かをgetClass()で区別できない。",
     "topic": "chapter1-generic-29",
     "difficulty": "hard",
     "id": 29
   },
   {
     "chapter": 1,
-    "question": "次の第1章範囲のコードまたは説明について、最も正しいものはどれか。\nimport java.util.*;\n\nclass Sample30 {\n    public static void main(String[] args) {\n        Object obj = new ArrayList<String>();\n\n        if (obj instanceof List<?>) {\n            System.out.println(\"List\");\n        }\n\n        // if (obj instanceof List<String>) {\n        //     System.out.println(\"String list\");\n        // }\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample30 {\n    public static void main(String[] args) {\n        Object obj = new ArrayList<String>();\n\n        if (obj instanceof List<?>) {\n            System.out.println(\"List\");\n        }\n        if (obj instanceof List<String>) {\n            System.out.println(\"String list\");\n        }\n    }\n}",
     "choices": {
-      "A": "このコードはJava SE 17では常にコンパイルエラーになる",
-      "B": "ジェネリック型に対して instanceof の型引数付き検査はできない。",
-      "C": "実行結果は必ずnullだけになり、例外は発生しない",
-      "D": "このAPIの戻り値は常にbooleanであり、型推論やオーバーロード解決とは無関係である"
+      "A": "List\nString list が出力される",
+      "B": "obj instanceof List<?> の行でコンパイルエラーになる",
+      "C": "obj instanceof List<String> の行でコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionが発生する"
     },
-    "correctChoice": "B",
-    "correctText": "ジェネリック型に対して instanceof の型引数付き検査はできない。",
-    "explanation": "・obj instanceof List<?> はOK\n・obj instanceof List<String> はコンパイルエラー\n・型消去により実行時にString要素のListか判定できない\n・rawなListでの判定はできるが警告や型安全性に注意\n・型消去とワイルドカードの複合問題",
+    "correctChoice": "C",
+    "correctText": "obj instanceof List<String> の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\n型消去により、実行時にList<String>かどうかを判定することはできない。obj instanceof List<?> は許されるが、obj instanceof List<String> はコンパイルエラーになる。\n\n選択肢の切り方：\nA：誤り。List<String>でのinstanceof判定はできない。\nB：誤り。List<?>による判定は可能。\nC：正しい。型引数付きの具体的なジェネリック型ではinstanceofできない。\nD：誤り。実行時ではなくコンパイル時に止まる。\n\n間違えやすいポイント：\ninstanceof List<?> はOK、instanceof List<String> はNG。この差は型消去問題で頻出。",
     "topic": "chapter1-generic-30",
     "difficulty": "hard",
     "id": 30
   },
   {
     "chapter": 1,
-    "question": "次の第1章範囲のコードまたは説明について、最も正しいものはどれか。\nimport java.util.*;\n\nclass Sample31<T> {\n    // T[] values = new T[10];\n\n    @SuppressWarnings(\"unchecked\")\n    T[] createArray(int size) {\n        return (T[]) new Object[size];\n    }\n\n    public static void main(String[] args) {\n        Sample31<String> s = new Sample31<>();\n        String[] array = s.createArray(2);\n        System.out.println(array.length);\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample31<T> {\n    @SuppressWarnings(\"unchecked\")\n    T[] createArray(int size) {\n        return (T[]) new Object[size];\n    }\n\n    public static void main(String[] args) {\n        Sample31<String> s = new Sample31<>();\n        String[] array = s.createArray(2);\n        System.out.println(array.length);\n    }\n}",
     "choices": {
-      "A": "このコードはJava SE 17では常にコンパイルエラーになる",
-      "B": "実行結果は必ずnullだけになり、例外は発生しない",
-      "C": "ジェネリック配列の直接生成はできない。",
-      "D": "このAPIの戻り値は常にbooleanであり、型推論やオーバーロード解決とは無関係である"
+      "A": "2 が出力される",
+      "B": "new Object[size] の行でコンパイルエラーになる",
+      "C": "String[] array = s.createArray(2); の行付近でClassCastExceptionが発生する",
+      "D": "@SuppressWarningsがあるため実行時例外も抑制される"
     },
     "correctChoice": "C",
-    "correctText": "ジェネリック配列の直接生成はできない。",
-    "explanation": "・new T[10]はコンパイルエラー\n・型消去により実行時のTがわからない\n・キャストで回避すると実行時ClassCastExceptionの危険がある\n・配列は実行時型を保持するためジェネリクスと相性が悪い\n・配列とジェネリクスの制約が頻出",
+    "correctText": "String[] array = s.createArray(2); の行付近でClassCastExceptionが発生する",
+    "explanation": "正解：C\n\n結論：\nnew Object[size] で作られる実体はObject[]。メソッド内の(T[])キャストは型消去の影響で警告付きで通るが、呼び出し側でString[]として受け取ると、Object[]をString[]へ変換できずClassCastExceptionになる。\n\n選択肢の切り方：\nA：誤り。配列長を出力する前に例外が発生する。\nB：誤り。Object配列の生成自体は可能。\nC：正しい。実体Object[]をString[]として扱おうとして落ちる。\nD：誤り。@SuppressWarningsはコンパイル警告を抑えるだけで、実行時例外は抑えない。\n\n間違えやすいポイント：\nジェネリック配列は危険。警告を消すことと、実行時に安全であることは別。",
     "topic": "chapter1-generic-31",
     "difficulty": "hard",
     "id": 31
   },
   {
     "chapter": 1,
-    "question": "次の第1章範囲のコードまたは説明について、最も正しいものはどれか。\nclass Sample32<T> {\n    T instanceValue;\n\n    // static T staticValue;\n\n    static <E> E identity(E e) {\n        return e;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Sample32.identity(\"OK\"));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nclass Sample32<T> {\n    T instanceValue;\n    static T staticValue;\n\n    static <E> E identity(E e) {\n        return e;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(Sample32.identity(\"OK\"));\n    }\n}",
     "choices": {
-      "A": "このコードはJava SE 17では常にコンパイルエラーになる",
-      "B": "実行結果は必ずnullだけになり、例外は発生しない",
-      "C": "このAPIの戻り値は常にbooleanであり、型推論やオーバーロード解決とは無関係である",
-      "D": "ジェネリック型のstaticフィールドに型パラメータTは使えない。"
+      "A": "OK が出力される",
+      "B": "T instanceValue; の行でコンパイルエラーになる",
+      "C": "static T staticValue; の行でコンパイルエラーになる",
+      "D": "static <E> E identity(E e) の行でコンパイルエラーになる"
     },
-    "correctChoice": "D",
-    "correctText": "ジェネリック型のstaticフィールドに型パラメータTは使えない。",
-    "explanation": "・Tは各インスタンスに紐づく型パラメータ\n・staticフィールドはクラスに1つなのでTを使えない\n・staticメソッドで型を使うならメソッド側に<E>を宣言する\n・static Tはコンパイルエラー\n・ジェネリッククラスとstaticの関係が頻出",
+    "correctChoice": "C",
+    "correctText": "static T staticValue; の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nクラスの型パラメータTはインスタンスに紐づく。staticフィールドはクラスに1つだけ存在し、特定のTを持つインスタンスに属さないため static T staticValue; はコンパイルエラーになる。\n\n選択肢の切り方：\nA：誤り。static T staticValue; があるためコンパイルできない。\nB：誤り。インスタンスフィールドでTを使うのは可能。\nC：正しい。static文脈でクラスのTは使えない。\nD：誤り。staticメソッドでもメソッド独自の<E>を宣言すれば使える。\n\n間違えやすいポイント：\nstaticで使いたい型は、クラスのTではなくメソッド側でstatic <E>のように宣言する。",
     "topic": "chapter1-generic-32",
     "difficulty": "hard",
     "id": 32
   },
   {
     "chapter": 1,
-    "question": "ジェネリックメソッドについて正しいものはどれか。\nclass Sample33 {\n    static <T> T choose(T a, T b) {\n        return a;\n    }\n\n    public static void main(String[] args) {\n        String s = choose(\"A\", \"B\");\n        Number n = choose(10, 2.5);\n\n        System.out.println(s);\n        System.out.println(n);\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample33 {\n    static <T> T choose(T a, T b) {\n        return a;\n    }\n\n    public static void main(String[] args) {\n        String s = choose(\"A\", \"B\");\n        Number n = choose(10, 2.5);\n\n        System.out.println(s);\n        System.out.println(n);\n    }\n}",
     "choices": {
-      "A": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる",
-      "B": "型パラメータはメソッド名の後ろにfoo<T>()の形で宣言する",
-      "C": "staticメソッドではジェネリックメソッドを宣言できない",
-      "D": "ジェネリックメソッドはジェネリッククラス内でしか定義できない"
+      "A": "A\n10",
+      "B": "B\n2.5",
+      "C": "A\n2.5",
+      "D": "2つ目のchoose(10, 2.5)でコンパイルエラーになる"
     },
     "correctChoice": "A",
-    "correctText": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる",
-    "explanation": "メソッド独自の型パラメータは戻り値型の前に<T>のように宣言する。staticでも利用可能。",
+    "correctText": "A\n10",
+    "explanation": "正解：A\n\n結論：\nchooseは第1引数をそのまま返すジェネリックメソッド。choose(\"A\", \"B\")はStringとして推論されAを返す。choose(10, 2.5)は両方を受けられる型へ推論され、戻り値をNumberで受け取れるため、返る値は第1引数の10。\n\n選択肢の切り方：\nA：正しい。どちらも第1引数が返る。\nB：誤り。第2引数を返すメソッドではない。\nC：誤り。2つ目も第1引数の10が返る。\nD：誤り。Numberで受け取れる型に推論されるためコンパイル可能。\n\n間違えやすいポイント：\nジェネリックメソッドは引数と代入先から型推論される。戻り値の値そのものはメソッド本体のreturnで決まる。",
     "topic": "generic-method-33",
     "difficulty": "hard",
     "id": 33
   },
   {
     "chapter": 1,
-    "question": "ジェネリックメソッドについて正しいものはどれか。\nclass Sample34 {\n    static <T extends CharSequence> int length(T value) {\n        return value.length();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(length(\"Java\"));\n        System.out.println(length(new StringBuilder(\"Gold\")));\n\n        // System.out.println(length(100));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nclass Sample34 {\n    static <T extends CharSequence> int length(T value) {\n        return value.length();\n    }\n\n    public static void main(String[] args) {\n        System.out.println(length(\"Java\"));\n        System.out.println(length(new StringBuilder(\"Gold\")));\n        System.out.println(length(100));\n    }\n}",
     "choices": {
-      "A": "型パラメータはメソッド名の後ろにfoo<T>()の形で宣言する",
-      "B": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる",
-      "C": "staticメソッドではジェネリックメソッドを宣言できない",
-      "D": "ジェネリックメソッドはジェネリッククラス内でしか定義できない"
+      "A": "4\n4\n3 が出力される",
+      "B": "length(\"Java\") の行でコンパイルエラーになる",
+      "C": "length(new StringBuilder(\"Gold\")) の行でコンパイルエラーになる",
+      "D": "length(100) の行でコンパイルエラーになる"
     },
-    "correctChoice": "B",
-    "correctText": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる",
-    "explanation": "メソッド独自の型パラメータは戻り値型の前に<T>のように宣言する。staticでも利用可能。",
+    "correctChoice": "D",
+    "correctText": "length(100) の行でコンパイルエラーになる",
+    "explanation": "正解：D\n\n結論：\n型パラメータTには CharSequence のサブタイプだけを指定できる。StringもStringBuilderもCharSequenceを実装しているため渡せるが、IntegerはCharSequenceではないため length(100) はコンパイルエラー。\n\n選択肢の切り方：\nA：誤り。100はCharSequenceではない。\nB：誤り。StringはCharSequence。\nC：誤り。StringBuilderもCharSequence。\nD：正しい。Integerは境界条件を満たさない。\n\n間違えやすいポイント：\n境界付きジェネリックメソッドでは、引数が境界を満たすかを確認する。数値だからObjectとして何でも入る、とはならない。",
     "topic": "generic-method-34",
     "difficulty": "hard",
     "id": 34
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample35 {\n    static void method(List<? extends Number> list) {\n        for (Number n : list) {\n            System.out.print(n.intValue() + \" \");\n        }\n\n        // list.add(1);\n    }\n\n    public static void main(String[] args) {\n        method(List.of(1, 2, 3));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample35 {\n    static void method(List<? extends Number> list) {\n        for (Number n : list) {\n            System.out.print(n.intValue() + \" \");\n        }\n        list.add(1);\n    }\n\n    public static void main(String[] args) {\n        method(List.of(1, 2, 3));\n    }\n}",
     "choices": {
-      "A": "class Box<?>のように型パラメータ宣言へ使える",
-      "B": "new ArrayList<?>としてインスタンス生成できる",
-      "C": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-      "D": "List<?>にはStringでもIntegerでも自由に追加できる"
+      "A": "1 2 3 が出力される",
+      "B": "for (Number n : list) の行でコンパイルエラーになる",
+      "C": "list.add(1); の行でコンパイルエラーになる",
+      "D": "List.of(1, 2, 3) の行でUnsupportedOperationExceptionが発生する"
     },
     "correctChoice": "C",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctText": "list.add(1); の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nList<? extends Number> はNumberとして読み取ることはできるが、具体的な要素型が不明なのでIntegerの1を追加することはできない。\n\n選択肢の切り方：\nA：誤り。addの行がコンパイルエラーになるため実行されない。\nB：誤り。Numberとして読み取るfor文は可能。\nC：正しい。extendsワイルドカードには具体的な非null値を追加できない。\nD：誤り。List.ofが原因ではなく、コンパイルエラーが先に発生する。\n\n間違えやすいポイント：\n? extends Number は読み取り用。『NumberのサブタイプだからIntegerを追加できる』と考えるのが罠。",
     "topic": "wildcard-35",
     "difficulty": "hard",
     "id": 35
   },
   {
     "chapter": 1,
-    "question": "ワイルドカードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample36 {\n    static void method(List<? super Integer> list) {\n        list.add(10);\n        list.add(Integer.valueOf(20));\n\n        Object obj = list.get(0);\n\n        System.out.println(obj);\n    }\n\n    public static void main(String[] args) {\n        method(new ArrayList<Number>());\n        method(new ArrayList<Object>());\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nimport java.util.*;\n\nclass Sample36 {\n    static void method(List<? super Integer> list) {\n        list.add(10);\n        list.add(Integer.valueOf(20));\n        Object obj = list.get(0);\n        System.out.println(obj);\n    }\n\n    public static void main(String[] args) {\n        method(new ArrayList<Number>());\n        method(new ArrayList<Object>());\n    }\n}",
     "choices": {
-      "A": "class Box<?>のように型パラメータ宣言へ使える",
-      "B": "new ArrayList<?>としてインスタンス生成できる",
-      "C": "List<?>にはStringでもIntegerでも自由に追加できる",
-      "D": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない"
+      "A": "10\n10",
+      "B": "20\n20",
+      "C": "コンパイルエラーになる",
+      "D": "ClassCastExceptionが発生する"
     },
-    "correctChoice": "D",
-    "correctText": "ワイルドカードは使用側の型指定で使い、List<?>には具体的な非null要素を安全に追加できない",
-    "explanation": "ワイルドカードは未知の型を表す。使用位置に制限があり、List<?>へ具体的な値は追加できないがnullは追加可能。",
+    "correctChoice": "A",
+    "correctText": "10\n10",
+    "explanation": "正解：A\n\n結論：\nList<? super Integer> はIntegerまたはそのスーパータイプのリストを受け取れる。ArrayList<Number>もArrayList<Object>も対象。各呼び出しで空のリストに10、20を追加し、先頭要素10をObjectとして取り出して出力する。\n\n選択肢の切り方：\nA：正しい。2回とも新しいリストの先頭は10。\nB：誤り。get(0)は最初に追加した10。\nC：誤り。NumberもObjectもIntegerのスーパータイプなので渡せる。\nD：誤り。Objectとして受けているためキャスト失敗はない。\n\n間違えやすいポイント：\nsuperワイルドカードは書き込みに強い。読み取りはObjectとして扱うのが安全。",
     "topic": "wildcard-36",
     "difficulty": "hard",
     "id": 36
   },
   {
     "chapter": 1,
-    "question": "raw型について正しいものはどれか。\nimport java.util.*;\n\nclass Sample37 {\n    public static void main(String[] args) {\n        List<String> strings = new ArrayList<>();\n        List raw = strings;\n\n        raw.add(100);\n\n        // String s = strings.get(0);\n        System.out.println(strings.size());\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nimport java.util.*;\n\nclass Sample37 {\n    public static void main(String[] args) {\n        List<String> strings = new ArrayList<>();\n        List raw = strings;\n        raw.add(100);\n\n        String s = strings.get(0);\n        System.out.println(s);\n    }\n}",
     "choices": {
-      "A": "raw型を使うとコンパイルは通ってもunchecked警告が出る可能性があり、後でClassCastExceptionを招き得る",
-      "B": "raw型を使うと必ずコンパイルエラーになる",
-      "C": "raw型では型安全性が完全に保証される",
-      "D": "raw型では異なる型の値をsetできない"
+      "A": "100 が出力される",
+      "B": "strings.get(0) の行付近でClassCastExceptionが発生する",
+      "C": "raw.add(100); の行でコンパイルエラーになる",
+      "D": "null が出力される"
     },
-    "correctChoice": "A",
-    "correctText": "raw型を使うとコンパイルは通ってもunchecked警告が出る可能性があり、後でClassCastExceptionを招き得る",
-    "explanation": "raw型はジェネリクス導入前との互換のため残るが、型安全性を弱める。警告、コンパイルエラー、実行時例外の区別が重要。",
+    "correctChoice": "B",
+    "correctText": "strings.get(0) の行付近でClassCastExceptionが発生する",
+    "explanation": "正解：B\n\n結論：\nraw型を経由すると、List<String>として作ったリストにIntegerを追加できてしまう。コンパイル時にはunchecked警告で済むことがあるが、strings.get(0)をStringとして受け取るタイミングで実体Integerとの不一致によりClassCastExceptionが発生する。\n\n選択肢の切り方：\nA：誤り。Stringとして取り出す前にキャスト失敗する。\nB：正しい。raw型で型安全性が壊れている。\nC：誤り。raw型なのでコンパイルエラーではなく警告になり得る。\nD：誤り。中身はnullではなく100。\n\n間違えやすいポイント：\nraw型は『古い互換性のために使える』が『型安全』ではない。警告と実行時例外の違いを押さえる。",
     "topic": "raw-type-37",
     "difficulty": "hard",
     "id": 37
   },
   {
     "chapter": 1,
-    "question": "不変コレクションについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample38 {\n    public static void main(String[] args) {\n        List<Integer> ints = new ArrayList<>();\n\n        // List<Number> nums = ints;\n\n        List<? extends Number> nums2 = ints;\n\n        System.out.println(nums2.size());\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample38 {\n    public static void main(String[] args) {\n        List<Integer> ints = new ArrayList<>();\n        List<Number> nums = ints;\n        System.out.println(nums.size());\n    }\n}",
     "choices": {
-      "A": "List.ofは固定長だがsetは常に可能である",
-      "B": "List.of/Set.of/Map.ofで作成したコレクションは不変で、変更操作でUnsupportedOperationExceptionが発生する",
-      "C": "List.ofはnullを自由に格納できる",
-      "D": "List.ofのaddはコンパイルエラーになるため実行時例外ではない"
+      "A": "0 が出力される",
+      "B": "List<Number> nums = ints; の行でコンパイルエラーになる",
+      "C": "実行時にClassCastExceptionが発生する",
+      "D": "List<Integer>はList<Number>のサブタイプなので代入できる"
     },
     "correctChoice": "B",
-    "correctText": "List.of/Set.of/Map.ofで作成したコレクションは不変で、変更操作でUnsupportedOperationExceptionが発生する",
-    "explanation": "List.of等は不変コレクションを返す。変更操作はコンパイル可能でも実行時にUnsupportedOperationException。nullも許可しない。",
+    "correctText": "List<Number> nums = ints; の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nIntegerはNumberのサブタイプだが、List<Integer>はList<Number>のサブタイプではない。ジェネリクスは基本的に不変なので、List<Number> nums = ints; はコンパイルエラーになる。\n\n選択肢の切り方：\nA：誤り。代入でコンパイルできない。\nB：正しい。ジェネリクスの不変性により不可。\nC：誤り。実行時ではなくコンパイル時に止まる。\nD：誤り。IntegerとNumberの関係がList同士にそのまま伝わるわけではない。\n\n間違えやすいポイント：\n配列は共変、ジェネリクスは不変。この違いはGoldで頻出。必要ならList<? extends Number>で受ける。",
     "topic": "immutable-collection-38",
     "difficulty": "hard",
     "id": 38
   },
   {
     "chapter": 1,
-    "question": "ジェネリッククラスについて正しいものはどれか。\nclass Sample39 {\n    static class Box<T> {\n        T value;\n\n        Box(T value) {\n            this.value = value;\n        }\n    }\n\n    public static void main(String[] args) {\n        Box<String> s = new Box<>(\"A\");\n        Box<Integer> i = new Box<>(1);\n\n        System.out.println(s.getClass() == i.getClass());\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample39 {\n    static class Box<T> {\n        T value;\n        Box(T value) { this.value = value; }\n    }\n\n    public static void main(String[] args) {\n        Box<String> s = new Box<>(\"A\");\n        Box<Integer> i = new Box<>(1);\n\n        System.out.println(s.getClass() == i.getClass());\n    }\n}",
     "choices": {
-      "A": "Box<String>でもset(100)は警告だけで必ず通る",
-      "B": "ジェネリクスは実行時だけ型検査を行いコンパイル時には無関係である",
-      "C": "Box<String>ではTがStringとして扱われ、異なる型のsetはコンパイルエラーになり得る",
-      "D": "get()時には必ず明示キャストが必要である"
+      "A": "true",
+      "B": "false",
+      "C": "コンパイルエラーになる",
+      "D": "ClassCastExceptionが発生する"
     },
-    "correctChoice": "C",
-    "correctText": "Box<String>ではTがStringとして扱われ、異なる型のsetはコンパイルエラーになり得る",
-    "explanation": "ジェネリクスはコンパイル時の型安全性を高める。Box<String>ならTはStringとして扱われ、get時のキャストも不要。",
+    "correctChoice": "A",
+    "correctText": "true",
+    "explanation": "正解：A\n\n結論：\nBox<String>とBox<Integer>はコンパイル時には異なる型引数を持つが、実行時には型消去により同じBoxクラスとして扱われる。そのためgetClass()の比較はtrue。\n\n選択肢の切り方：\nA：正しい。実行時クラスはどちらもSample39$Box。\nB：誤り。型引数の違いはgetClass()では区別されない。\nC：誤り。どちらの生成もコンパイル可能。\nD：誤り。キャスト処理は行っていない。\n\n間違えやすいポイント：\nジェネリクスの型引数は実行時のクラス比較には基本的に残らない。型消去を意識する。",
     "topic": "generic-class-39",
     "difficulty": "hard",
     "id": 39
   },
   {
     "chapter": 1,
-    "question": "ジェネリックメソッドについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample40 {\n    static <E> void printAll(List<E> list) {\n        for (E e : list) {\n            System.out.print(e + \" \");\n        }\n    }\n\n    public static void main(String[] args) {\n        Sample40.<String>printAll(List.of(\"A\", \"B\"));\n        printAll(List.of(1, 2));\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nimport java.util.*;\n\nclass Sample40 {\n    static <E> void printAll(List<E> list) {\n        for (E e : list) {\n            System.out.print(e + \" \");\n        }\n        System.out.println();\n    }\n\n    public static void main(String[] args) {\n        Sample40.<String>printAll(List.of(\"A\", \"B\"));\n        printAll(List.of(1, 2));\n    }\n}",
     "choices": {
-      "A": "型パラメータはメソッド名の後ろにfoo<T>()の形で宣言する",
-      "B": "staticメソッドではジェネリックメソッドを宣言できない",
-      "C": "ジェネリックメソッドはジェネリッククラス内でしか定義できない",
-      "D": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる"
+      "A": "A B \n1 2",
+      "B": "1 2 \nA B",
+      "C": "Sample40.<String>printAll(...) の行でコンパイルエラーになる",
+      "D": "staticメソッドではジェネリックメソッドを定義できない"
     },
-    "correctChoice": "D",
-    "correctText": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる",
-    "explanation": "メソッド独自の型パラメータは戻り値型の前に<T>のように宣言する。staticでも利用可能。",
+    "correctChoice": "A",
+    "correctText": "A B \n1 2",
+    "explanation": "正解：A\n\n結論：\nprintAllはstaticなジェネリックメソッド。1回目は明示的にEをStringとして呼び出し、2回目はList.of(1, 2)からEがIntegerとして推論される。どちらもコンパイルでき、順に要素を出力する。\n\n選択肢の切り方：\nA：正しい。1回目はA B、2回目は1 2を出力する。\nB：誤り。呼び出し順が逆。\nC：誤り。メソッド名の直前に<String>を書く明示型指定は正しい。\nD：誤り。staticメソッドでもメソッド独自の型パラメータを宣言できる。\n\n間違えやすいポイント：\nstaticでも <E> をメソッド側で宣言すればジェネリックメソッドにできる。クラスの型パラメータとは別物。",
     "topic": "generic-method-40",
     "difficulty": "hard",
     "id": 40
