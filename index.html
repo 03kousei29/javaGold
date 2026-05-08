@@ -300,7 +300,7 @@ button, .choice, .linkbtn {
     border-radius: 13px;
     font-size: .95rem;
   }
-  #shuffleBtn, #menuBtnInQuiz{
+  #shuffleBtn, #jumpQuestionBtn, #menuBtnInQuiz{
     width: calc(50% - 4px);
   }
   .timer-box{
@@ -402,7 +402,7 @@ button, .choice, .linkbtn {
   }
 }
 @media (max-width: 380px){
-  #shuffleBtn, #menuBtnInQuiz{
+  #shuffleBtn, #jumpQuestionBtn, #menuBtnInQuiz{
     width: 100%;
   }
   .question-text .code-block{
@@ -568,6 +568,7 @@ button, .choice, .linkbtn {
         <div class="actions" style="margin-bottom:0">
           <button id="finishBtn" class="secondary">回答を終了してサマリーへ</button>
           <button id="shuffleBtn" class="secondary">シャッフル: OFF</button>
+          <button id="jumpQuestionBtn" class="secondary">指定問題へ移動</button>
           <button id="menuBtnInQuiz" class="secondary">メインメニューへ戻る</button>
         </div>
       </div>
@@ -718,6 +719,7 @@ const explanationText = document.getElementById("explanationText");
 const nextBtn = document.getElementById("nextBtn");
 const finishBtn = document.getElementById("finishBtn");
 const shuffleBtn = document.getElementById("shuffleBtn");
+const jumpQuestionBtn = document.getElementById("jumpQuestionBtn");
 const summaryCorrect = document.getElementById("summaryCorrect");
 const summaryRate = document.getElementById("summaryRate");
 const donutChart = document.getElementById("donutChart");
@@ -973,6 +975,35 @@ function actualIndexAt(displayIndex) {
 }
 function updateShuffleButton() {
   shuffleBtn.textContent = `シャッフル: ${state.shuffle ? "ON" : "OFF"}`;
+  updateJumpQuestionButton();
+}
+function canUseQuestionJump() {
+  return !state.shuffle && !isAnyReviewMode() && currentVisibleQuestionsLength() > 0;
+}
+function updateJumpQuestionButton() {
+  if (!jumpQuestionBtn) return;
+  const canUse = canUseQuestionJump();
+  jumpQuestionBtn.classList.toggle("hidden", !canUse);
+  jumpQuestionBtn.disabled = !canUse;
+  jumpQuestionBtn.title = canUse ? "シャッフルOFF時に指定した問題番号へ移動できます" : "シャッフルOFF時のみ使用できます";
+}
+function jumpToQuestionNumber() {
+  if (!canUseQuestionJump()) {
+    alert("指定問題への移動はシャッフルOFFの通常出題時のみ使用できます。");
+    return;
+  }
+
+  const total = currentVisibleQuestionsLength();
+  const input = prompt(`移動したい問題番号を入力してください。\n指定可能範囲: 1〜${total}問`, String(state.currentIndex + 1));
+  if (input === null) return;
+
+  const targetNo = Number(input);
+  if (!Number.isInteger(targetNo) || targetNo < 1 || targetNo > total) {
+    alert(`問題番号は1〜${total}の範囲で入力してください。`);
+    return;
+  }
+
+  renderQuestion(targetNo - 1);
 }
 function currentVisibleQuestionsLength() {
   return state.order.length;
@@ -1238,6 +1269,7 @@ function renderQuestion(index) {
   }
   nextBtn.textContent = index === currentVisibleQuestionsLength() - 1 ? "結果を見る" : "次の問題へ";
   updateProgress();
+  updateJumpQuestionButton();
 
   if (!ans) {
     resetTimerForQuestion();
@@ -1445,6 +1477,8 @@ finishBtn.addEventListener("click", () => {
   renderSummary();
   saveStudyProgress("summary");
 });
+
+jumpQuestionBtn.addEventListener("click", jumpToQuestionNumber);
 
 menuBtnInQuiz.addEventListener("click", () => {
   const ok = confirm("現在の回答状況を保存したまま、メインメニューへ戻りますか？");
