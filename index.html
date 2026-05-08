@@ -489,6 +489,39 @@ button, .choice, .linkbtn {
   .save-actions button{width:100%}
 }
 
+/* ===== review bookmark checkbox ===== */
+.bookmark-box{
+  margin:10px 0 14px;
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(255,224,138,.24);
+  background:rgba(255,224,138,.06);
+}
+.bookmark-label{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  cursor:pointer;
+  color:var(--text);
+  font-weight:700;
+}
+.bookmark-label input{
+  width:20px;
+  height:20px;
+  accent-color:var(--accent);
+}
+.bookmark-help{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:.82rem;
+  line-height:1.5;
+}
+@media (max-width:640px){
+  .bookmark-box{padding:11px 12px;border-radius:14px}
+  .bookmark-label{font-size:.92rem}
+  .bookmark-help{font-size:.78rem}
+}
+
 </style>
 </head>
 <body>
@@ -550,6 +583,13 @@ button, .choice, .linkbtn {
     </div>
 
     <div id="questionText" class="question-text"></div>
+    <div id="bookmarkBox" class="bookmark-box hidden">
+      <label class="bookmark-label">
+        <input id="bookmarkCheckbox" type="checkbox" />
+        <span id="bookmarkText">あとで復習する</span>
+      </label>
+      <div class="bookmark-help">チェックした問題はこの端末のブラウザに保存され、メニューの「あとで復習」から解けます。</div>
+    </div>
     <div id="choices" class="choices"></div>
 
     <div id="explanationBox" class="explanation hidden">
@@ -641,6 +681,8 @@ const state = {
   baseOrderBeforeWrongReview: null,
   reviewAnswers: {},
   selectedChapters: [1,2,3,4,5,6,7,8],
+  allChapterQuestionCount: null,
+  bookmarkIds: [],
   timerSeconds: 90,
   timerId: null,
   timerStopped: false,
@@ -665,6 +707,9 @@ const metaTopic = document.getElementById("metaTopic");
 const timerPill = document.getElementById("timerPill");
 const timerRing = document.getElementById("timerRing");
 const questionText = document.getElementById("questionText");
+const bookmarkBox = document.getElementById("bookmarkBox");
+const bookmarkCheckbox = document.getElementById("bookmarkCheckbox");
+const bookmarkText = document.getElementById("bookmarkText");
 const choicesEl = document.getElementById("choices");
 const explanationBox = document.getElementById("explanationBox");
 const resultBadge = document.getElementById("resultBadge");
@@ -684,6 +729,7 @@ const retryWrongUnansweredBtn = document.getElementById("retryWrongUnansweredBtn
 const summaryActions = document.getElementById("summaryActions");
 
 const STORAGE_KEY = "javaGoldSe17StudyProgress.v2";
+const BOOKMARK_STORAGE_KEY = "javaGoldSe17Bookmarks.v1";
 
 const CHAPTER_TITLES = {
   1: "コレクションとジェネリクス",
@@ -694,13 +740,86 @@ const CHAPTER_TITLES = {
   6: "ファイルI/O",
   7: "JDBC",
   8: "ローカライズ",
-  99: "模擬試験"
+  9: "基礎知識編",
+  10: "あとで復習",
+  11: "模擬試験1"
 };
 const GOLD_CHAPTERS = [1,2,3,4,5,6,7,8];
 
 
 function questionSignature() {
-  return QUESTIONS.map(q => q.id).join(",");
+  return QUESTIONS.map(q => `${q.id}:${q.chapter}`).join(",");
+}
+
+function safeReadBookmarkIds() {
+  try {
+    const raw = localStorage.getItem(BOOKMARK_STORAGE_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    console.warn("復習チェックの読み込みに失敗しました", e);
+    return [];
+  }
+}
+
+function saveBookmarkIds() {
+  try {
+    localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(state.bookmarkIds));
+  } catch (e) {
+    console.warn("復習チェックの保存に失敗しました", e);
+  }
+}
+
+function loadBookmarkIds() {
+  const validIds = new Set(QUESTIONS.map(q => String(q.id)));
+  state.bookmarkIds = safeReadBookmarkIds()
+    .map(id => String(id))
+    .filter((id, idx, arr) => validIds.has(id) && arr.indexOf(id) === idx);
+  saveBookmarkIds();
+}
+
+function questionIdAt(actualIndex) {
+  const q = QUESTIONS[actualIndex];
+  return q ? String(q.id) : null;
+}
+
+function isBookmarked(actualIndex) {
+  const id = questionIdAt(actualIndex);
+  return id !== null && state.bookmarkIds.includes(id);
+}
+
+function setBookmarked(actualIndex, checked) {
+  const id = questionIdAt(actualIndex);
+  if (id === null) return;
+  if (checked && !state.bookmarkIds.includes(id)) {
+    state.bookmarkIds.push(id);
+  }
+  if (!checked) {
+    state.bookmarkIds = state.bookmarkIds.filter(savedId => savedId !== id);
+  }
+  saveBookmarkIds();
+  updateBookmarkBox(actualIndex);
+}
+
+function getBookmarkQuestionIndexes() {
+  const bookmarked = new Set(state.bookmarkIds);
+  return QUESTIONS
+    .map((q, i) => bookmarked.has(String(q.id)) ? i : null)
+    .filter(i => i !== null);
+}
+
+function isBookmarkModeSelected() {
+  return state.selectedChapters.length === 1 && state.selectedChapters[0] === 10;
+}
+
+function updateBookmarkBox(actualIndex) {
+  if (!QUESTIONS[actualIndex]) {
+    bookmarkBox.classList.add("hidden");
+    return;
+  }
+  bookmarkBox.classList.remove("hidden");
+  bookmarkCheckbox.checked = isBookmarked(actualIndex);
+  bookmarkText.textContent = bookmarkCheckbox.checked ? "あとで復習に追加済み" : "あとで復習する";
 }
 
 function safeReadSavedProgress() {
@@ -730,7 +849,8 @@ function saveStudyProgress(view = "quiz") {
       reviewWrongAndUnanswered: state.reviewWrongAndUnanswered,
       baseOrderBeforeWrongReview: state.baseOrderBeforeWrongReview,
       reviewAnswers: state.reviewAnswers,
-      selectedChapters: state.selectedChapters
+      selectedChapters: state.selectedChapters,
+      allChapterQuestionCount: state.allChapterQuestionCount
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     updateSavedProgressBox();
@@ -784,6 +904,7 @@ function restoreStudyProgress() {
   state.baseOrderBeforeWrongReview = saved.baseOrderBeforeWrongReview || null;
   state.reviewAnswers = saved.reviewAnswers || {};
   state.selectedChapters = Array.isArray(saved.selectedChapters) ? saved.selectedChapters : [1,2,3,4,5,6,7,8];
+  state.allChapterQuestionCount = Number.isInteger(saved.allChapterQuestionCount) ? saved.allChapterQuestionCount : null;
   updateShuffleButton();
   renderQuestion(state.currentIndex);
 }
@@ -802,7 +923,42 @@ function shuffledArray(arr) {
   }
   return copy;
 }
+function isAllGoldChaptersSelected() {
+  return state.selectedChapters.length === GOLD_CHAPTERS.length
+    && GOLD_CHAPTERS.every(n => state.selectedChapters.includes(n));
+}
+function getChapterQuestionIndexes(chapter) {
+  return QUESTIONS
+    .map((q, i) => q.chapter === chapter ? i : null)
+    .filter(i => i !== null);
+}
+function maxBalancedAllChapterQuestionCount() {
+  const minCount = Math.min(...GOLD_CHAPTERS.map(chapter => getChapterQuestionIndexes(chapter).length));
+  return minCount * GOLD_CHAPTERS.length;
+}
+function buildBalancedAllChapterOrder(totalCount) {
+  const perChapter = totalCount / GOLD_CHAPTERS.length;
+  const order = [];
+  GOLD_CHAPTERS.forEach(chapter => {
+    const indexes = getChapterQuestionIndexes(chapter);
+    order.push(...shuffledArray(indexes).slice(0, perChapter));
+  });
+  return shuffledArray(order);
+}
 function resetOrder() {
+  if (isBookmarkModeSelected()) {
+    state.order = getBookmarkQuestionIndexes();
+    if (state.shuffle) {
+      state.order = shuffledArray(state.order);
+    }
+    return;
+  }
+
+  if (isAllGoldChaptersSelected() && Number.isInteger(state.allChapterQuestionCount)) {
+    state.order = buildBalancedAllChapterOrder(state.allChapterQuestionCount);
+    return;
+  }
+
   state.order = Array.from({length: QUESTIONS.length}, (_, i) => i)
     .filter(i => state.selectedChapters.includes(QUESTIONS[i].chapter));
   if (state.shuffle) {
@@ -849,21 +1005,29 @@ function isAnyReviewMode() {
   return state.reviewOnlyWrong || state.reviewWrongAndUnanswered;
 }
 function chapterLabel(chapter) {
-  if (chapter === 99) return "模擬試験";
+  if (chapter === 9) return "基礎知識編";
+  if (chapter === 10) return "あとで復習";
   const title = CHAPTER_TITLES[chapter];
   return title ? `第${chapter}章：${title}` : `第${chapter}章`;
 }
 function currentModeTitle() {
-  if (state.selectedChapters.length === GOLD_CHAPTERS.length && GOLD_CHAPTERS.every(n => state.selectedChapters.includes(n))) {
-    return "全章";
+  if (isAllGoldChaptersSelected()) {
+    return state.allChapterQuestionCount ? `全章（${state.allChapterQuestionCount}問）` : "全章";
   }
-  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 99) {
-    return "模擬試験";
+  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 9) {
+    return "基礎知識編";
+  }
+  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 10) {
+    return "あとで復習";
+  }
+  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 11) {
+    return "模擬試験1";
   }
   return state.selectedChapters.map(n => chapterLabel(n)).join("・");
 }
 function showMenu() {
   stopTimer();
+  buildMenu();
   timerPill.textContent = "90";
   timerRing.style.setProperty("--pct", 100);
   menuView.classList.remove("hidden");
@@ -872,8 +1036,9 @@ function showMenu() {
   progressShell.classList.add("hidden");
   updateSavedProgressBox();
 }
-function startMode(chapters) {
+function startMode(chapters, options = {}) {
   state.selectedChapters = [...chapters];
+  state.allChapterQuestionCount = Number.isInteger(options.allChapterQuestionCount) ? options.allChapterQuestionCount : null;
   state.answers = Array(QUESTIONS.length).fill(null);
   state.currentIndex = 0;
   state.reviewOnlyWrong = false;
@@ -882,7 +1047,7 @@ function startMode(chapters) {
   state.reviewAnswers = {};
   resetOrder();
   if (state.order.length === 0) {
-    alert("この出題範囲にはまだ問題が登録されていません。");
+    alert(isBookmarkModeSelected() ? "あとで復習する問題がまだ登録されていません。各問題画面でチェックを付けてください。" : "この出題範囲にはまだ問題が登録されていません。");
     showMenu();
     return;
   }
@@ -890,9 +1055,26 @@ function startMode(chapters) {
   renderQuestion(0);
   saveStudyProgress("quiz");
 }
+function startAllChaptersMode() {
+  const maxCount = maxBalancedAllChapterQuestionCount();
+  const defaultCount = Math.min(80, maxCount);
+  const input = prompt(`全章から出題する問題数を入力してください。\n8章から均等に出題するため、8の倍数で指定してください。\n指定可能範囲: 8〜${maxCount}問`, String(defaultCount));
+  if (input === null) return;
+
+  const count = Number(input);
+  if (!Number.isInteger(count) || count < GOLD_CHAPTERS.length || count > maxCount || count % GOLD_CHAPTERS.length !== 0) {
+    alert(`問題数は8〜${maxCount}の範囲で、8の倍数を指定してください。`);
+    return;
+  }
+
+  startMode(GOLD_CHAPTERS, { allChapterQuestionCount: count });
+}
 function buildMenu() {
+  const bookmarkCount = getBookmarkQuestionIndexes().length;
   const items = [
-    { label: "全章", chapters: GOLD_CHAPTERS, desc: "通常8章から出題" },
+    { label: "基礎知識編", chapters: [9], desc: "Java Gold学習前に押さえる基礎知識" },
+    { label: "あとで復習", chapters: [10], desc: `${bookmarkCount}問登録中。チェックした問題だけを出題` },
+    { label: "全章", chapters: GOLD_CHAPTERS, desc: "問題数を指定し、通常8章から均等ランダム出題", isAllChapters: true },
     { label: "第1章", chapters: [1], desc: "コレクションとジェネリクス" },
     { label: "第2章", chapters: [2], desc: "関数型インターフェースとラムダ式" },
     { label: "第3章", chapters: [3], desc: "ストリームAPI" },
@@ -901,7 +1083,7 @@ function buildMenu() {
     { label: "第6章", chapters: [6], desc: "ファイルI/O" },
     { label: "第7章", chapters: [7], desc: "JDBC" },
     { label: "第8章", chapters: [8], desc: "ローカライズ" },
-    { label: "模擬試験", chapters: [99], desc: "本番形式を意識した総合演習" },
+    { label: "模擬試験1", chapters: [11], desc: "問題追加予定の本番形式演習" },
   ];
   menuButtons.innerHTML = "";
   items.forEach(item => {
@@ -909,7 +1091,7 @@ function buildMenu() {
     btn.type = "button";
     btn.className = "choice";
     btn.innerHTML = `<span class="choice-key">▶</span><span><strong>${item.label}</strong><br><span style="color:var(--muted)">${item.desc}</span></span>`;
-    btn.addEventListener("click", () => startMode(item.chapters));
+    btn.addEventListener("click", () => item.isAllChapters ? startAllChaptersMode() : startMode(item.chapters));
     menuButtons.appendChild(btn);
   });
 }
@@ -1028,6 +1210,7 @@ function renderQuestion(index) {
   metaChapter.textContent = `${currentModeTitle()} / ${chapterLabel(q.chapter)}`;
   metaTopic.textContent = q.topic || "基礎";
   questionText.innerHTML = formatQuestionText(q.question);
+  updateBookmarkBox(actualIndex);
 
   let ans = isAnyReviewMode()
     ? state.reviewAnswers[actualIndex] || null
@@ -1204,6 +1387,7 @@ function renderReview(actualIndex, displayIndex = state.order.indexOf(actualInde
   timerPill.textContent = "解説";
   timerRing.style.setProperty("--pct", 0);
   questionText.innerHTML = formatQuestionText(q.question);
+  updateBookmarkBox(actualIndex);
 
   choicesEl.innerHTML = "";
   ["A", "B", "C", "D"].forEach(key => {
@@ -1230,6 +1414,11 @@ function escapeHtml(str) {
 }
 
 resumeSavedBtn.addEventListener("click", restoreStudyProgress);
+
+bookmarkCheckbox.addEventListener("change", () => {
+  const actualIndex = actualIndexAt(state.currentIndex);
+  setBookmarked(actualIndex, bookmarkCheckbox.checked);
+});
 
 clearSavedBtn.addEventListener("click", () => {
   const ok = confirm("保存されている学習履歴を削除します。よろしいですか？");
@@ -1362,6 +1551,7 @@ restartBtn.addEventListener("click", () => {
 async function initApp() {
   try {
     await loadQuestions();
+    loadBookmarkIds();
     state.answers = Array(QUESTIONS.length).fill(null);
     state.order = Array.from({length: QUESTIONS.length}, (_, i) => i);
     buildMenu();

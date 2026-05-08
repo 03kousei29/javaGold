@@ -16961,7 +16961,7 @@
   },
   {
     "id": 1061,
-    "chapter": 99,
+    "chapter": 9,
     "question": "Java SE 17 Developer試験で扱うテキストブロックの開始と終了に使う記号はどれか。",
     "choices": {
       "A": "三重ダブルクォート（\"\"\"）",
@@ -16977,7 +16977,7 @@
   },
   {
     "id": 1062,
-    "chapter": 99,
+    "chapter": 9,
     "question": "Stringは不変である。replace()を呼び出したときの説明として正しいものはどれか。",
     "choices": {
       "A": "元のString自身が変更される",
@@ -16993,7 +16993,7 @@
   },
   {
     "id": 1063,
-    "chapter": 99,
+    "chapter": 9,
     "question": "LocalDate.now() が返すものとして最も適切なものはどれか。",
     "choices": {
       "A": "時刻のみを表すLocalTime",
@@ -17009,7 +17009,7 @@
   },
   {
     "id": 1064,
-    "chapter": 99,
+    "chapter": 9,
     "question": "BigDecimalを金額計算で使う主な理由として適切なものはどれか。",
     "choices": {
       "A": "intより必ず高速に計算できる",
@@ -17025,7 +17025,7 @@
   },
   {
     "id": 1065,
-    "chapter": 99,
+    "chapter": 9,
     "question": "DateTimeFormatterの役割として最も適切なものはどれか。",
     "choices": {
       "A": "日付・時刻の文字列変換や解析を行う",
@@ -17041,7 +17041,7 @@
   },
   {
     "id": 1066,
-    "chapter": 99,
+    "chapter": 9,
     "question": "varを使える場所として正しいものはどれか。",
     "choices": {
       "A": "フィールド宣言",
@@ -17057,7 +17057,7 @@
   },
   {
     "id": 1067,
-    "chapter": 99,
+    "chapter": 9,
     "question": "switch式の特徴として正しいものはどれか。",
     "choices": {
       "A": "必ずフォールスルーする",
@@ -17073,7 +17073,7 @@
   },
   {
     "id": 1068,
-    "chapter": 99,
+    "chapter": 9,
     "question": "switch式でコロン形式を使って値を返す場合に使うキーワードはどれか。",
     "choices": {
       "A": "return",
@@ -17089,7 +17089,7 @@
   },
   {
     "id": 1069,
-    "chapter": 99,
+    "chapter": 9,
     "question": "instanceofのパターンマッチングの説明として正しいものはどれか。",
     "choices": {
       "A": "型判定とキャスト後の変数宣言をまとめて書ける",
@@ -17105,7 +17105,7 @@
   },
   {
     "id": 1070,
-    "chapter": 99,
+    "chapter": 9,
     "question": "次のコードの説明として正しいものはどれか。\nif (obj instanceof String s) { System.out.println(s.length()); }",
     "choices": {
       "A": "sはifブロック外で必ず使える",
@@ -17121,7 +17121,7 @@
   },
   {
     "id": 1071,
-    "chapter": 99,
+    "chapter": 9,
     "question": "for(;;) の説明として正しいものはどれか。",
     "choices": {
       "A": "コンパイルエラーになる",
@@ -17137,7 +17137,7 @@
   },
   {
     "id": 1072,
-    "chapter": 99,
+    "chapter": 9,
     "question": "短絡評価を行う論理演算子の組み合わせとして正しいものはどれか。",
     "choices": {
       "A": "& と |",
@@ -17153,7 +17153,7 @@
   },
   {
     "id": 1073,
-    "chapter": 99,
+    "chapter": 9,
     "question": "recordの主な用途として最も適切なものはどれか。",
     "choices": {
       "A": "不変データキャリアを簡潔に定義する",
@@ -17169,7 +17169,7 @@
   },
   {
     "id": 1074,
-    "chapter": 99,
+    "chapter": 9,
     "question": "recordで自動生成されるものとして正しいものはどれか。",
     "choices": {
       "A": "全フィールドのsetter",
@@ -17185,7 +17185,7 @@
   },
   {
     "id": 1075,
-    "chapter": 99,
+    "chapter": 9,
     "question": "recordの構成要素フィールドについて正しい説明はどれか。",
     "choices": {
       "A": "暗黙的にpublicになる",
@@ -17201,7 +17201,7 @@
   },
   {
     "id": 1076,
-    "chapter": 99,
+    "chapter": 9,
     "question": "sealed classの目的として最も適切なものはどれか。",
     "choices": {
       "A": "全メソッドをstaticにする",
@@ -17217,7 +17217,7 @@
   },
   {
     "id": 1077,
-    "chapter": 99,
+    "chapter": 9,
     "question": "sealed class A permits B, C と書いた場合の説明として正しいものはどれか。",
     "choices": {
       "A": "BとCだけがAを直接継承できる",
@@ -17233,7 +17233,7 @@
   },
   {
     "id": 1078,
-    "chapter": 99,
+    "chapter": 9,
     "question": "sealedクラスを継承するサブクラスに必要な指定として正しい組み合わせはどれか。",
     "choices": {
       "A": "public、private、protectedのいずれか",
@@ -17249,7 +17249,7 @@
   },
   {
     "id": 1079,
-    "chapter": 99,
+    "chapter": 9,
     "question": "interfaceのprivateメソッドの主な用途として適切なものはどれか。",
     "choices": {
       "A": "実装クラスから直接呼び出すAPIにする",
@@ -17265,7 +17265,7 @@
   },
   {
     "id": 1080,
-    "chapter": 99,
+    "chapter": 9,
     "question": "enumについて正しい説明はどれか。",
     "choices": {
       "A": "自由にnewできる",
@@ -17281,7 +17281,7 @@
   },
   {
     "id": 1081,
-    "chapter": 99,
+    "chapter": 9,
     "question": "try-with-resourcesで扱えるリソースの条件として正しいものはどれか。",
     "choices": {
       "A": "AutoCloseableを実装している",
@@ -17297,7 +17297,7 @@
   },
   {
     "id": 1082,
-    "chapter": 99,
+    "chapter": 9,
     "question": "try-with-resourcesで複数リソースを宣言した場合のクローズ順はどれか。",
     "choices": {
       "A": "宣言した順",
@@ -17313,7 +17313,7 @@
   },
   {
     "id": 1083,
-    "chapter": 99,
+    "chapter": 9,
     "question": "マルチキャッチ catch (A | B e) について正しい説明はどれか。",
     "choices": {
       "A": "AとBは必ず同じクラスでなければならない",
@@ -17329,7 +17329,7 @@
   },
   {
     "id": 1084,
-    "chapter": 99,
+    "chapter": 9,
     "question": "RuntimeExceptionのサブクラスについて正しい説明はどれか。",
     "choices": {
       "A": "必ずcatchしなければコンパイルエラー",
@@ -17345,7 +17345,7 @@
   },
   {
     "id": 1085,
-    "chapter": 99,
+    "chapter": 9,
     "question": "finallyブロックについて正しい説明はどれか。",
     "choices": {
       "A": "通常はtry/catchを抜ける前に実行される",
