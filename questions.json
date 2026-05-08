@@ -1,320 +1,320 @@
 [
   {
     "chapter": 1,
-    "question": "次のラッパークラスのコードについて正しいものはどれか。\nclass Sample01 {\n    public static void main(String[] args) {\n        Integer i = Integer.valueOf(10);\n        int value = i.intValue();\n\n        Integer n = null;\n\n        System.out.println(value);\n        // System.out.println(n.intValue());\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample01 {\n    public static void main(String[] args) {\n        Integer x = null;\n        int y = x;\n        System.out.println(y);\n    }\n}",
     "choices": {
-      "A": "Integerなどのラッパークラスは参照型なのでnullを保持できるが、null参照でintValue()を呼ぶとNullPointerExceptionになる",
-      "B": "Integerは基本型なのでnullを保持できない",
-      "C": "nullのIntegerをintValue()すると0が返る",
-      "D": "null参照のintValue()はコンパイルエラーになる"
+      "A": "NullPointerExceptionが発生する",
+      "B": "0 が出力される",
+      "C": "null が出力される",
+      "D": "コンパイルエラーになる"
     },
     "correctChoice": "A",
-    "correctText": "Integerなどのラッパークラスは参照型なのでnullを保持できるが、null参照でintValue()を呼ぶとNullPointerExceptionになる",
-    "explanation": "ラッパークラスは参照型なのでnullを保持できる。ただしnull参照に対するメソッド呼び出しやアンボクシングは実行時にNullPointerExceptionになる。",
+    "correctText": "NullPointerExceptionが発生する",
+    "explanation": "正解：A\n\n結論：\nInteger x = null; まではコンパイルできる。しかし int y = x; でIntegerからintへのアンボクシングが発生し、nullから値を取り出そうとして実行時にNullPointerExceptionになる。\n\n選択肢の切り方：\nA：正しい。nullのラッパー型をアンボクシングするとNPE。\nB：誤り。nullが0へ自動変換される仕様はない。\nC：誤り。System.out.println(y)まで到達しない。\nD：誤り。代入式自体は文法上成立するため、コンパイルではなく実行時に落ちる。\n\n間違えやすいポイント：\nnull代入は可能、nullのアンボクシングは実行時例外。この2段階を分けて判断する。",
     "topic": "wrapper-null-1",
     "difficulty": "hard",
     "id": 1
   },
   {
     "chapter": 1,
-    "question": "オートボクシングについて正しいものはどれか。\nclass Sample02 {\n    public static void main(String[] args) {\n        Integer i = 100;\n        Boolean b = true;\n        Character c = 'A';\n\n        System.out.println(i + \":\" + b + \":\" + c);\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nclass Sample02 {\n    public static void main(String[] args) {\n        Integer a = 10;\n        Long b = 10;\n        Boolean c = true;\n        System.out.println(a + \":\" + c);\n    }\n}",
     "choices": {
-      "A": "intからLongへの直接変換も常にオートボクシングで成立する",
-      "B": "オートボクシングは基本データ型から対応するラッパークラスへの自動変換である",
-      "C": "オートボクシングはラッパークラスから基本型への変換である",
-      "D": "booleanはオートボクシング対象外である"
+      "A": "10:true が出力される",
+      "B": "Long b = 10; の行でコンパイルエラーになる",
+      "C": "Boolean c = true; の行でコンパイルエラーになる",
+      "D": "Integer a = 10; の行でコンパイルエラーになる"
     },
     "correctChoice": "B",
-    "correctText": "オートボクシングは基本データ型から対応するラッパークラスへの自動変換である",
-    "explanation": "int→Integer、boolean→Boolean、char→Characterなど対応するラッパークラスへの変換がオートボクシング。任意の数値型変換まで自動で行うわけではない。",
+    "correctText": "Long b = 10; の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nInteger a = 10; はintからIntegerへのボクシングで成立する。Boolean c = true; もbooleanからBooleanへのボクシングで成立する。一方、Long b = 10; はintをLongへ直接ボクシングできないためコンパイルエラー。\n\n選択肢の切り方：\nA：誤り。Long b = 10; が通らないので実行されない。\nB：正しい。int→Longは対応ラッパーへのボクシングではない。\nC：誤り。boolean→Booleanは対応関係なので成立する。\nD：誤り。int→Integerは典型的なオートボクシング。\n\n間違えやすいポイント：\n「intはlongへ拡大できる」ことと「intをLongへ代入できる」ことは別。ボクシングは対応するラッパー型に対して行われる。",
     "topic": "autoboxing-2",
     "difficulty": "hard",
     "id": 2
   },
   {
     "chapter": 1,
-    "question": "オートアンボクシングについて正しいものはどれか。\nclass Sample03 {\n    public static void main(String[] args) {\n        Integer wrapper = Integer.valueOf(20);\n        int value = wrapper;\n\n        Long l = null;\n        // long x = l;\n\n        System.out.println(value);\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample03 {\n    public static void main(String[] args) {\n        Long value = null;\n        long a = value;\n        System.out.println(a);\n    }\n}",
     "choices": {
-      "A": "nullをアンボクシングすると0やfalseになる",
-      "B": "アンボクシングは基本型からラッパー型への変換である",
-      "C": "ラッパークラスから対応する基本データ型への自動変換で、nullをアンボクシングするとNullPointerExceptionになる",
-      "D": "Longからintへは常に直接アンボクシングできる"
+      "A": "0 が出力される",
+      "B": "null が出力される",
+      "C": "NullPointerExceptionが発生する",
+      "D": "Longからlongへの変換はできないためコンパイルエラーになる"
     },
     "correctChoice": "C",
-    "correctText": "ラッパークラスから対応する基本データ型への自動変換で、nullをアンボクシングするとNullPointerExceptionになる",
-    "explanation": "ラッパー型から対応基本型への変換がアンボクシング。null参照ではコンパイルエラーではなく実行時にNullPointerException。",
+    "correctText": "NullPointerExceptionが発生する",
+    "explanation": "正解：C\n\n結論：\nLongからlongへのアンボクシング自体は可能。ただし参照先がnullなので、long値を取り出すタイミングでNullPointerExceptionになる。\n\n選択肢の切り方：\nA：誤り。nullは0に変換されない。\nB：誤り。longは基本型なのでnullを保持できない。\nC：正しい。nullのアンボクシングは実行時例外。\nD：誤り。Long→longは対応するアンボクシングなので文法上は成立する。\n\n間違えやすいポイント：\n「アンボクシングできる型か」と「実行時に中身がnullか」は別。型は正しくても、値がnullなら落ちる。",
     "topic": "unboxing-3",
     "difficulty": "hard",
     "id": 3
   },
   {
     "chapter": 1,
-    "question": "次の数値変換とボクシングについて正しいものはどれか。\nclass Sample04 {\n    public static void main(String[] args) {\n        int i = 10;\n        long l = i;\n\n        Integer wi = i;\n\n        // Long wl = i;\n        Long wl2 = (long) i;\n\n        System.out.println(wi + \":\" + wl2);\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nclass Sample04 {\n    public static void main(String[] args) {\n        int i = 10;\n        long a = i;\n        Integer b = i;\n        Long c = i;\n        System.out.println(a + b + c);\n    }\n}",
     "choices": {
-      "A": "int→Longは拡大変換とボクシングが自動連鎖して常に成立する",
-      "B": "int→Integerもコンパイルエラーになる",
-      "C": "Long wl2 = (long)i; もコンパイルエラーになる",
-      "D": "int→longの拡大変換やint→Integerのボクシングは可能だが、int→Longのような拡大してからボクシングは代入変換では直接成立しない"
+      "A": "30 が出力される",
+      "B": "Long c = i; の行でコンパイルエラーになる",
+      "C": "Integer b = i; の行でコンパイルエラーになる",
+      "D": "long a = i; の行でコンパイルエラーになる"
     },
-    "correctChoice": "D",
-    "correctText": "int→longの拡大変換やint→Integerのボクシングは可能だが、int→Longのような拡大してからボクシングは代入変換では直接成立しない",
-    "explanation": "ボクシングは対応するラッパー型に対して働く。拡大変換とボクシングの組み合わせ順序は制限され、intからLongへ直接は不可。",
+    "correctChoice": "B",
+    "correctText": "Long c = i; の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nint→longの拡大変換は可能。int→Integerのボクシングも可能。しかし Long c = i; は、intをlongへ拡大してからLongへボクシングする代入としては直接成立しない。\n\n選択肢の切り方：\nA：誤り。cの代入でコンパイルエラーになるため実行されない。\nB：正しい。int→Longは直接代入できない。\nC：誤り。Integerはintの対応ラッパーなので成立する。\nD：誤り。int→longは基本型の拡大変換。\n\n間違えやすいポイント：\n拡大変換とボクシングを都合よく連鎖できるとは限らない。Longに入れたいなら Long c = (long)i; のように先にlongへ明示する。",
     "topic": "boxing-numeric-4",
     "difficulty": "hard",
     "id": 4
   },
   {
     "chapter": 1,
-    "question": "Integer.valueOf()と比較について正しいものはどれか。\nclass Sample05 {\n    public static void main(String[] args) {\n        Integer a = Integer.valueOf(100);\n        Integer b = Integer.valueOf(100);\n\n        Integer c = Integer.valueOf(200);\n        Integer d = Integer.valueOf(200);\n\n        System.out.println(a == b);\n        System.out.println(c == d);\n        System.out.println(c.equals(d));\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample05 {\n    public static void main(String[] args) {\n        Integer a = Integer.valueOf(100);\n        Integer b = Integer.valueOf(100);\n        Integer c = Integer.valueOf(200);\n        Integer d = Integer.valueOf(200);\n\n        System.out.println(a == b);\n        System.out.println(c == d);\n        System.out.println(c.equals(d));\n    }\n}",
     "choices": {
-      "A": "Integer.valueOf()は通常-128〜127をキャッシュするため、100同士の==はtrueになりやすく、200同士はfalseになりやすい",
-      "B": "Integer.valueOf()は全ての整数値を必ず同一インスタンスにする",
-      "C": "equals()は参照比較なので200同士ではfalseになる",
-      "D": "==はラッパークラスでは常に値比較になる"
+      "A": "true\ntrue\ntrue",
+      "B": "true\nfalse\ntrue",
+      "C": "false\nfalse\ntrue",
+      "D": "true\nfalse\nfalse"
     },
-    "correctChoice": "A",
-    "correctText": "Integer.valueOf()は通常-128〜127をキャッシュするため、100同士の==はtrueになりやすく、200同士はfalseになりやすい",
-    "explanation": "Integer.valueOfは通常-128〜127をキャッシュする。==は参照比較、equalsは値比較。キャッシュ範囲外で==に頼るのは危険。",
+    "correctChoice": "B",
+    "correctText": "true\nfalse\ntrue",
+    "explanation": "正解：B\n\n結論：\nInteger.valueOf()は通常-128〜127をキャッシュする。100は同じインスタンスになりやすいため a == b はtrue。200は通常キャッシュ範囲外なので c == d はfalse。equals()は値比較なのでtrue。\n\n選択肢の切り方：\nA：誤り。200同士の==までtrueにしている。\nB：正しい。参照比較、参照比較、値比較の順。\nC：誤り。100はキャッシュ範囲内なのでa == bはtrueになりやすい。\nD：誤り。Integerのequals()は同じ型の値比較なので200同士はtrue。\n\n間違えやすいポイント：\n==は参照比較、equals()は値比較。小さいIntegerで==がtrueになっても、値比較に==を使ってよいわけではない。",
     "topic": "integer-valueof-cache-5",
     "difficulty": "hard",
     "id": 5
   },
   {
     "chapter": 1,
-    "question": "ラッパークラスのequalsについて正しいものはどれか。\nclass Sample06 {\n    public static void main(String[] args) {\n        Integer i = 10;\n        Long l = 10L;\n\n        System.out.println(i.equals(10));\n        System.out.println(i.equals(l));\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample06 {\n    public static void main(String[] args) {\n        Integer i = 10;\n        Long l = 10L;\n\n        System.out.println(i.equals(10));\n        System.out.println(i.equals(l));\n    }\n}",
     "choices": {
-      "A": "Integer.equals(Long)は数値が同じならtrueになる",
-      "B": "Integer.equals(Long)は数値が同じ10でも型が異なるためfalseになる",
-      "C": "Integer.equals(10)は必ずfalseになる",
-      "D": "equalsはラッパークラスでは常に参照比較である"
+      "A": "true\ntrue",
+      "B": "true\nfalse",
+      "C": "false\ntrue",
+      "D": "false\nfalse"
     },
     "correctChoice": "B",
-    "correctText": "Integer.equals(Long)は数値が同じ10でも型が異なるためfalseになる",
-    "explanation": "ラッパークラスのequalsは基本的に同じラッパー型同士の値比較。IntegerとLongは同じ数値でもequalsではfalse。",
+    "correctText": "true\nfalse",
+    "explanation": "正解：B\n\n結論：\ni.equals(10) の10はIntegerへボクシングされ、Integer同士の値比較になるためtrue。一方、i.equals(l) はIntegerとLongの比較なので、数値が同じ10でもfalse。\n\n選択肢の切り方：\nA：誤り。IntegerとLongはequals()では同値扱いされない。\nB：正しい。Integer(10)とはtrue、Long(10L)とはfalse。\nC：誤り。i.equals(10)はInteger同士になるためtrue。\nD：誤り。1行目までfalseにしている。\n\n間違えやすいポイント：\nequals()は「数値として同じならtrue」ではない。ラッパークラスでは型の違いも結果に影響する。",
     "topic": "wrapper-equals-6",
     "difficulty": "hard",
     "id": 6
   },
   {
     "chapter": 1,
-    "question": "非ジェネリックなObject管理について正しいものはどれか。\nclass Sample07 {\n    static class Box {\n        private Object obj;\n\n        void set(Object obj) {\n            this.obj = obj;\n        }\n\n        Object get() {\n            return obj;\n        }\n    }\n\n    public static void main(String[] args) {\n        Box box = new Box();\n        box.set(\"Java\");\n\n        String s = (String) box.get();\n\n        System.out.println(s);\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample07 {\n    static class Box {\n        private Object obj;\n        void set(Object obj) { this.obj = obj; }\n        Object get() { return obj; }\n    }\n\n    public static void main(String[] args) {\n        Box box = new Box();\n        box.set(100);\n        String s = (String) box.get();\n        System.out.println(s);\n    }\n}",
     "choices": {
-      "A": "Objectに格納した値は取り出し時に自動で目的型へ安全変換される",
-      "B": "Object型ではString以外を格納できない",
-      "C": "Objectで保持すると任意の型を格納できるが、取得時のキャスト失敗でClassCastExceptionが起こり得る",
-      "D": "キャスト失敗は常にコンパイルエラーになる"
+      "A": "100 が出力される",
+      "B": "null が出力される",
+      "C": "ClassCastExceptionが発生する",
+      "D": "box.set(100) の行でコンパイルエラーになる"
     },
     "correctChoice": "C",
-    "correctText": "Objectで保持すると任意の型を格納できるが、取得時のキャスト失敗でClassCastExceptionが起こり得る",
-    "explanation": "Object型で保持するとコンパイル時の型安全性が弱く、取得時に明示キャストが必要。実体型が違えばClassCastException。",
+    "correctText": "ClassCastExceptionが発生する",
+    "explanation": "正解：C\n\n結論：\nObject型にはIntegerも格納できるため box.set(100) はコンパイルできる。しかし実体はIntegerなので、Stringへキャストしようとすると実行時にClassCastExceptionになる。\n\n選択肢の切り方：\nA：誤り。String sへのキャストで落ちるため出力されない。\nB：誤り。値はnullではなくIntegerの100。\nC：正しい。ObjectからStringへのキャストが実体型と合わない。\nD：誤り。Object引数にはIntegerを渡せる。\n\n間違えやすいポイント：\nObject型は「何でも入る」が「何にでも安全に取り出せる」わけではない。実体型を追う。",
     "topic": "nongeneric-object-7",
     "difficulty": "hard",
     "id": 7
   },
   {
     "chapter": 1,
-    "question": "非ジェネリックなObject管理について正しいものはどれか。\nclass Sample08 {\n    static class Box {\n        private Object obj;\n        void set(Object obj) { this.obj = obj; }\n        Object get() { return obj; }\n    }\n\n    public static void main(String[] args) {\n        Box box = new Box();\n        box.set(\"Java\");\n        box.set(100);\n\n        // String s = (String) box.get();\n        Object o = box.get();\n\n        System.out.println(o);\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample08 {\n    static class Box {\n        private Object obj;\n        void set(Object obj) { this.obj = obj; }\n        Object get() { return obj; }\n    }\n\n    public static void main(String[] args) {\n        Box box = new Box();\n        box.set(\"Java\");\n        box.set(100);\n\n        Object o = box.get();\n        System.out.println(o);\n    }\n}",
     "choices": {
-      "A": "Objectに格納した値は取り出し時に自動で目的型へ安全変換される",
-      "B": "Object型ではString以外を格納できない",
-      "C": "キャスト失敗は常にコンパイルエラーになる",
-      "D": "Objectで保持すると任意の型を格納できるが、取得時のキャスト失敗でClassCastExceptionが起こり得る"
+      "A": "Java が出力される",
+      "B": "100 が出力される",
+      "C": "ClassCastExceptionが発生する",
+      "D": "box.set(100) の行でコンパイルエラーになる"
     },
-    "correctChoice": "D",
-    "correctText": "Objectで保持すると任意の型を格納できるが、取得時のキャスト失敗でClassCastExceptionが起こり得る",
-    "explanation": "Object型で保持するとコンパイル時の型安全性が弱く、取得時に明示キャストが必要。実体型が違えばClassCastException。",
+    "correctChoice": "B",
+    "correctText": "100 が出力される",
+    "explanation": "正解：B\n\n結論：\nBoxの中身はset()を呼ぶたびに上書きされる。最後にbox.set(100)しているため、get()で返る実体はIntegerの100。Object型で受けているのでキャスト失敗も起こらない。\n\n選択肢の切り方：\nA：誤り。\"Java\"は後続のset(100)で上書きされる。\nB：正しい。最後に格納された100が出力される。\nC：誤り。StringへキャストしていないためClassCastExceptionは起こらない。\nD：誤り。ObjectにはIntegerも格納できる。\n\n間違えやすいポイント：\n複数回setしている場合は最後の代入を追う。Objectで受けるか、Stringへキャストするかでも結果が変わる。",
     "topic": "nongeneric-object-8",
     "difficulty": "hard",
     "id": 8
   },
   {
     "chapter": 1,
-    "question": "ジェネリッククラスについて正しいものはどれか。\nclass Sample09 {\n    static class Box<T> {\n        private T obj;\n\n        void set(T obj) {\n            this.obj = obj;\n        }\n\n        T get() {\n            return obj;\n        }\n    }\n\n    public static void main(String[] args) {\n        Box<String> box = new Box<String>();\n        box.set(\"Gold\");\n\n        String s = box.get();\n\n        System.out.println(s);\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nclass Sample09 {\n    static class Box<T> {\n        private T obj;\n        void set(T obj) { this.obj = obj; }\n        T get() { return obj; }\n    }\n\n    public static void main(String[] args) {\n        Box<String> box = new Box<>();\n        box.set(\"Gold\");\n        box.set(100);\n        System.out.println(box.get());\n    }\n}",
     "choices": {
-      "A": "Box<String>ではTがStringとして扱われ、異なる型のsetはコンパイルエラーになり得る",
-      "B": "Box<String>でもset(100)は警告だけで必ず通る",
-      "C": "ジェネリクスは実行時だけ型検査を行いコンパイル時には無関係である",
-      "D": "get()時には必ず明示キャストが必要である"
+      "A": "Gold が出力される",
+      "B": "100 が出力される",
+      "C": "box.set(100) の行でコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionが発生する"
     },
-    "correctChoice": "A",
-    "correctText": "Box<String>ではTがStringとして扱われ、異なる型のsetはコンパイルエラーになり得る",
-    "explanation": "ジェネリクスはコンパイル時の型安全性を高める。Box<String>ならTはStringとして扱われ、get時のキャストも不要。",
+    "correctChoice": "C",
+    "correctText": "box.set(100) の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nBox<String>ではTがStringとして扱われる。そのためset()に渡せるのはString。box.set(100)はIntegerを渡しているためコンパイルエラーになる。\n\n選択肢の切り方：\nA：誤り。box.set(100)があるため実行まで進まない。\nB：誤り。Box<String>にIntegerは入れられない。\nC：正しい。ジェネリクスにより入れる時点で型ミスを検出する。\nD：誤り。raw型やObject管理と違い、このケースはコンパイル時に防がれる。\n\n間違えやすいポイント：\nObject型Boxなら実行時例外になり得るが、Box<String>ならコンパイル時に止まる。ジェネリクスの強みはここ。",
     "topic": "generic-class-9",
     "difficulty": "hard",
     "id": 9
   },
   {
     "chapter": 1,
-    "question": "ジェネリクスの型引数について正しいものはどれか。\nclass Sample10 {\n    static class Box<T> {\n        T value;\n    }\n\n    public static void main(String[] args) {\n        Box<Integer> ok = new Box<>();\n\n        // Box<int> ng = new Box<int>();\n\n        ok.value = 10;\n        System.out.println(ok.value);\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample10 {\n    public static void main(String[] args) {\n        List<int> nums = new ArrayList<>();\n        nums.add(10);\n        System.out.println(nums.get(0));\n    }\n}",
     "choices": {
-      "A": "List<int>はオートボクシングによりList<Integer>へ自動変換される",
-      "B": "ジェネリクスの型引数には参照型だけを指定でき、intではなくIntegerを使う必要がある",
-      "C": "Box<int>はraw型として扱われる",
-      "D": "型引数には基本型だけを指定できる"
+      "A": "10 が出力される",
+      "B": "List<int> の行でコンパイルエラーになる",
+      "C": "nums.add(10) の行でNullPointerExceptionが発生する",
+      "D": "intは自動的にIntegerへ変換されるため、List<Integer>として扱われる"
     },
     "correctChoice": "B",
-    "correctText": "ジェネリクスの型引数には参照型だけを指定でき、intではなくIntegerを使う必要がある",
-    "explanation": "ジェネリクスの型引数にプリミティブ型は指定できない。intを扱いたい場合はIntegerやIntStreamなどを検討する。",
+    "correctText": "List<int> の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nジェネリクスの型引数には参照型しか指定できない。intは基本型なのでList<int>はコンパイルエラー。int値を扱うならList<Integer>を使う。\n\n選択肢の切り方：\nA：誤り。コンパイルできないので実行されない。\nB：正しい。型引数に基本型は指定できない。\nC：誤り。実行時例外ではなくコンパイルエラー。\nD：誤り。要素追加時の10はボクシングされるが、List<int>という型はList<Integer>へ自動変換されない。\n\n間違えやすいポイント：\n「値の10がIntegerへボクシングされる」ことと「型引数にintを書ける」ことは別。型引数は必ず参照型。",
     "topic": "generic-type-arg-reference-10",
     "difficulty": "hard",
     "id": 10
   },
   {
     "chapter": 1,
-    "question": "raw型について正しいものはどれか。\nclass Sample11 {\n    static class Box<T> {\n        private T obj;\n        void set(T obj) { this.obj = obj; }\n        T get() { return obj; }\n    }\n\n    public static void main(String[] args) {\n        Box<String> typed = new Box<>();\n        Box raw = typed;\n\n        raw.set(100);\n\n        // String s = typed.get();\n        System.out.println(raw.get());\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample11 {\n    static class Box<T> {\n        private T obj;\n        void set(T obj) { this.obj = obj; }\n        T get() { return obj; }\n    }\n\n    public static void main(String[] args) {\n        Box<String> typed = new Box<>();\n        Box raw = typed;\n        raw.set(100);\n\n        String s = typed.get();\n        System.out.println(s);\n    }\n}",
     "choices": {
-      "A": "raw型を使うと必ずコンパイルエラーになる",
-      "B": "raw型では型安全性が完全に保証される",
-      "C": "raw型を使うとコンパイルは通ってもunchecked警告が出る可能性があり、後でClassCastExceptionを招き得る",
-      "D": "raw型では異なる型の値をsetできない"
+      "A": "100 が出力される",
+      "B": "null が出力される",
+      "C": "コンパイルエラーになる",
+      "D": "ClassCastExceptionが発生する"
     },
-    "correctChoice": "C",
-    "correctText": "raw型を使うとコンパイルは通ってもunchecked警告が出る可能性があり、後でClassCastExceptionを招き得る",
-    "explanation": "raw型はジェネリクス導入前との互換のため残るが、型安全性を弱める。警告、コンパイルエラー、実行時例外の区別が重要。",
+    "correctChoice": "D",
+    "correctText": "ClassCastExceptionが発生する",
+    "explanation": "正解：D\n\n結論：\nraw型を経由するとBox<String>にIntegerを入れられてしまう。コンパイル時にはunchecked警告で済むことがあるが、typed.get()をStringとして受け取るタイミングで実体Integerとの不一致によりClassCastExceptionが発生する。\n\n選択肢の切り方：\nA：誤り。Stringとして取り出す時点で落ちる。\nB：誤り。中身はnullではなく100。\nC：誤り。raw型利用は多くの場合コンパイルエラーではなく警告。\nD：正しい。raw型による型安全性の破壊が実行時例外につながる。\n\n間違えやすいポイント：\nraw型は「使えるが危険」。コンパイルできることと型安全であることを混同しない。",
     "topic": "raw-type-11",
     "difficulty": "hard",
     "id": 11
   },
   {
     "chapter": 1,
-    "question": "ダイヤモンド演算子について正しいものはどれか。\nimport java.util.*;\n\nclass Sample12 {\n    public static void main(String[] args) {\n        List<String> list = new ArrayList<>();\n        Map<Integer, List<String>> map = new HashMap<>();\n\n        list.add(\"A\");\n        map.put(1, list);\n\n        System.out.println(map.get(1).get(0));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample12 {\n    public static void main(String[] args) {\n        List<String> a = new ArrayList<>();\n        var b = new ArrayList<>();\n\n        a.add(\"A\");\n        b.add(\"B\");\n        b.add(10);\n\n        System.out.println(a.get(0) + b.get(1));\n    }\n}",
     "choices": {
-      "A": "<>を使うと常にObject型になり左辺は無視される",
-      "B": "ダイヤモンド演算子はJava SE 17では削除された",
-      "C": "ネストしたジェネリクスでは<>を使えない",
-      "D": "ダイヤモンド演算子<>は左辺や文脈から型引数を推論する"
+      "A": "A10 が出力される",
+      "B": "b.add(10) の行でコンパイルエラーになる",
+      "C": "var b = new ArrayList<>(); の推論結果はArrayList<String>である",
+      "D": "List<String> a = new ArrayList<>(); の<>はObjectとして推論される"
     },
-    "correctChoice": "D",
-    "correctText": "ダイヤモンド演算子<>は左辺や文脈から型引数を推論する",
-    "explanation": "new ArrayList<>()の<>は文脈から型推論する。左辺がvarだけなど文脈が弱い場合の推論に注意。",
+    "correctChoice": "A",
+    "correctText": "A10 が出力される",
+    "explanation": "正解：A\n\n結論：\nList<String> a = new ArrayList<>(); では左辺からStringが推論される。一方、var b = new ArrayList<>(); は型情報が弱く、ArrayList<Object>相当として扱われるためStringもIntegerも追加できる。\n\n選択肢の切り方：\nA：正しい。a.get(0)は\"A\"、b.get(1)はIntegerの10で、文字列連結になる。\nB：誤り。bはString専用ではないため10を追加できる。\nC：誤り。varだけではArrayList<String>とは推論されない。\nD：誤り。aの<>は左辺List<String>からStringとして推論される。\n\n間違えやすいポイント：\n<>は文脈から推論する。左辺が具体的な型か、varかで推論結果が変わる。",
     "topic": "diamond-operator-12",
     "difficulty": "hard",
     "id": 12
   },
   {
     "chapter": 1,
-    "question": "ジェネリックメソッドについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample13 {\n    static <T> List<T> createList(T value) {\n        List<T> list = new ArrayList<>();\n        list.add(value);\n        return list;\n    }\n\n    public static void main(String[] args) {\n        List<Integer> nums = createList(10);\n        List<String> strs = createList(\"Java\");\n\n        System.out.println(nums.get(0) + \":\" + strs.get(0));\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nimport java.util.*;\n\nclass Sample13 {\n    static <T> List<T> createList(T value) {\n        List<T> list = new ArrayList<>();\n        list.add(value);\n        return list;\n    }\n\n    public static void main(String[] args) {\n        var a = createList(10);\n        var b = createList(\"Java\");\n        System.out.println(a.get(0).getClass().getSimpleName());\n        System.out.println(b.get(0).getClass().getSimpleName());\n    }\n}",
     "choices": {
-      "A": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる",
-      "B": "型パラメータはメソッド名の後ろにfoo<T>()の形で宣言する",
-      "C": "staticメソッドではジェネリックメソッドを宣言できない",
-      "D": "ジェネリックメソッドはジェネリッククラス内でしか定義できない"
+      "A": "Integer\nString",
+      "B": "Number\nString",
+      "C": "Object\nObject",
+      "D": "コンパイルエラーになる"
     },
     "correctChoice": "A",
-    "correctText": "ジェネリックメソッドの型パラメータは戻り値型の前に宣言し、クラスが非ジェネリックでも定義できる",
-    "explanation": "メソッド独自の型パラメータは戻り値型の前に<T>のように宣言する。staticでも利用可能。",
+    "correctText": "Integer\nString",
+    "explanation": "正解：A\n\n結論：\ncreateList(10)ではTがIntegerとして推論され、createList(\"Java\")ではTがStringとして推論される。ジェネリックメソッドは呼び出しごとに型推論される。\n\n選択肢の切り方：\nA：正しい。10はInteger、\"Java\"はString。\nB：誤り。10だからといってNumberに広げて推論されるとは限らない。\nC：誤り。TはObject固定ではない。\nD：誤り。staticなジェネリックメソッドとして正しく宣言されている。\n\n間違えやすいポイント：\nジェネリックメソッドのTはメソッド呼び出しごとに決まる。クラスがジェネリックでなくても使える。",
     "topic": "generic-method-13",
     "difficulty": "hard",
     "id": 13
   },
   {
     "chapter": 1,
-    "question": "ジェネリックメソッドの明示型指定について正しいものはどれか。\nimport java.util.*;\n\nclass Sample14 {\n    static <T> List<T> emptyList() {\n        return new ArrayList<T>();\n    }\n\n    public static void main(String[] args) {\n        List<String> a = Sample14.emptyList();\n        List<Integer> b = Sample14.<Integer>emptyList();\n\n        b.add(10);\n\n        System.out.println(a.size() + \":\" + b.get(0));\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample14 {\n    static <T> List<T> emptyList() {\n        return new ArrayList<T>();\n    }\n\n    public static void main(String[] args) {\n        List<Integer> a = Sample14.<Integer>emptyList();\n        List<String> b = Sample14.emptyList<String>();\n        System.out.println(a.size() + b.size());\n    }\n}",
     "choices": {
-      "A": "emptyList<Integer>()のようにメソッド名の後ろへ書く",
-      "B": "ジェネリックメソッドの明示型指定はSample14.<Integer>emptyList()のようにメソッド名の直前に書く",
-      "C": "明示型指定はJavaでは一切できない",
-      "D": "明示型指定は戻り値型の後ろに書く"
+      "A": "0 が出力される",
+      "B": "Sample14.<Integer>emptyList() の行でコンパイルエラーになる",
+      "C": "Sample14.emptyList<String>() の行でコンパイルエラーになる",
+      "D": "ジェネリックメソッドは明示的に型指定できない"
     },
-    "correctChoice": "B",
-    "correctText": "ジェネリックメソッドの明示型指定はSample14.<Integer>emptyList()のようにメソッド名の直前に書く",
-    "explanation": "明示型指定はクラス名または参照の後、メソッド名の直前に書く。method<T>()形式ではない。",
+    "correctChoice": "C",
+    "correctText": "Sample14.emptyList<String>() の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nジェネリックメソッドの明示型指定は、Sample14.<Integer>emptyList() のようにメソッド名の直前に書く。emptyList<String>() のようにメソッド名の後ろへ書く形式はJavaでは使えない。\n\n選択肢の切り方：\nA：誤り。bの行がコンパイルエラーになるため実行されない。\nB：誤り。.<Integer>emptyList() は正しい書き方。\nC：正しい。emptyList<String>() は構文として誤り。\nD：誤り。明示型指定自体は可能。\n\n間違えやすいポイント：\n宣言時の<T>は戻り値型の前、呼び出し時の<Integer>はメソッド名の直前。メソッド名の後ろではない。",
     "topic": "generic-method-explicit-14",
     "difficulty": "hard",
     "id": 14
   },
   {
     "chapter": 1,
-    "question": "次の第1章範囲のコードまたは説明について、最も正しいものはどれか。\nclass Sample15<T> {\n    T value;\n\n    // static T ng;\n\n    static <E> E echo(E e) {\n        return e;\n    }\n\n    public static void main(String[] args) {\n        String s = Sample15.echo(\"Java\");\n        Integer i = Sample15.<Integer>echo(10);\n\n        System.out.println(s + \":\" + i);\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nclass Sample15<T> {\n    T value;\n    static T cache;\n\n    static <E> E echo(E e) {\n        return e;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(echo(\"Java\"));\n    }\n}",
     "choices": {
-      "A": "このコードはJava SE 17では常にコンパイルエラーになる",
-      "B": "実行結果は必ずnullだけになり、例外は発生しない",
-      "C": "staticメソッドでは、クラスの型パラメータを直接参照できない。",
-      "D": "このAPIの戻り値は常にbooleanであり、型推論やオーバーロード解決とは無関係である"
+      "A": "Java が出力される",
+      "B": "static T cache; の行でコンパイルエラーになる",
+      "C": "static <E> E echo(E e) の行でコンパイルエラーになる",
+      "D": "T value; の行でコンパイルエラーになる"
     },
-    "correctChoice": "C",
-    "correctText": "staticメソッドでは、クラスの型パラメータを直接参照できない。",
-    "explanation": "・クラスのTはインスタンスに属する型情報\n・static文脈ではクラス型パラメータTを直接使えない\n・static T ng; はコンパイルエラー\n・staticメソッドで型を使いたい場合はstatic <E>のように別途宣言する\n・staticジェネリックメソッドは頻出",
+    "correctChoice": "B",
+    "correctText": "static T cache; の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nクラスの型パラメータTはインスタンスに紐づく。staticフィールドはクラスに属するため、static T cache; のようにクラス型パラメータTを直接使うことはできない。\n\n選択肢の切り方：\nA：誤り。static T cache; があるためコンパイルできない。\nB：正しい。static文脈でクラスのTは使えない。\nC：誤り。staticメソッドでも、メソッド独自の<E>を宣言すれば使える。\nD：誤り。インスタンスフィールドでTを使うのは問題ない。\n\n間違えやすいポイント：\nstaticで型を使いたいなら、クラスのTではなく static <E> のようにメソッド側で独自に宣言する。",
     "topic": "chapter1-generic-15",
     "difficulty": "hard",
     "id": 15
   },
   {
     "chapter": 1,
-    "question": "型パラメータ境界について正しいものはどれか。\nclass Sample16 {\n    static class Box<T extends Number> {\n        private T value;\n\n        Box(T value) {\n            this.value = value;\n        }\n\n        double doubleValue() {\n            return value.doubleValue();\n        }\n    }\n\n    public static void main(String[] args) {\n        Box<Integer> i = new Box<>(10);\n        Box<Double> d = new Box<>(3.5);\n\n        // Box<String> s = new Box<>(\"NG\");\n\n        System.out.println(i.doubleValue() + d.doubleValue());\n    }\n}",
+    "question": "次のうち、型パラメータの複数境界としてコンパイルできる宣言はどれか。\ninterface A {}\ninterface B {}\nclass Base {}",
     "choices": {
-      "A": "インターフェース境界にはimplementsを使う",
-      "B": "複数境界ではインターフェースを必ず先に書く",
-      "C": "superは型パラメータ宣言の上限境界に使う",
-      "D": "型パラメータ境界ではクラスにもインターフェースにもextendsを使い、複数境界ではクラス境界を先に書く"
+      "A": "class X<T implements A> {}",
+      "B": "class X<T extends A & Base> {}",
+      "C": "class X<T extends Base & A & B> {}",
+      "D": "class X<T super Base> {}"
     },
-    "correctChoice": "D",
-    "correctText": "型パラメータ境界ではクラスにもインターフェースにもextendsを使い、複数境界ではクラス境界を先に書く",
-    "explanation": "T extends Number & Runnable のように書く。implementsではなくextends、クラス境界は先頭、superはワイルドカードで使う。",
+    "correctChoice": "C",
+    "correctText": "class X<T extends Base & A & B> {}",
+    "explanation": "正解：C\n\n結論：\n型パラメータの境界では、クラスにもインターフェースにもextendsを使う。複数境界でクラス境界がある場合、クラスは先頭に1つだけ置き、その後にインターフェースを&で続ける。\n\n選択肢の切り方：\nA：誤り。型パラメータ境界ではimplementsは使わない。\nB：誤り。クラス境界BaseがインターフェースAの後ろに来ている。\nC：正しい。Baseが先頭、その後にAとB。\nD：誤り。型パラメータ宣言でsuperは使わない。\n\n間違えやすいポイント：\nクラス宣言のimplementsと、ジェネリクス境界のextendsを混同しない。境界の順序も試験で狙われやすい。",
     "topic": "bounded-type-parameter-16",
     "difficulty": "hard",
     "id": 16
   },
   {
     "chapter": 1,
-    "question": "型パラメータ境界について正しいものはどれか。\nclass Sample17 {\n    static <T extends Comparable<T>> T max(T a, T b) {\n        return a.compareTo(b) >= 0 ? a : b;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(max(10, 20));\n        System.out.println(max(\"B\", \"A\"));\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nclass Sample17 {\n    static <T extends Comparable<T>> T max(T a, T b) {\n        return a.compareTo(b) >= 0 ? a : b;\n    }\n\n    public static void main(String[] args) {\n        System.out.println(max(10, 20));\n        System.out.println(max(\"B\", \"A\"));\n    }\n}",
     "choices": {
-      "A": "型パラメータ境界ではクラスにもインターフェースにもextendsを使い、複数境界ではクラス境界を先に書く",
-      "B": "インターフェース境界にはimplementsを使う",
-      "C": "複数境界ではインターフェースを必ず先に書く",
-      "D": "superは型パラメータ宣言の上限境界に使う"
+      "A": "10\nA",
+      "B": "20\nB",
+      "C": "20\nA",
+      "D": "コンパイルエラーになる"
     },
-    "correctChoice": "A",
-    "correctText": "型パラメータ境界ではクラスにもインターフェースにもextendsを使い、複数境界ではクラス境界を先に書く",
-    "explanation": "T extends Number & Runnable のように書く。implementsではなくextends、クラス境界は先頭、superはワイルドカードで使う。",
+    "correctChoice": "B",
+    "correctText": "20\nB",
+    "explanation": "正解：B\n\n結論：\nIntegerもStringもComparableを実装しているため、max()に渡せる。10.compareTo(20)は負なので20、\"B\".compareTo(\"A\")は正なので\"B\"が返る。\n\n選択肢の切り方：\nA：誤り。数値比較で大きいのは20。\nB：正しい。Integer比較では20、String比較では辞書順でB。\nC：誤り。文字列比較でBよりAが大きいわけではない。\nD：誤り。IntegerもStringもComparable<T>の条件を満たす。\n\n間違えやすいポイント：\nComparable境界によりcompareTo()を呼べる。参照型を>で比較しているわけではない。",
     "topic": "bounded-type-parameter-17",
     "difficulty": "hard",
     "id": 17
   },
   {
     "chapter": 1,
-    "question": "次の第1章範囲のコードまたは説明について、最も正しいものはどれか。\nclass Sample18 {\n    static class Pair<T, U extends T> {\n        T first;\n        U second;\n\n        Pair(T first, U second) {\n            this.first = first;\n            this.second = second;\n        }\n    }\n\n    public static void main(String[] args) {\n        Pair<Number, Integer> p = new Pair<>(10.5, 20);\n\n        System.out.println(p.first + \":\" + p.second);\n    }\n}",
+    "question": "次のコードについて正しいものはどれか。\nclass Sample18 {\n    static class Pair<T, U extends T> {\n        T first;\n        U second;\n        Pair(T first, U second) {\n            this.first = first;\n            this.second = second;\n        }\n    }\n\n    public static void main(String[] args) {\n        Pair<Integer, Number> p = new Pair<>(10, 20);\n        System.out.println(p.first + \":\" + p.second);\n    }\n}",
     "choices": {
-      "A": "このコードはJava SE 17では常にコンパイルエラーになる",
-      "B": "境界付き型パラメータでは、後続の型パラメータが前の型パラメータに依存できる。",
-      "C": "実行結果は必ずnullだけになり、例外は発生しない",
-      "D": "このAPIの戻り値は常にbooleanであり、型推論やオーバーロード解決とは無関係である"
+      "A": "10:20 が出力される",
+      "B": "Pair<Integer, Number> の型指定でコンパイルエラーになる",
+      "C": "new Pair<>(10, 20) のダイヤモンド演算子だけが原因でコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionが発生する"
     },
     "correctChoice": "B",
-    "correctText": "境界付き型パラメータでは、後続の型パラメータが前の型パラメータに依存できる。",
-    "explanation": "・U extends T のように型パラメータ同士で境界を作れる\n・Pair<Number,Integer>はIntegerがNumberのサブタイプなのでOK\n・Pair<Integer,Number>はNG\n・型パラメータの宣言順も重要\n・複数型パラメータ問題で頻出",
+    "correctText": "Pair<Integer, Number> の型指定でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nPair<T, U extends T>では、UはTのサブタイプでなければならない。Pair<Integer, Number>は、NumberがIntegerのサブタイプではないため境界違反でコンパイルエラー。\n\n選択肢の切り方：\nA：誤り。型指定が境界を満たさないので実行されない。\nB：正しい。Number extends Integer ではない。\nC：誤り。原因はダイヤモンド演算子ではなく、Pair<Integer, Number>自体の境界違反。\nD：誤り。実行時ではなくコンパイル時に検出される。\n\n間違えやすいポイント：\nU extends T の向きを逆にしない。Pair<Number, Integer>はOKだが、Pair<Integer, Number>はNG。",
     "topic": "chapter1-generic-18",
     "difficulty": "hard",
     "id": 18
   },
   {
     "chapter": 1,
-    "question": "次の第1章範囲のコードまたは説明について、最も正しいものはどれか。\nimport java.io.*;\n\nclass Sample19 {\n    static class Data implements Serializable, Comparable<Data> {\n        private final int id;\n\n        Data(int id) {\n            this.id = id;\n        }\n\n        public int compareTo(Data other) {\n            return Integer.compare(this.id, other.id);\n        }\n    }\n\n    static <T extends Data & Serializable> void print(T value) {\n        System.out.println(value);\n    }\n\n    public static void main(String[] args) {\n        print(new Data(1));\n    }\n}",
+    "question": "次のうち、複数境界の宣言としてコンパイルできるものはどれか。\nimport java.io.*;\n\nclass Data implements Serializable {}",
     "choices": {
-      "A": "このコードはJava SE 17では常にコンパイルエラーになる",
-      "B": "実行結果は必ずnullだけになり、例外は発生しない",
-      "C": "複数境界を指定する場合、クラス境界は最初に1つだけ指定する。",
-      "D": "このAPIの戻り値は常にbooleanであり、型推論やオーバーロード解決とは無関係である"
+      "A": "static <T extends Serializable & Data> void m(T t) {}",
+      "B": "static <T extends Data & Serializable> void m(T t) {}",
+      "C": "static <T extends Data & String> void m(T t) {}",
+      "D": "static <T implements Data & Serializable> void m(T t) {}"
     },
-    "correctChoice": "C",
-    "correctText": "複数境界を指定する場合、クラス境界は最初に1つだけ指定する。",
-    "explanation": "・複数境界は & でつなぐ\n・クラス境界がある場合は最初に1つだけ\n・インターフェース境界は複数指定可能\n・T extends Serializable & Data のようにクラスが後ろだとコンパイルエラー\n・構文問題で頻出",
+    "correctChoice": "B",
+    "correctText": "static <T extends Data & Serializable> void m(T t) {}",
+    "explanation": "正解：B\n\n結論：\n複数境界では、クラス境界がある場合は最初に1つだけ置く。Dataはクラス、Serializableはインターフェースなので、T extends Data & Serializable の順ならコンパイルできる。\n\n選択肢の切り方：\nA：誤り。クラスDataがインターフェースSerializableの後ろにある。\nB：正しい。クラスDataが先頭、Serializableが後続。\nC：誤り。DataもStringもクラス。クラス境界を複数指定できない。\nD：誤り。型パラメータ境界ではimplementsではなくextends。\n\n間違えやすいポイント：\n複数境界は「クラス1つを先頭、その後にインターフェース」。順序と個数の両方が狙われる。",
     "topic": "chapter1-generic-19",
     "difficulty": "hard",
     "id": 19
   },
   {
     "chapter": 1,
-    "question": "不変コレクションについて正しいものはどれか。\nimport java.util.*;\n\nclass Sample20 {\n    public static void main(String[] args) {\n        Number[] nums = new Integer[2];\n        nums[0] = 10;\n\n        // nums[1] = 3.14;\n\n        List<Integer> ints = new ArrayList<>();\n        // List<Number> numbers = ints;\n\n        System.out.println(nums[0]);\n    }\n}",
+    "question": "次のコードの実行結果として正しいものはどれか。\nimport java.util.*;\n\nclass Sample20 {\n    public static void main(String[] args) {\n        List<String> list = List.of(\"A\", \"B\");\n        list.add(\"C\");\n        System.out.println(list);\n    }\n}",
     "choices": {
-      "A": "List.ofは固定長だがsetは常に可能である",
-      "B": "List.ofはnullを自由に格納できる",
-      "C": "List.ofのaddはコンパイルエラーになるため実行時例外ではない",
-      "D": "List.of/Set.of/Map.ofで作成したコレクションは不変で、変更操作でUnsupportedOperationExceptionが発生する"
+      "A": "[A, B, C] が出力される",
+      "B": "[A, B] が出力される",
+      "C": "UnsupportedOperationExceptionが発生する",
+      "D": "list.add(\"C\") の行でコンパイルエラーになる"
     },
-    "correctChoice": "D",
-    "correctText": "List.of/Set.of/Map.ofで作成したコレクションは不変で、変更操作でUnsupportedOperationExceptionが発生する",
-    "explanation": "List.of等は不変コレクションを返す。変更操作はコンパイル可能でも実行時にUnsupportedOperationException。nullも許可しない。",
+    "correctChoice": "C",
+    "correctText": "UnsupportedOperationExceptionが発生する",
+    "explanation": "正解：C\n\n結論：\nList.of()で作成したリストは不変。add()メソッド自体はListのメソッドとして呼び出せるためコンパイルは通るが、実行時にUnsupportedOperationExceptionが発生する。\n\n選択肢の切り方：\nA：誤り。不変リストなので要素追加はできない。\nB：誤り。add()で例外が発生するためprintlnまで到達しない。\nC：正しい。変更操作は実行時にUnsupportedOperationException。\nD：誤り。add()呼び出しは文法上可能。失敗は実行時。\n\n間違えやすいポイント：\n不変コレクションの変更操作は「コンパイルエラー」ではなく「実行時例外」になりやすい。List.of(null)はNullPointerExceptionになる点も別論点として注意。",
     "topic": "immutable-collection-20",
     "difficulty": "hard",
     "id": 20
