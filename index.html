@@ -300,7 +300,7 @@ button, .choice, .linkbtn {
     border-radius: 13px;
     font-size: .95rem;
   }
-  #shuffleBtn, #jumpQuestionBtn, #menuBtnInQuiz{
+  #shuffleBtn, #jumpQuestionBtn, #prevQuestionBtn, #nextQuestionTopBtn, #menuBtnInQuiz{
     width: calc(50% - 4px);
   }
   .timer-box{
@@ -402,7 +402,7 @@ button, .choice, .linkbtn {
   }
 }
 @media (max-width: 380px){
-  #shuffleBtn, #jumpQuestionBtn, #menuBtnInQuiz{
+  #shuffleBtn, #jumpQuestionBtn, #prevQuestionBtn, #nextQuestionTopBtn, #menuBtnInQuiz{
     width: 100%;
   }
   .question-text .code-block{
@@ -569,6 +569,8 @@ button, .choice, .linkbtn {
           <button id="finishBtn" class="secondary">回答を終了してサマリーへ</button>
           <button id="shuffleBtn" class="secondary">シャッフル: OFF</button>
           <button id="jumpQuestionBtn" class="secondary">指定問題へ移動</button>
+          <button id="prevQuestionBtn" class="secondary">前の問題へ</button>
+          <button id="nextQuestionTopBtn" class="secondary">次の問題へ</button>
           <button id="menuBtnInQuiz" class="secondary">メインメニューへ戻る</button>
         </div>
       </div>
@@ -687,6 +689,7 @@ const state = {
   timerSeconds: 90,
   timerId: null,
   timerStopped: false,
+  summaryReviewMode: false,
   lastView: "menu"
 };
 
@@ -720,6 +723,8 @@ const nextBtn = document.getElementById("nextBtn");
 const finishBtn = document.getElementById("finishBtn");
 const shuffleBtn = document.getElementById("shuffleBtn");
 const jumpQuestionBtn = document.getElementById("jumpQuestionBtn");
+const prevQuestionBtn = document.getElementById("prevQuestionBtn");
+const nextQuestionTopBtn = document.getElementById("nextQuestionTopBtn");
 const summaryCorrect = document.getElementById("summaryCorrect");
 const summaryRate = document.getElementById("summaryRate");
 const donutChart = document.getElementById("donutChart");
@@ -864,6 +869,7 @@ function saveStudyProgress(view = "quiz") {
 function clearStudyProgress() {
   localStorage.removeItem(STORAGE_KEY);
   updateSavedProgressBox();
+  updatePrevNextNavigationButtons();
 }
 
 function isSavedProgressCompatible(saved) {
@@ -976,6 +982,7 @@ function actualIndexAt(displayIndex) {
 function updateShuffleButton() {
   shuffleBtn.textContent = `シャッフル: ${state.shuffle ? "ON" : "OFF"}`;
   updateJumpQuestionButton();
+  updatePrevNextNavigationButtons();
 }
 function canUseQuestionJump() {
   return !state.shuffle && !isAnyReviewMode() && currentVisibleQuestionsLength() > 0;
@@ -1004,6 +1011,26 @@ function jumpToQuestionNumber() {
   }
 
   renderQuestion(targetNo - 1);
+}
+function canUsePrevNextNavigation() {
+  return !state.summaryReviewMode && currentVisibleQuestionsLength() > 0;
+}
+function updatePrevNextNavigationButtons() {
+  if (!prevQuestionBtn || !nextQuestionTopBtn) return;
+  const canUse = canUsePrevNextNavigation();
+  const isFirst = state.currentIndex <= 0;
+  const isLast = state.currentIndex >= currentVisibleQuestionsLength() - 1;
+
+  prevQuestionBtn.disabled = !canUse || isFirst;
+  nextQuestionTopBtn.disabled = !canUse || isLast;
+  prevQuestionBtn.title = isFirst ? "現在は最初の問題です" : "前の問題へ移動します";
+  nextQuestionTopBtn.title = isLast ? "現在は最後の問題です" : "次の問題へ移動します";
+}
+function moveQuestionRelative(delta) {
+  if (!canUsePrevNextNavigation()) return;
+  const targetIndex = state.currentIndex + delta;
+  if (targetIndex < 0 || targetIndex >= currentVisibleQuestionsLength()) return;
+  renderQuestion(targetIndex);
 }
 function currentVisibleQuestionsLength() {
   return state.order.length;
@@ -1227,6 +1254,7 @@ function formatQuestionText(text) {
 }
 
 function renderQuestion(index) {
+  state.summaryReviewMode = false;
   const q = orderedQuestionAt(index);
   const actualIndex = actualIndexAt(index);
   state.currentIndex = index;
@@ -1270,6 +1298,7 @@ function renderQuestion(index) {
   nextBtn.textContent = index === currentVisibleQuestionsLength() - 1 ? "結果を見る" : "次の問題へ";
   updateProgress();
   updateJumpQuestionButton();
+  updatePrevNextNavigationButtons();
 
   if (!ans) {
     resetTimerForQuestion();
@@ -1330,6 +1359,7 @@ function showExplanation(isCorrect, q, reviewMode) {
 }
 
 function renderSummary() {
+  state.summaryReviewMode = false;
   stopTimer();
   menuView.classList.add("hidden");
   quizView.classList.add("hidden");
@@ -1403,6 +1433,7 @@ function renderSummary() {
   saveStudyProgress("summary");
 }
 function renderReview(actualIndex, displayIndex = state.order.indexOf(actualIndex)) {
+  state.summaryReviewMode = true;
   state.currentIndex = displayIndex;
   const q = QUESTIONS[actualIndex];
   let ans = isAnyReviewMode()
@@ -1435,6 +1466,7 @@ function renderReview(actualIndex, displayIndex = state.order.indexOf(actualInde
 
   showExplanation(ans ? ans.isCorrect : false, q, true);
   nextBtn.textContent = "サマリーへ戻る";
+  updatePrevNextNavigationButtons();
 }
 
 function escapeHtml(str) {
@@ -1479,6 +1511,8 @@ finishBtn.addEventListener("click", () => {
 });
 
 jumpQuestionBtn.addEventListener("click", jumpToQuestionNumber);
+prevQuestionBtn.addEventListener("click", () => moveQuestionRelative(-1));
+nextQuestionTopBtn.addEventListener("click", () => moveQuestionRelative(1));
 
 menuBtnInQuiz.addEventListener("click", () => {
   const ok = confirm("現在の回答状況を保存したまま、メインメニューへ戻りますか？");
