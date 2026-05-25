@@ -203,6 +203,34 @@ tr:last-child td{border-bottom:0}
 }
 .question-text .question-lead{display:block;}
 
+/* ===== Java module multi-file question headers ===== */
+.question-text .code-block .code-file-header{
+  display:block;
+  margin:14px -4px 10px;
+  padding:8px 12px;
+  border:1px solid rgba(255,224,138,.30);
+  border-left:4px solid var(--accent);
+  border-radius:10px;
+  background:
+    linear-gradient(90deg, rgba(212,175,55,.18), rgba(255,224,138,.06)),
+    rgba(255,255,255,.035);
+  color:var(--accent2);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic",sans-serif;
+  font-size:.86rem;
+  font-weight:800;
+  line-height:1.35;
+  letter-spacing:.01em;
+  white-space:normal;
+}
+.question-text .code-block .code-file-header:first-child{
+  margin-top:0;
+}
+.question-text .code-block .code-file-header::before{
+  content:"📄 ";
+  opacity:.95;
+}
+
+
 
 /* ===== Mobile friendly adjustments ===== */
 html {
@@ -469,6 +497,13 @@ button, .choice, .linkbtn {
     font-size: .70rem;
     line-height: 1.5;
   }
+  .question-text .code-block .code-file-header{
+    margin:10px -2px 8px;
+    padding:7px 9px;
+    border-radius:9px;
+    font-size:.72rem;
+  }
+
 }
 
 
@@ -1225,32 +1260,147 @@ function updateProgress() {
 }
 
 function prettyJavaCode(code) {
-  const normalized = code.replace(/\s+/g, " ").trim();
-  const spaced = normalized
-    .replace(/\s*\{\s*/g, " {\n")
-    .replace(/\s*;\s*/g, ";\n")
-    .replace(/\s*\}\s*/g, "\n}\n")
-    .replace(/\s+(?=(?:class|interface|record|sealed|non-sealed|abstract|public|import)\b)/g, "\n")
-    .replace(/\n\s*\n/g, "\n")
-    .trim();
-  const lines = spaced.split("\n").map(line => line.trim()).filter(Boolean);
-  let level = 0;
-  return lines.map(line => {
-    if (line.startsWith("}")) level = Math.max(0, level - 1);
-    const out = "  ".repeat(level) + line;
-    const opens = (line.match(/\{/g) || []).length;
-    const closes = (line.match(/\}/g) || []).length;
-    level = Math.max(0, level + opens - closes);
-    return out;
-  }).join("\n");
+  const lines = String(code ?? "")
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .trim()
+    .split("\n");
+
+  const fixed = [];
+
+  for (const line of lines) {
+    const onlyNumbering = line.trim().match(/^\/\/\s*\((\d+)\)$/);
+    if (onlyNumbering && fixed.length > 0) {
+      const prev = fixed.pop().replace(/\s*\/\/\s*\(\d+\)\s*$/, "").trimEnd();
+      fixed.push(`${prev} // (${onlyNumbering[1]})`);
+      continue;
+    }
+
+    fixed.push(line.replace(/\s*\/\/\s*\((\d+)\)\s*$/, " // ($1)"));
+  }
+
+  return fixed.join("\n");
 }
+function isCodeFileHeaderLine(line) {
+  const trimmed = String(line ?? "").trim();
+
+  if (!trimmed.startsWith("//")) return false;
+
+  const label = trimmed.replace(/^\/\/\s*/, "").trim();
+
+  if (!label) return false;
+
+  return (
+    /^(?:src|out|work|ex\d+|com\.[\w.:-]+|META-INF|[\w$.-]+)\//.test(label) ||
+    /(?:^|\/)(?:module-info\.java|MANIFEST\.MF|MANIFEST\.txt|[\w$]+\.java|[\w$]+\.properties|[\w$]+\.class|[\w$]+\.jar)$/.test(label)
+  );
+}
+
+function isDirectoryTreeLine(line, nextLine = "") {
+  const current = String(line ?? "");
+  const next = String(nextLine ?? "");
+  return (
+    /[├└│─]/.test(current) ||
+    (current.trim() !== "" && /[├└│─]/.test(next))
+  );
+}
+
+function isJavaCodeLine(line) {
+  const trimmed = String(line ?? "").trim();
+
+  if (trimmed === "") return true;
+  if (isCodeFileHeaderLine(trimmed)) return true;
+  if (/^(?:package|import|module|open\s+module)\b/.test(trimmed)) return true;
+  if (/^(?:public|protected|private|static|final|abstract|sealed|non-sealed|class|interface|record|enum)\b/.test(trimmed)) return true;
+  if (/^(?:requires|exports|opens|uses|provides|to|with)\b/.test(trimmed)) return true;
+  if (/^(?:try|catch|finally|if|else|for|while|switch|case|default|return|throw|throws|new|var)\b/.test(trimmed)) return true;
+  if (/^[{}()[\];,@.]/.test(trimmed)) return true;
+  if (/^[A-Za-z_$][\w$<>\[\]., ?]*\s+[A-Za-z_$][\w$]*\s*[=;(]/.test(trimmed)) return true;
+  if (/^[A-Za-z_$][\w$.]*\s*\(/.test(trimmed)) return true;
+  if (/^(?:System\.out|List\.of|Arrays\.|Stream\.|IntStream\.|Thread\.|ExecutorService\b)/.test(trimmed)) return true;
+
+  return false;
+}
+
+function isQuestionProseLine(line) {
+  const trimmed = String(line ?? "").trim();
+  if (trimmed === "") return false;
+
+  return /[ぁ-んァ-ヶ一-龠]/.test(trimmed) && !trimmed.startsWith("//") && !/[├└│─]/.test(trimmed);
+}
+
+function renderJavaCodeWithFileHeaders(code) {
+  return prettyJavaCode(code)
+    .split("\n")
+    .map(line => {
+      if (isCodeFileHeaderLine(line)) {
+        const label = line.trim().replace(/^\/\/\s*/, "").trim();
+        return `<span class="code-file-header">${escapeHtml(label)}</span>`;
+      }
+      return escapeHtml(line);
+    })
+    .join("\n");
+}
+
+function renderQuestionTextParts(parts) {
+  return parts.map(part => {
+    if (part.type === "code") {
+      return `<pre class="code-block"><code>${renderJavaCodeWithFileHeaders(part.text)}</code></pre>`;
+    }
+    return `<span class="question-lead">${escapeHtml(part.text.trim())}</span>`;
+  }).join("");
+}
+
 function formatQuestionText(text) {
-  const source = String(text ?? "");
-  const match = source.match(/^(.*?。)\s*((?:import|class|interface|record|sealed|non-sealed|abstract|public)\b[\s\S]*)$/);
-  if (!match) return escapeHtml(source);
-  const lead = escapeHtml(match[1]);
-  const code = escapeHtml(prettyJavaCode(match[2]));
-  return `<span class="question-lead">${lead}</span><pre class="code-block"><code>${code}</code></pre>`;
+  const source = String(text ?? "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+  const lines = source.split("\n");
+  const parts = [];
+  let buffer = [];
+  let mode = "text";
+
+  function flush() {
+    const text = buffer.join("\n").replace(/\n+$/g, "");
+    if (text.trim() !== "") {
+      parts.push({ type: mode, text });
+    }
+    buffer = [];
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const next = i + 1 < lines.length ? lines[i + 1] : "";
+    const startsCode =
+      isCodeFileHeaderLine(line) ||
+      isDirectoryTreeLine(line, next) ||
+      (mode === "code" && isJavaCodeLine(line)) ||
+      (mode === "text" && isJavaCodeLine(line) && !isQuestionProseLine(line));
+
+    if (mode === "text") {
+      if (startsCode) {
+        flush();
+        mode = "code";
+        buffer.push(line);
+      } else {
+        buffer.push(line);
+      }
+      continue;
+    }
+
+    if (mode === "code") {
+      if (isQuestionProseLine(line) && !isJavaCodeLine(line) && !isDirectoryTreeLine(line, next)) {
+        flush();
+        mode = "text";
+        buffer.push(line);
+      } else {
+        buffer.push(line);
+      }
+    }
+  }
+
+  flush();
+
+  if (parts.length === 0) return escapeHtml(source);
+  return renderQuestionTextParts(parts);
 }
 
 function renderQuestion(index) {
