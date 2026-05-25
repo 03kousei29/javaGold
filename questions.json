@@ -3902,5 +3902,661 @@
     "correctChoice": "B",
     "correctText": "true\nfalse",
     "explanation": "正解：B\n\n結論：\nStatement.execute(String)は、実行結果がResultSetの場合にtrueを返し、更新件数または結果なしの場合にfalseを返します。SELECTはResultSetを返すためtrue、DELETEは更新件数を返すためfalseです。\n\n選択肢の切り方：\nA：誤り。DELETEはResultSetではありません。\nB：正しい。SELECTはtrue、DELETEはfalseです。\nC：誤り。SELECTはResultSetなのでtrueです。\nD：誤り。SELECTの判定が違います。\n\n間違えやすいポイント：\nexecuteのbooleanは成功/失敗ではありません。ResultSetかどうかを表します。"
+  },
+  {
+    "id": 245,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-basic-methods",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample245 {\n    public static void main(String[] args) {\n        Locale locale = new Locale(\"ja\", \"JP\");\n\n        System.out.println(locale);\n        System.out.println(locale.getLanguage());\n        System.out.println(locale.getCountry());\n    }\n}\n",
+    "choices": {
+      "A": "ja_JP\nja\nJP",
+      "B": "ja-JP\nja\nJP",
+      "C": "JP_ja\nJP\nja",
+      "D": "Locale[ja,JP]\nja\nJP"
+    },
+    "correctChoice": "A",
+    "correctText": "ja_JP\nja\nJP",
+    "explanation": "正解：A\n\n結論：\nLocaleインスタンスを出力すると、言語コード_国コードの形式で表示されます。new Locale(\"ja\", \"JP\")なのでja_JPです。getLanguage()は言語コード、getCountry()は国コードを返します。\n\n選択肢の切り方：\nA：正しい。toString、getLanguage、getCountryの結果が正しいです。\nB：誤り。Localeの文字列表現はja_JPのようにアンダースコア区切りです。\nC：誤り。言語コードと国コードが逆です。\nD：誤り。Locale[ja,JP]のようには表示されません。\n\n間違えやすいポイント：\nLocaleで重要なのは言語コードと国コードです。toStringの表示形式、getLanguage、getCountryをセットで押さえます。"
+  },
+  {
+    "id": 246,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-default-and-display",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample246 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n\n        Locale locale = Locale.FRANCE;\n\n        System.out.println(locale.getLanguage());\n        System.out.println(locale.getCountry());\n        System.out.println(locale.getDisplayLanguage());\n        System.out.println(locale.getDisplayCountry());\n    }\n}\n",
+    "choices": {
+      "A": "fr\nFR\nfrançais\nFrance",
+      "B": "fr\nFR\nFrench\nFrance",
+      "C": "FR\nfr\nFrench\nUnited States",
+      "D": "en\nUS\nFrench\nFrance"
+    },
+    "correctChoice": "B",
+    "correctText": "fr\nFR\nFrench\nFrance",
+    "explanation": "正解：B\n\n結論：\nLocale.FRANCEは言語コードfr、国コードFRです。getDisplayLanguage()とgetDisplayCountry()は、引数なしの場合、デフォルトロケールで表示名を返します。デフォルトロケールをLocale.USにしているため、French、Franceと英語表示になります。\n\n選択肢の切り方：\nA：誤り。デフォルトロケールがUSなので、表示言語名はフランス語表記ではなく英語表記です。\nB：正しい。コードと表示名の扱いが正しいです。\nC：誤り。getLanguageとgetCountryが逆です。\nD：誤り。対象ロケールはLocale.FRANCEであり、デフォルトロケールそのものを出力しているわけではありません。\n\n間違えやすいポイント：\ngetLanguage/getCountryは対象Localeのコードを返します。一方、getDisplayLanguage/getDisplayCountryは「どのロケールの表示名で返すか」にデフォルトロケールが影響します。"
+  },
+  {
+    "id": 247,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-constructor-invalid-no-exception",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample247 {\n    public static void main(String[] args) {\n        Locale locale = new Locale(\"xx\", \"yyy\");\n\n        System.out.println(locale);\n        System.out.println(locale.getLanguage());\n        System.out.println(locale.getCountry());\n    }\n}\n",
+    "choices": {
+      "A": "Localeの生成時にIllformedLocaleExceptionがスローされる",
+      "B": "Localeの生成時にMissingResourceExceptionがスローされる",
+      "C": "xx_YYY\nxx\nYYY",
+      "D": "xx_yyy\nxx\nyyy"
+    },
+    "correctChoice": "C",
+    "correctText": "xx_YYY\nxx\nYYY",
+    "explanation": "正解：C\n\n結論：\nLocaleのコンストラクタに実在しないような言語コードや国コードを渡しても、それだけでIllformedLocaleExceptionはスローされません。一方で、Locale(String language, String country)では、言語コードは小文字、国コードは大文字として扱われます。そのため、new Locale(\"xx\", \"yyy\")の表示はxx_YYYになります。\n\n選択肢の切り方：\nA：誤り。通常のLocaleコンストラクタでは、このケースでIllformedLocaleExceptionはスローされません。\nB：誤り。MissingResourceExceptionは主にResourceBundleの検索失敗などで発生します。\nC：正しい。存在しない値でもLocaleは生成され、国コードは大文字で扱われます。\nD：誤り。国コードyyyがそのまま小文字で出力されるとは限りません。\n\n間違えやすいポイント：\n通常のLocaleコンストラクタとLocale.Builderを混同しないことです。Builderのsetterは妥当性チェックを行い、不正な形式ではIllformedLocaleExceptionをスローします。"
+  },
+  {
+    "id": 248,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-builder-valid-chain",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample248 {\n    public static void main(String[] args) {\n        Locale locale = new Locale.Builder()\n            .setLanguage(\"en\")\n            .setRegion(\"GB\")\n            .build();\n\n        System.out.println(locale);\n        System.out.println(locale.getLanguage());\n        System.out.println(locale.getCountry());\n    }\n}\n",
+    "choices": {
+      "A": "en_GB\nen\nGB",
+      "B": "en-GB\nen\nGB",
+      "C": "GB_en\nGB\nen",
+      "D": "build()の行でIllformedLocaleExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "en_GB\nen\nGB",
+    "explanation": "正解：A\n\n結論：\nLocale.BuilderではsetLanguageで言語コード、setRegionで国や地域コードを設定し、build()でLocaleオブジェクトを生成します。setLanguage(\"en\")、setRegion(\"GB\")なので、結果はen_GBです。\n\n選択肢の切り方：\nA：正しい。言語コードと国コードが正しく設定されています。\nB：誤り。LocaleのtoStringはハイフンではなくアンダースコア表記です。\nC：誤り。言語コードと国コードが逆です。\nD：誤り。enとGBは妥当な形式なので例外は発生しません。\n\n間違えやすいポイント：\nLocale.BuilderのsetterはBuilder自身を返すため、メソッドチェーンできます。最後にbuild()を呼んでLocaleを作ります。"
+  },
+  {
+    "id": 249,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-builder-invalid-region",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.util.*;\n\nclass LocaleSample249 {\n    public static void main(String[] args) {\n        Locale locale = new Locale.Builder()\n            .setLanguage(\"en\")\n            .setRegion(\"U\")\n            .build();\n\n        System.out.println(locale);\n    }\n}\n",
+    "choices": {
+      "A": "en_U が出力される",
+      "B": "en_US が出力される",
+      "C": "Locale.Builderはstaticネストクラスではないためコンパイルエラーになる",
+      "D": "setRegion(\"U\")の処理でIllformedLocaleExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "setRegion(\"U\")の処理でIllformedLocaleExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\nLocale.Builderのsetterメソッドでは設定値の妥当性チェックが行われます。setRegionには妥当な地域コードを指定する必要があります。\"U\"は地域コードとして不正な形式なので、setRegion(\"U\")の処理でIllformedLocaleExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。Builderでは不正形式がそのままLocaleになるわけではありません。\nB：誤り。不正な地域コードが自動的にUSへ補正されるわけではありません。\nC：正しい。Builderの妥当性チェックが働きます。\nD：誤り。Locale.BuilderはLocaleクラスのstaticなネストクラスとして利用できます。\n\n間違えやすいポイント：\n通常のLocaleコンストラクタでは緩く扱われる値でも、Locale.Builderのsetterでは妥当性チェックにより例外になることがあります。"
+  },
+  {
+    "id": 250,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-resourcebundle-fallback-language",
+    "question": "次のプロパティファイルがクラスパス直下に配置されている。\n\nmessages.properties\nmsg=DEFAULT\n\nmessages_en.properties\nmsg=EN\n\nmessages_en_US.properties は存在しない。\n\n次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass I18nSample250 {\n    public static void main(String[] args) {\n        ResourceBundle rb = ResourceBundle.getBundle(\n            \"messages\",\n            Locale.US\n        );\n\n        System.out.println(rb.getString(\"msg\"));\n        System.out.println(rb.getLocale());\n    }\n}\n",
+    "choices": {
+      "A": "EN\nen",
+      "B": "DEFAULT\n",
+      "C": "EN\nen_US",
+      "D": "MissingResourceExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "EN\nen",
+    "explanation": "正解：A\n\n結論：\nLocale.USはen_USです。messages_en_US.propertiesが存在しない場合、より一般的なmessages_en.propertiesへフォールバックします。そのためmsgはEN、取得されたResourceBundleのLocaleはenになります。\n\n選択肢の切り方：\nA：正しい。en_USからenへフォールバックしています。\nB：誤り。messages_en.propertiesが存在するため、基底名のみのmessages.propertiesより先に使われます。\nC：誤り。実際に取得されたファイルはmessages_en.propertiesなので、getLocale()はenです。\nD：誤り。利用可能な候補が存在するため例外ではありません。\n\n間違えやすいポイント：\nResourceBundleでは、指定ロケールに完全一致するファイルがなくても、言語のみ、基底名のみの順に候補を探します。"
+  },
+  {
+    "id": 251,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-resourcebundle-base-fallback-empty-locale",
+    "question": "次のプロパティファイルがクラスパス直下に配置されている。\n\nlabels.properties\ntitle=DefaultTitle\n\nlabels_ja_JP.properties は存在しない。\nlabels_ja.properties も存在しない。\n\n次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass I18nSample251 {\n    public static void main(String[] args) {\n        ResourceBundle rb = ResourceBundle.getBundle(\n            \"labels\",\n            Locale.JAPAN\n        );\n\n        System.out.println(rb.getString(\"title\"));\n        System.out.println(rb.getLocale().toString().isEmpty());\n    }\n}\n",
+    "choices": {
+      "A": "DefaultTitle\nfalse",
+      "B": "DefaultTitle\ntrue",
+      "C": "null\ntrue",
+      "D": "MissingResourceExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "DefaultTitle\ntrue",
+    "explanation": "正解：B\n\n結論：\nLocale.JAPANに対応するlabels_ja_JP.propertiesやlabels_ja.propertiesが存在しなくても、基底名だけのlabels.propertiesが存在すればそれが取得されます。この場合、取得されたResourceBundleのLocaleは空のLocaleになるため、toString().isEmpty()はtrueです。\n\n選択肢の切り方：\nA：誤り。基底名のみのリソースバンドルのLocaleは空として扱われます。\nB：正しい。値はDefaultTitle、Locale文字列は空です。\nC：誤り。キーtitleがあるためnullではありません。\nD：誤り。基底名のみのファイルが存在するため例外ではありません。\n\n間違えやすいポイント：\nファイルが基底名だけの場合、getLocale()は指定したLocale.JAPANではなく空のLocaleになります。"
+  },
+  {
+    "id": 252,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-resourcebundle-default-locale",
+    "question": "次のプロパティファイルがクラスパス直下に配置されている。\n\napp.properties\nname=BASE\n\napp_fr.properties\nname=FR\n\n次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass I18nSample252 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.FRANCE);\n\n        ResourceBundle rb = ResourceBundle.getBundle(\"app\");\n\n        System.out.println(rb.getString(\"name\"));\n        System.out.println(rb.getLocale());\n    }\n}\n",
+    "choices": {
+      "A": "BASE\n",
+      "B": "BASE\nfr_FR",
+      "C": "FR\nfr",
+      "D": "MissingResourceExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "FR\nfr",
+    "explanation": "正解：C\n\n結論：\nResourceBundle.getBundle(String baseName)は、明示的なLocale指定がないためデフォルトロケールを使用します。Locale.setDefault(Locale.FRANCE)によりデフォルトはfr_FRです。app_fr_FR.propertiesはありませんが、app_fr.propertiesがあるため、それが取得されます。\n\n選択肢の切り方：\nA：誤り。app_fr.propertiesが存在するため、基底名のみのapp.propertiesより優先されます。\nB：誤り。基底名のみではなくapp_fr.propertiesが使われます。\nC：正しい。値はFR、getLocale()はfrです。\nD：誤り。候補ファイルが存在します。\n\n間違えやすいポイント：\ngetBundle(baseName)では、現在のデフォルトロケールが検索に使われます。明示的にLocaleを指定した場合とは区別します。"
+  },
+  {
+    "id": 253,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-resourcebundle-missing-key",
+    "question": "次のプロパティファイルがクラスパス直下に配置されている。\n\nmenu.properties\ntitle=Menu\n\n次のコードをコンパイル、実行するとどうなるか。\n\nimport java.util.*;\n\nclass I18nSample253 {\n    public static void main(String[] args) {\n        ResourceBundle rb = ResourceBundle.getBundle(\"menu\");\n\n        System.out.println(rb.containsKey(\"title\"));\n        System.out.println(rb.containsKey(\"price\"));\n        System.out.println(rb.getString(\"price\"));\n    }\n}\n",
+    "choices": {
+      "A": "true\nfalse\nnull",
+      "B": "true\nfalse と出力された後、MissingResourceExceptionがスローされる",
+      "C": "true\nfalse と出力された後、NoSuchElementExceptionがスローされる",
+      "D": "containsKey(\"price\")の行でコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "true\nfalse と出力された後、MissingResourceExceptionがスローされる",
+    "explanation": "正解：B\n\n結論：\ncontainsKey(String key)は、指定キーが存在するかをbooleanで返します。titleは存在するためtrue、priceは存在しないためfalseです。その後、存在しないpriceをgetStringで取得しようとするためMissingResourceExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。存在しないキーのgetStringはnullではなく例外です。\nB：正しい。containsKeyの結果出力後にMissingResourceExceptionです。\nC：誤り。ResourceBundleのキー未存在はNoSuchElementExceptionではありません。\nD：誤り。containsKey(String)は有効なメソッドです。\n\n間違えやすいポイント：\ncontainsKeyは安全確認用、getStringはキーがないと例外です。戻り値nullとは考えません。"
+  },
+  {
+    "id": 254,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-resourcebundle-missing-base",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.util.*;\n\nclass I18nSample254 {\n    public static void main(String[] args) {\n        ResourceBundle rb = ResourceBundle.getBundle(\n            \"notfound\",\n            Locale.US\n        );\n\n        System.out.println(rb.getString(\"msg\"));\n    }\n}\n\nなお、クラスパス上にnotfound.properties、notfound_en.properties、notfound_en_US.properties、および対応するListResourceBundleクラスは存在しないものとする。",
+    "choices": {
+      "A": "null が出力される",
+      "B": "空文字が出力される",
+      "C": "ResourceBundleオブジェクトは生成されるが、getStringでMissingResourceExceptionがスローされる",
+      "D": "getBundleの時点でMissingResourceExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "getBundleの時点でMissingResourceExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\n指定した基底名に対応するリソースバンドルが、指定ロケール候補にも基底名のみの候補にも存在しない場合、ResourceBundle.getBundleの時点でMissingResourceExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。リソースバンドル未発見はnull返却ではありません。\nB：誤り。空文字を返す仕様ではありません。\nC：誤り。ResourceBundle自体が取得できないため、getStringまで進みません。\nD：正しい。getBundleで例外が発生します。\n\n間違えやすいポイント：\nリソースバンドル自体がない場合はgetBundleで例外、キーだけがない場合はgetStringで例外です。"
+  },
+  {
+    "id": 255,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-resourcebundle-keyset-getobject",
+    "question": "次のListResourceBundleクラスがクラスパス上に存在する。\n\n// Items.java\nimport java.util.*;\n\npublic class Items extends ListResourceBundle {\n    protected Object[][] getContents() {\n        return new Object[][] {\n            {\"title\", \"Book\"},\n            {\"count\", 3}\n        };\n    }\n}\n\n次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass I18nSample255 {\n    public static void main(String[] args) {\n        ResourceBundle rb = ResourceBundle.getBundle(\"Items\");\n\n        System.out.println(rb.getString(\"title\"));\n        System.out.println(rb.getObject(\"count\"));\n        System.out.println(rb.keySet().contains(\"count\"));\n    }\n}\n",
+    "choices": {
+      "A": "Book\n3\ntrue",
+      "B": "Book\n3\nfalse",
+      "C": "getObject(\"count\")の行でMissingResourceExceptionがスローされる",
+      "D": "ListResourceBundleはプロパティファイル専用なのでコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "Book\n3\ntrue",
+    "explanation": "正解：A\n\n結論：\nListResourceBundleを継承したクラスでは、getContents()でObject型の2次元配列を返し、キーと値のペアを定義します。titleはStringなのでgetStringで取得でき、countはObjectとしてgetObjectで取得できます。keySet()にはcountも含まれます。\n\n選択肢の切り方：\nA：正しい。各メソッドの役割が合っています。\nB：誤り。countキーは存在するためkeySet().contains(\"count\")はtrueです。\nC：誤り。countキーは存在します。\nD：誤り。ListResourceBundleはクラスファイル形式のリソースバンドルで使います。\n\n間違えやすいポイント：\nPropertyResourceBundleはプロパティファイル、ListResourceBundleはクラスファイル形式のリソースバンドルで使われます。"
+  },
+  {
+    "id": 256,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-resourcebundle-class-priority",
+    "question": "同じクラスパス上に、次の2つが存在する。\n\n// Words.java\nimport java.util.*;\n\npublic class Words extends ListResourceBundle {\n    protected Object[][] getContents() {\n        return new Object[][] {\n            {\"msg\", \"CLASS\"}\n        };\n    }\n}\n\nWords.properties\nmsg=PROPERTY\n\n次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass I18nSample256 {\n    public static void main(String[] args) {\n        ResourceBundle rb = ResourceBundle.getBundle(\"Words\");\n        System.out.println(rb.getString(\"msg\"));\n    }\n}\n",
+    "choices": {
+      "A": "PROPERTY",
+      "B": "CLASS",
+      "C": "MissingResourceExceptionがスローされる",
+      "D": "同名のクラスとプロパティファイルがあるためコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "CLASS",
+    "explanation": "正解：B\n\n結論：\nResourceBundleの検索では、同じ基底名の候補がある場合、クラスファイル形式のリソースバンドルがプロパティファイルより優先されます。そのためWordsクラスが使用され、msgの値はCLASSになります。\n\n選択肢の切り方：\nA：誤り。プロパティファイルよりクラスファイルが優先されます。\nB：正しい。Wordsクラスの値が取得されます。\nC：誤り。利用可能な候補が存在します。\nD：誤り。同名候補があること自体はコンパイルエラーではありません。\n\n間違えやすいポイント：\nリソースバンドルの候補では、ファイル種類の優先順位があります。クラスファイル、プロパティファイルの順です。"
+  },
+  {
+    "id": 257,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-localdate-immutable-plus-minus",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\n\nclass DateSample257 {\n    public static void main(String[] args) {\n        LocalDate date = LocalDate.of(2025, 9, 30);\n\n        date.plusYears(1);\n        LocalDate changed = date.plusMonths(2).minusDays(10);\n\n        System.out.println(date);\n        System.out.println(changed);\n        System.out.println(date.getDayOfMonth());\n    }\n}\n",
+    "choices": {
+      "A": "2026-11-20\n2026-11-20\n20",
+      "B": "2025-09-30\n2025-11-30\n30",
+      "C": "2025-09-30\n2025-11-20\n30",
+      "D": "plusYears(1)の行でUnsupportedTemporalTypeExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "2025-09-30\n2025-11-20\n30",
+    "explanation": "正解：C\n\n結論：\nLocalDateなどの日時オブジェクトはイミュータブルです。date.plusYears(1)を呼んでも戻り値を受け取らなければdate自体は変わりません。date.plusMonths(2)で2025-11-30、そこからminusDays(10)で2025-11-20になります。\n\n選択肢の切り方：\nA：誤り。plusYears(1)の戻り値を破棄しているためdateは変更されません。\nB：正しい。元のdateとchangedを分けて追えています。\nC：誤り。minusDays(10)の結果を見落としています。\nD：誤り。LocalDateはplusYearsをサポートします。\n\n間違えやすいポイント：\n日時APIは変更メソッドに見える名前でも、元オブジェクトを変更せず新しいオブジェクトを返します。"
+  },
+  {
+    "id": 258,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-localdate-enum-methods",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\n\nclass DateSample258 {\n    public static void main(String[] args) {\n        LocalDate date = LocalDate.of(2025, 9, 30);\n\n        System.out.println(date.getDayOfWeek());\n        System.out.println(date.getMonth());\n        System.out.println(date.getDayOfMonth());\n    }\n}\n",
+    "choices": {
+      "A": "Tuesday\nSeptember\n30",
+      "B": "2\n9\n30",
+      "C": "TUESDAY\nSEPTEMBER\n30",
+      "D": "Tue\nSep\n30"
+    },
+    "correctChoice": "C",
+    "correctText": "TUESDAY\nSEPTEMBER\n30",
+    "explanation": "正解：C\n\n結論：\nLocalDate#getDayOfWeek()はDayOfWeek列挙型、getMonth()はMonth列挙型を返します。これらをprintlnすると、列挙型定数名としてTUESDAY、SEPTEMBERのように大文字で表示されます。getDayOfMonth()は月の日をintで返します。\n\n選択肢の切り方：\nA：誤り。表示は列挙型定数名なので大文字です。\nB：正しい。曜日と月は列挙型定数の表示です。\nC：誤り。getDayOfWeekやgetMonthは数値ではなく列挙型を返します。\nD：誤り。短縮表示ではありません。\n\n間違えやすいポイント：\n曜日や月を数値で返すメソッドと、列挙型を返すメソッドを混同しないようにします。"
+  },
+  {
+    "id": 259,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-constants",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\n\nclass DateSample259 {\n    public static void main(String[] args) {\n        LocalDate date = LocalDate.of(2025, 9, 30);\n\n        System.out.println(date.format(DateTimeFormatter.BASIC_ISO_DATE));\n        System.out.println(date.format(DateTimeFormatter.ISO_LOCAL_DATE));\n    }\n}\n",
+    "choices": {
+      "A": "2025-09-30\n20250930",
+      "B": "09/30/2025\n2025-09-30",
+      "C": "2025/09/30\n2025-09-30",
+      "D": "20250930\n2025-09-30"
+    },
+    "correctChoice": "D",
+    "correctText": "20250930\n2025-09-30",
+    "explanation": "正解：D\n\n結論：\nDateTimeFormatter.BASIC_ISO_DATEは基本ISO日付形式で、20250930のようにハイフンなしで出力します。ISO_LOCAL_DATEはLocalDateの標準的なISO形式で、2025-09-30のように出力します。\n\n選択肢の切り方：\nA：誤り。2つの定数の結果が逆です。\nB：正しい。BASIC_ISO_DATEとISO_LOCAL_DATEの違いを正しく追えています。\nC：誤り。BASIC_ISO_DATEはスラッシュ区切りではありません。\nD：誤り。US形式の月日年ではありません。\n\n間違えやすいポイント：\nBASIC_ISO_DATEとISO_LOCAL_DATEは似ていますが、ハイフン有無が違います。"
+  },
+  {
+    "id": 260,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-pattern-md",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\n\nclass DateSample260 {\n    public static void main(String[] args) {\n        LocalDate date = LocalDate.of(2025, 9, 3);\n\n        DateTimeFormatter f1 = DateTimeFormatter.ofPattern(\"M/d\");\n        DateTimeFormatter f2 = DateTimeFormatter.ofPattern(\"MM/dd\");\n\n        System.out.println(date.format(f1));\n        System.out.println(date.format(f2));\n    }\n}\n",
+    "choices": {
+      "A": "9/3\n09/03",
+      "B": "09/03\n9/3",
+      "C": "Sep/3\nSeptember/03",
+      "D": "2025/9/3\n2025/09/03"
+    },
+    "correctChoice": "A",
+    "correctText": "9/3\n09/03",
+    "explanation": "正解：A\n\n結論：\nDateTimeFormatterのパターンでMやdを1文字にすると、必要最小桁で出力されます。MMやddのように2文字にすると、2桁になるよう0埋めされます。2025年9月3日なので、M/dは9/3、MM/ddは09/03です。\n\n選択肢の切り方：\nA：正しい。1文字と2文字の違いが正しいです。\nB：誤り。f1とf2の結果が逆です。\nC：誤り。MやMMは数値月であり、月名表示ではありません。\nD：誤り。パターンに年は含まれていません。\n\n間違えやすいポイント：\nパターン文字の個数が桁数や表示形式に影響します。MとMM、dとddの差は頻出です。"
+  },
+  {
+    "id": 261,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-pattern-era-dayofweek",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\nimport java.util.*;\n\nclass DateSample261 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n        LocalDate date = LocalDate.of(2025, 9, 30);\n\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"GGGGG EEEEE\");\n\n        System.out.println(date.format(formatter));\n    }\n}\n",
+    "choices": {
+      "A": "AD Tue",
+      "B": "A T",
+      "C": "Anno Domini Tuesday",
+      "D": "AD T"
+    },
+    "correctChoice": "D",
+    "correctText": "AD T",
+    "explanation": "正解：D\n\n結論：\nDateTimeFormatterのパターンでGは紀元、Eは曜日を表します。テキストの範囲では、GやEは5個の場合に縮小形式となります。Locale.USでは、GGGGGがAD、EEEEEがTになります。\n\n選択肢の切り方：\nA：正しい。5個指定の縮小形式です。\nB：誤り。紀元がAになるわけではありません。\nC：誤り。フル形式ではありません。\nD：誤り。曜日が短縮形式Tueではなく、5個指定の縮小形式Tです。\n\n間違えやすいポイント：\nGやEは文字数によって短縮、フル、縮小の表示が変わります。1〜3個、4個、5個の違いを見ます。"
+  },
+  {
+    "id": 262,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-pattern-month-text",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\nimport java.util.*;\n\nclass DateSample262 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n        LocalDate date = LocalDate.of(2025, 9, 3);\n\n        DateTimeFormatter f1 = DateTimeFormatter.ofPattern(\"MMM d\");\n        DateTimeFormatter f2 = DateTimeFormatter.ofPattern(\"MMMM d\");\n\n        System.out.println(date.format(f1));\n        System.out.println(date.format(f2));\n    }\n}\n",
+    "choices": {
+      "A": "Sep 3\nSeptember 3",
+      "B": "09 3\n09 3",
+      "C": "SEP 3\nSEPTEMBER 3",
+      "D": "9 3\n09 03"
+    },
+    "correctChoice": "A",
+    "correctText": "Sep 3\nSeptember 3",
+    "explanation": "正解：A\n\n結論：\nDateTimeFormatterのパターンでMを3個にすると月の短縮テキスト、4個にすると月の完全テキストになります。Locale.USなので、9月はSep、Septemberです。dは1文字なので日付は0埋めされず3です。\n\n選択肢の切り方：\nA：正しい。MMMとMMMMの違いを正しく追えています。\nB：誤り。MMMやMMMMは数値月ではなくテキスト月です。\nC：誤り。月名は大文字固定ではありません。\nD：誤り。MやMMの数値月パターンと混同しています。\n\n間違えやすいポイント：\nMは個数によって数値月にもテキスト月にもなります。M/MM、MMM/MMMMを区別します。"
+  },
+  {
+    "id": 263,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-pattern-hour-symbols",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\n\nclass DateSample263 {\n    public static void main(String[] args) {\n        LocalTime time = LocalTime.of(15, 5, 9);\n\n        DateTimeFormatter f1 = DateTimeFormatter.ofPattern(\"HH:mm:ss\");\n        DateTimeFormatter f2 = DateTimeFormatter.ofPattern(\"H:m:s\");\n\n        System.out.println(time.format(f1));\n        System.out.println(time.format(f2));\n    }\n}\n",
+    "choices": {
+      "A": "15:05:09\n15:5:9",
+      "B": "03:05:09\n3:5:9",
+      "C": "15:5:9\n15:05:09",
+      "D": "午後3:05:09\n15:5:9"
+    },
+    "correctChoice": "A",
+    "correctText": "15:05:09\n15:5:9",
+    "explanation": "正解：A\n\n結論：\nHHは24時間表記を2桁で出力します。mmとssも2桁出力です。一方、H、m、sを1文字で指定すると必要最小桁で出力されます。15時5分9秒なので、HH:mm:ssは15:05:09、H:m:sは15:5:9です。\n\n選択肢の切り方：\nA：正しい。2桁指定と1桁指定の違いが正しいです。\nB：誤り。HHは24時間表記であり、15時を03とは表示しません。\nC：誤り。f1とf2の結果が逆です。\nD：誤り。aなどの午前午後パターンを指定していません。\n\n間違えやすいポイント：\n大文字Hは0〜23の24時間表記です。2文字指定は0埋め、1文字指定は最小桁です。"
+  },
+  {
+    "id": 264,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-pattern-mismatch",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.time.*;\nimport java.time.format.*;\n\nclass DateSample264 {\n    public static void main(String[] args) {\n        LocalDate date = LocalDate.of(2025, 9, 3);\n\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"HH:mm\");\n\n        System.out.println(date.format(formatter));\n    }\n}\n",
+    "choices": {
+      "A": "00:00 が出力される",
+      "B": "09:03 が出力される",
+      "C": "UnsupportedTemporalTypeExceptionがスローされる",
+      "D": "ofPatternの行でコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "UnsupportedTemporalTypeExceptionがスローされる",
+    "explanation": "正解：C\n\n結論：\nLocalDateは日付情報だけを持ち、時刻情報を持ちません。HH:mmのように時分を要求するDateTimeFormatterでLocalDateをformatしようとすると、時刻フィールドを取得できないためUnsupportedTemporalTypeExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。存在しない時刻が自動的に00:00になるわけではありません。\nB：誤り。月日を時分として解釈するわけではありません。\nC：正しい。サポートしない時刻フィールドを要求しています。\nD：誤り。パターン自体は有効なのでコンパイルエラーではありません。\n\n間違えやすいポイント：\nDateTimeFormatterのパターンが有効でも、対象のTemporalがそのフィールドを持っているとは限りません。"
+  },
+  {
+    "id": 265,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-localdate-parse-custom-pattern",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\n\nclass DateSample265 {\n    public static void main(String[] args) {\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"yyyy/MM/dd\");\n\n        LocalDate date = LocalDate.parse(\"2025/09/03\", formatter);\n\n        System.out.println(date);\n        System.out.println(date.getMonth());\n    }\n}\n",
+    "choices": {
+      "A": "2025/09/03\nSEPTEMBER",
+      "B": "2025-09-03\n9",
+      "C": "2025-09-03\nSEPTEMBER",
+      "D": "DateTimeParseExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "2025-09-03\nSEPTEMBER",
+    "explanation": "正解：C\n\n結論：\nLocalDate.parse(String, DateTimeFormatter)により、指定したパターンyyyy/MM/ddで文字列を解析できます。生成されたLocalDateをprintlnすると標準ISO形式の2025-09-03で表示されます。getMonth()はMonth列挙型を返すためSEPTEMBERです。\n\n選択肢の切り方：\nA：誤り。LocalDateのtoStringはスラッシュ区切りではなくISO_LOCAL_DATE形式です。\nB：誤り。getMonth()は数値ではなくMonth列挙型です。\nC：正しい。parse後の表示形式とgetMonthの戻り値が正しいです。\nD：誤り。文字列とパターンが一致しているため解析できます。\n\n間違えやすいポイント：\nparse時のパターンと、LocalDateのtoString表示形式は別です。"
+  },
+  {
+    "id": 266,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-localdate-parse-pattern-mismatch",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.time.*;\nimport java.time.format.*;\n\nclass DateSample266 {\n    public static void main(String[] args) {\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"yyyy/MM/dd\");\n\n        LocalDate date = LocalDate.parse(\"2025-09-03\", formatter);\n\n        System.out.println(date);\n    }\n}\n",
+    "choices": {
+      "A": "2025-09-03 が出力される",
+      "B": "2025/09/03 が出力される",
+      "C": "null が出力される",
+      "D": "DateTimeParseExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "DateTimeParseExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\nDateTimeFormatter.ofPattern(\"yyyy/MM/dd\")はスラッシュ区切りの文字列を期待します。しかし解析対象は2025-09-03であり、区切り文字が一致していません。そのためLocalDate.parseの時点でDateTimeParseExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。指定したformatterと文字列が一致しません。\nB：誤り。parseは表示形式を変換して出力する処理ではありません。\nC：誤り。解析失敗時にnullを返すわけではありません。\nD：正しい。解析失敗はDateTimeParseExceptionです。\n\n間違えやすいポイント：\nDateTimeFormatterは区切り文字も含めてパターン一致が必要です。"
+  },
+  {
+    "id": 267,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-number-us",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample267 {\n    public static void main(String[] args) {\n        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);\n\n        System.out.println(nf.format(1234567.89));\n    }\n}\n",
+    "choices": {
+      "A": "1234567.89",
+      "B": "1,234,567.89",
+      "C": "1.234.567,89",
+      "D": "$1,234,567.89"
+    },
+    "correctChoice": "B",
+    "correctText": "1,234,567.89",
+    "explanation": "正解：B\n\n結論：\nNumberFormat.getNumberInstance(Locale.US)は、米国ロケールの一般数値形式でフォーマットします。桁区切りはカンマ、小数点はピリオドなので、1234567.89は1,234,567.89になります。\n\n選択肢の切り方：\nA：誤り。Locale.USの数値フォーマットでは桁区切りが入ります。\nB：正しい。米国形式です。\nC：誤り。これは一部欧州系ロケールで見られる形式です。\nD：誤り。通貨フォーマッタではないためドル記号は付きません。\n\n間違えやすいポイント：\ngetNumberInstance、getCurrencyInstance、getPercentInstanceの違いを区別します。"
+  },
+  {
+    "id": 268,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-integer-rounding",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample268 {\n    public static void main(String[] args) {\n        NumberFormat nf = NumberFormat.getIntegerInstance(Locale.US);\n\n        System.out.println(nf.format(1234.9));\n    }\n}\n",
+    "choices": {
+      "A": "1,234.9",
+      "B": "1234.9",
+      "C": "1,234",
+      "D": "1,235"
+    },
+    "correctChoice": "D",
+    "correctText": "1,235",
+    "explanation": "正解：D\n\n結論：\nNumberFormat.getIntegerInstance(Locale.US)は整数形式でフォーマットします。小数部は表示されず、1234.9は整数に丸められて1,235になります。Locale.USなので桁区切りにはカンマが使われます。\n\n選択肢の切り方：\nA：誤り。整数フォーマッタなので小数部は表示されません。\nB：誤り。桁区切りも丸めも反映されていません。\nC：誤り。単純切り捨てではなく丸められます。\nD：正しい。整数形式の丸め結果です。\n\n間違えやすいポイント：\ngetIntegerInstanceは小数部を単に表示しないだけではなく、丸めて整数表示します。"
+  },
+  {
+    "id": 269,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-currency-us",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample269 {\n    public static void main(String[] args) {\n        NumberFormat nf = NumberFormat.getCurrencyInstance(Locale.US);\n\n        System.out.println(nf.format(1234.56));\n    }\n}\n",
+    "choices": {
+      "A": "1,234.56",
+      "B": "$1,234.56",
+      "C": "USD 1,234.56",
+      "D": "123456%"
+    },
+    "correctChoice": "B",
+    "correctText": "$1,234.56",
+    "explanation": "正解：B\n\n結論：\nNumberFormat.getCurrencyInstance(Locale.US)は、米国ロケールの通貨形式でフォーマットします。1234.56はドル記号付きで$1,234.56になります。\n\n選択肢の切り方：\nA：誤り。これは一般数値形式であり、通貨記号がありません。\nB：正しい。米国通貨形式です。\nC：誤り。通常のLocale.US通貨表示ではUSD表記ではなくドル記号が使われます。\nD：誤り。これはパーセント形式でもありません。\n\n間違えやすいポイント：\n同じ数値でも、NumberFormatの生成メソッドによって一般数値、整数、通貨、パーセントで表示が変わります。"
+  },
+  {
+    "id": 270,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-percent-us",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample270 {\n    public static void main(String[] args) {\n        NumberFormat nf = NumberFormat.getPercentInstance(Locale.US);\n\n        System.out.println(nf.format(0.756));\n    }\n}\n",
+    "choices": {
+      "A": "0.756%",
+      "B": "75.6%",
+      "C": "76%",
+      "D": "0.76"
+    },
+    "correctChoice": "C",
+    "correctText": "76%",
+    "explanation": "正解：C\n\n結論：\nNumberFormat.getPercentInstance(Locale.US)は、数値を100倍してパーセント形式で表示します。デフォルトでは小数部なしの表示となるため、0.756は75.6%から丸められて76%になります。\n\n選択肢の切り方：\nA：誤り。値をそのままパーセント記号付きにするだけではありません。\nB：誤り。デフォルトでは小数部を表示しません。\nC：正しい。100倍して丸めたパーセント表示です。\nD：誤り。パーセント記号が付きませんし、表示形式も違います。\n\n間違えやすいポイント：\nPercentInstanceは入力値を100倍して表示します。0.75は75%の意味です。"
+  },
+  {
+    "id": 271,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-decimalformat-basic-pattern",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\n\nclass NumberSample271 {\n    public static void main(String[] args) {\n        DecimalFormat df = new DecimalFormat(\"#,##0.00\");\n\n        System.out.println(df.format(1234.5));\n        System.out.println(df.format(12));\n    }\n}\n",
+    "choices": {
+      "A": "1,234.50\n12.00",
+      "B": "1,234.5\n12",
+      "C": "1234.50\n12.00",
+      "D": "1,234.500\n012.00"
+    },
+    "correctChoice": "A",
+    "correctText": "1,234.50\n12.00",
+    "explanation": "正解：A\n\n結論：\nDecimalFormatのパターンで#,##0は桁区切りを指定し、小数部の.00は小数2桁を必ず表示する指定です。そのため1234.5は1,234.50、12は12.00になります。\n\n選択肢の切り方：\nA：正しい。桁区切りと小数2桁が反映されています。\nB：誤り。小数2桁固定の指定を無視しています。\nC：誤り。桁区切りが反映されていません。\nD：誤り。小数3桁や整数部3桁固定の指定ではありません。\n\n間違えやすいポイント：\n0は桁がなくても表示する、#は必要な場合だけ表示する、という違いがあります。"
+  },
+  {
+    "id": 272,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-decimalformat-sharp-zero",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\n\nclass NumberSample272 {\n    public static void main(String[] args) {\n        DecimalFormat f1 = new DecimalFormat(\"#.##\");\n        DecimalFormat f2 = new DecimalFormat(\"0.00\");\n\n        System.out.println(f1.format(0.5));\n        System.out.println(f2.format(0.5));\n    }\n}\n",
+    "choices": {
+      "A": "0.5\n0.50",
+      "B": ".5\n0.50",
+      "C": ".50\n.50",
+      "D": "0.50\n0.5"
+    },
+    "correctChoice": "B",
+    "correctText": ".5\n0.50",
+    "explanation": "正解：B\n\n結論：\nDecimalFormatで#は必要な桁だけ表示し、0は桁がない場合でも0を表示します。パターン#.##では整数部の0を必ず表示する指定がないため0.5は.5になります。一方、0.00では整数部の0と小数2桁を必ず表示するため0.50になります。\n\n選択肢の切り方：\nA：誤り。#.##では先頭の0が必ず表示されるとは限りません。\nB：正しい。#と0の違いが出ています。\nC：誤り。f1は小数2桁固定ではありません。\nD：誤り。f1とf2の結果が逆です。\n\n間違えやすいポイント：\n#と0はどちらも桁指定ですが、0は不足桁を0で補う点が重要です。"
+  },
+  {
+    "id": 273,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-parse-position",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample273 {\n    public static void main(String[] args) throws Exception {\n        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);\n\n        Number n = nf.parse(\"1,234.5abc\");\n\n        System.out.println(n);\n        System.out.println(n.getClass().getSimpleName());\n    }\n}\n",
+    "choices": {
+      "A": "1234\nLong",
+      "B": "1234.5abc\nString",
+      "C": "ParseExceptionがスローされる",
+      "D": "1234.5\nDouble"
+    },
+    "correctChoice": "D",
+    "correctText": "1234.5\nDouble",
+    "explanation": "正解：D\n\n結論：\nNumberFormat#parse(String)は、文字列の先頭から数値として解析できる部分をNumberとして返します。Locale.USでは1,234.5を数値として解析でき、末尾のabcは解析対象外として残ります。この結果は小数を含むためDoubleになります。\n\n選択肢の切り方：\nA：誤り。小数部を含むためLongではありません。\nB：誤り。parseの戻り値はStringではなくNumberです。\nC：誤り。先頭から解析可能な数値があるため、このケースでは例外になりません。\nD：正しい。解析可能な数値部分がDoubleとして返ります。\n\n間違えやすいポイント：\nparseは文字列全体が完全一致しないと必ず失敗する、とは限りません。先頭から解析できる部分が重要です。"
+  },
+  {
+    "id": 274,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-oflocalizeddate-full-long",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\nimport java.util.*;\n\nclass FormatSample274 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n        LocalDate date = LocalDate.of(2025, 9, 30);\n\n        DateTimeFormatter f1 = DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL);\n        DateTimeFormatter f2 = DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG);\n\n        System.out.println(date.format(f1));\n        System.out.println(date.format(f2));\n    }\n}\n",
+    "choices": {
+      "A": "Tuesday, September 30, 2025\nSeptember 30, 2025",
+      "B": "September 30, 2025\nTuesday, September 30, 2025",
+      "C": "2025-09-30\n2025-09-30",
+      "D": "9/30/25\nSep 30, 2025"
+    },
+    "correctChoice": "A",
+    "correctText": "Tuesday, September 30, 2025\nSeptember 30, 2025",
+    "explanation": "正解：A\n\n結論：\nDateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)は、ロケールに応じた完全形式の日付フォーマッタを返します。Locale.USでは曜日を含むTuesday, September 30, 2025のような形式です。LONGは曜日を含まず、September 30, 2025のような形式になります。\n\n選択肢の切り方：\nA：正しい。FULLとLONGの違いを正しく追えています。\nB：誤り。FULLとLONGの結果が逆です。\nC：誤り。これはISO_LOCAL_DATEのような形式です。\nD：誤り。SHORTやMEDIUMに近い形式です。\n\n間違えやすいポイント：\nofLocalizedDateはデフォルトロケールの影響を受けます。今回はLocale.USに固定しているため、英語表記で考えます。"
+  },
+  {
+    "id": 275,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-localizedby",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\nimport java.util.*;\n\nclass FormatSample275 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n        LocalDate date = LocalDate.of(2025, 9, 30);\n\n        DateTimeFormatter formatter = DateTimeFormatter\n            .ofLocalizedDate(FormatStyle.LONG)\n            .localizedBy(Locale.FRANCE);\n\n        System.out.println(date.format(formatter));\n    }\n}\n",
+    "choices": {
+      "A": "September 30, 2025",
+      "B": "30 septembre 2025",
+      "C": "2025-09-30",
+      "D": "9/30/25"
+    },
+    "correctChoice": "B",
+    "correctText": "30 septembre 2025",
+    "explanation": "正解：B\n\n結論：\nDateTimeFormatter#localizedBy(Locale)は、指定したロケールでローカライズしたフォーマッタのコピーを返します。デフォルトロケールはUSですが、formatterにはLocale.FRANCEを指定しているため、LONG形式はフランス語圏の表記になります。\n\n選択肢の切り方：\nA：誤り。これはUSのLONG形式です。\nB：正しい。localizedBy(Locale.FRANCE)が効いています。\nC：誤り。ISO_LOCAL_DATE形式ではありません。\nD：誤り。SHORT形式ではありません。\n\n間違えやすいポイント：\nLocale.setDefaultとformatter.localizedByの両方がある場合、実際に使用するformatterのロケール指定を見ます。"
+  },
+  {
+    "id": 276,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-parse-temporalaccessor-localdate-from",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\nimport java.time.temporal.*;\n\nclass FormatSample276 {\n    public static void main(String[] args) {\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"yyyy/MM/dd\");\n\n        TemporalAccessor ta = formatter.parse(\"2025/09/30\");\n        LocalDate date = LocalDate.from(ta);\n\n        System.out.println(date);\n        System.out.println(date.getDayOfMonth());\n    }\n}\n",
+    "choices": {
+      "A": "2025/09/30\n30",
+      "B": "2025-09-30\n30",
+      "C": "2025-09-30\nTUESDAY",
+      "D": "DateTimeParseExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "2025-09-30\n30",
+    "explanation": "正解：B\n\n結論：\nDateTimeFormatter#parse(CharSequence)はTemporalAccessorを返します。LocalDate.from(TemporalAccessor)でLocalDateを作成できます。LocalDateを出力するとISO_LOCAL_DATE形式の2025-09-30になり、getDayOfMonth()は30を返します。\n\n選択肢の切り方：\nA：誤り。parse時のパターンがスラッシュでも、LocalDateのtoStringはハイフン区切りです。\nB：正しい。TemporalAccessorからLocalDateへ変換できています。\nC：誤り。getDayOfMonthは曜日ではなく月の日を返します。\nD：誤り。文字列とパターンが一致しているため解析できます。\n\n間違えやすいポイント：\nparseの戻り値は直接LocalDateとは限りません。TemporalAccessorをLocalDate.fromで変換する流れを押さえます。"
+  },
+  {
+    "id": 277,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-parse-to-localtime-fail",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.time.*;\nimport java.time.format.*;\nimport java.time.temporal.*;\n\nclass FormatSample277 {\n    public static void main(String[] args) {\n        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(\"yyyy/MM/dd\");\n\n        TemporalAccessor ta = formatter.parse(\"2025/09/30\");\n        LocalTime time = LocalTime.from(ta);\n\n        System.out.println(time);\n    }\n}\n",
+    "choices": {
+      "A": "00:00 が出力される",
+      "B": "09:30 が出力される",
+      "C": "LocalTime.from(ta)でDateTimeExceptionがスローされる",
+      "D": "parseの行でコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "LocalTime.from(ta)でDateTimeExceptionがスローされる",
+    "explanation": "正解：C\n\n結論：\nformatter.parse(\"2025/09/30\")で得られるTemporalAccessorには日付情報はありますが、時刻情報はありません。LocalTime.from(ta)は時刻を作ろうとするため、必要な時刻フィールドを取得できずDateTimeExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。時刻が自動的に00:00になるわけではありません。\nB：誤り。月日を時分として解釈しません。\nC：正しい。TemporalAccessorに時刻情報がないため変換できません。\nD：誤り。parse自体は有効です。\n\n間違えやすいポイント：\nTemporalAccessorから任意の日時型へ常に変換できるわけではありません。持っているフィールドと変換先が合う必要があります。"
+  },
+  {
+    "id": 278,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-getinstance-default-locale",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample278 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n\n        NumberFormat nf = NumberFormat.getInstance();\n\n        System.out.println(nf.format(1234.5));\n    }\n}\n",
+    "choices": {
+      "A": "$1,234.50",
+      "B": "1234.5",
+      "C": "1,234.5",
+      "D": "123,450%"
+    },
+    "correctChoice": "C",
+    "correctText": "1,234.5",
+    "explanation": "正解：C\n\n結論：\nNumberFormat.getInstance()は、デフォルトロケールに対する汎用数値フォーマッタを返します。Locale.setDefault(Locale.US)にしているため、桁区切りはカンマ、小数点はピリオドです。1234.5は1,234.5になります。\n\n選択肢の切り方：\nA：誤り。これは通貨フォーマッタに近い形式です。\nB：誤り。桁区切りが反映されていません。\nC：正しい。USの汎用数値形式です。\nD：誤り。パーセントフォーマッタではありません。\n\n間違えやすいポイント：\ngetInstanceは汎用数値用です。通貨やパーセントではありません。"
+  },
+  {
+    "id": 279,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-parse-failure",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample279 {\n    public static void main(String[] args) throws Exception {\n        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);\n\n        Number n = nf.parse(\"abc123\");\n\n        System.out.println(n);\n    }\n}\n",
+    "choices": {
+      "A": "123 が出力される",
+      "B": "0 が出力される",
+      "C": "null が出力される",
+      "D": "ParseExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "ParseExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\nNumberFormat#parse(String)は、文字列の先頭から数値として解析します。\"abc123\"は先頭が数値として解析できないため、ParseExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。途中にある123だけを探して解析するわけではありません。\nB：誤り。解析失敗時に0を返すわけではありません。\nC：誤り。解析失敗時にnullを返すわけではありません。\nD：正しい。先頭から解析できないためParseExceptionです。\n\n間違えやすいポイント：\n\"1,234abc\"のように先頭から解析できる場合と、\"abc123\"のように先頭から解析できない場合を区別します。"
+  },
+  {
+    "id": 280,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-parse-long",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample280 {\n    public static void main(String[] args) throws Exception {\n        NumberFormat nf = NumberFormat.getNumberInstance(Locale.US);\n\n        Number n = nf.parse(\"1,234\");\n\n        System.out.println(n);\n        System.out.println(n.getClass().getSimpleName());\n    }\n}\n",
+    "choices": {
+      "A": "1234\nLong",
+      "B": "1234.0\nDouble",
+      "C": "1,234\nString",
+      "D": "ParseExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "1234\nLong",
+    "explanation": "正解：A\n\n結論：\nLocale.USのNumberFormatでは、\"1,234\"を桁区切り付き整数として解析できます。小数部を含まないため、戻り値のNumber実装はLongになります。\n\n選択肢の切り方：\nA：正しい。数値1234がLongとして返ります。\nB：誤り。小数部がないためDoubleではありません。\nC：誤り。parseの戻り値はStringではなくNumberです。\nD：誤り。US形式として解析可能です。\n\n間違えやすいポイント：\nNumberFormat#parseの戻り値型はNumberです。整数か小数かによって実体がLongやDoubleになる場合があります。"
+  },
+  {
+    "id": 281,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-messageformat-basic",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\n\nclass MessageSample281 {\n    public static void main(String[] args) {\n        String msg = MessageFormat.format(\n            \"{0} has {1} items.\",\n            \"Duke\",\n            3\n        );\n\n        System.out.println(msg);\n    }\n}\n",
+    "choices": {
+      "A": "{0} has {1} items.",
+      "B": "3 has Duke items.",
+      "C": "MessageFormat.formatの行でコンパイルエラーになる",
+      "D": "Duke has 3 items."
+    },
+    "correctChoice": "D",
+    "correctText": "Duke has 3 items.",
+    "explanation": "正解：D\n\n結論：\nMessageFormat.format(String, Object...)は、文字列中の{0}、{1}、{2}...に、後続引数を順番に代入した結果を返します。このコードでは{0}がDuke、{1}が3になります。\n\n選択肢の切り方：\nA：誤り。プレースホルダーはそのまま残りません。\nB：誤り。{0}と{1}の対応が逆です。\nC：誤り。MessageFormat.formatはstaticメソッドとして利用できます。\nD：正しい。プレースホルダーに対応する値が代入されています。\n\n間違えやすいポイント：\nMessageFormatの番号は0始まりです。{0}には最初の値が入ります。"
+  },
+  {
+    "id": 282,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-messageformat-repeated-index",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\n\nclass MessageSample282 {\n    public static void main(String[] args) {\n        String msg = MessageFormat.format(\n            \"{0}-{0}-{1}\",\n            \"A\",\n            \"B\"\n        );\n\n        System.out.println(msg);\n    }\n}\n",
+    "choices": {
+      "A": "A-B-A",
+      "B": "{0}-{0}-{1}",
+      "C": "A-A-B",
+      "D": "IllegalArgumentExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "A-A-B",
+    "explanation": "正解：C\n\n結論：\nMessageFormatでは同じインデックスのプレースホルダーを複数回使えます。{0}にはA、{1}にはBが代入されるため、A-A-Bになります。\n\n選択肢の切り方：\nA：誤り。2番目も{0}なのでAです。\nB：誤り。プレースホルダーは置換されます。\nC：正しい。同じインデックスを繰り返し使用できます。\nD：誤り。同じ番号を複数回使っても例外にはなりません。\n\n間違えやすいポイント：\n{0}、{1}は登場順ではなく番号で引数に対応します。同じ番号なら同じ値が入ります。"
+  },
+  {
+    "id": 283,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-constants-language-country",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample283 {\n    public static void main(String[] args) {\n        Locale a = Locale.JAPANESE;\n        Locale b = Locale.JAPAN;\n\n        System.out.println(a);\n        System.out.println(a.getLanguage());\n        System.out.println(a.getCountry().isEmpty());\n        System.out.println(b);\n    }\n}\n",
+    "choices": {
+      "A": "ja\nja\ntrue\nja_JP",
+      "B": "ja_JP\nja\nfalse\nja",
+      "C": "JP\nJP\ntrue\nja_JP",
+      "D": "ja\nJP\ntrue\nja_JP"
+    },
+    "correctChoice": "A",
+    "correctText": "ja\nja\ntrue\nja_JP",
+    "explanation": "正解：A\n\n結論：\nLocale.JAPANESEは言語のみを表すLocaleで、言語コードはja、国コードは空です。そのためtoStringはja、getLanguageはja、getCountry().isEmpty()はtrueです。一方、Locale.JAPANは日本語_日本を表し、ja_JPです。\n\n選択肢の切り方：\nA：正しい。JAPANESEと言語+国のJAPANを区別できています。\nB：誤り。JAPANESEに国コードJPは含まれません。\nC：誤り。言語コードと国コードを混同しています。\nD：誤り。JAPANESEのgetLanguageはJPではありません。\n\n間違えやすいポイント：\nLocale.JAPANESEは言語のみ、Locale.JAPANは国を含むロケールです。ENGLISHとUS、FRENCHとFRANCEも同じ区別です。"
+  },
+  {
+    "id": 284,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-canada-french-constant",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample284 {\n    public static void main(String[] args) {\n        Locale locale = Locale.CANADA_FRENCH;\n\n        System.out.println(locale);\n        System.out.println(locale.getLanguage());\n        System.out.println(locale.getCountry());\n    }\n}\n",
+    "choices": {
+      "A": "en_CA\nen\nCA",
+      "B": "fr_CA\nfr\nCA",
+      "C": "fr_FR\nfr\nFR",
+      "D": "ca_FR\nca\nFR"
+    },
+    "correctChoice": "B",
+    "correctText": "fr_CA\nfr\nCA",
+    "explanation": "正解：B\n\n結論：\nLocale.CANADA_FRENCHはカナダのフランス語ロケールです。言語コードはfr、国コードはCAなので、toStringはfr_CAになります。\n\n選択肢の切り方：\nA：誤り。これはLocale.CANADAに近い英語カナダです。\nB：正しい。カナダのフランス語です。\nC：誤り。これはフランスのフランス語であるLocale.FRANCEです。\nD：誤り。言語コードと国コードが不適切です。\n\n間違えやすいポイント：\nCANADAとCANADA_FRENCHは国は同じCAでも、言語コードがenとfrで異なります。"
+  },
+  {
+    "id": 285,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-numberformat-abstract-class",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass NumberSample285 {\n    public static void main(String[] args) {\n        // insert code here\n\n        System.out.println(nf.format(1234.5));\n    }\n}\n\n目的は、Locale.USの汎用数値フォーマッタを取得することである。",
+    "choices": {
+      "A": "NumberFormat nf = new NumberFormat(Locale.US);",
+      "B": "NumberFormat nf = NumberFormat(Locale.US);",
+      "C": "NumberFormat nf = new NumberFormat();",
+      "D": "NumberFormat nf = NumberFormat.getInstance(Locale.US);"
+    },
+    "correctChoice": "D",
+    "correctText": "NumberFormat nf = NumberFormat.getInstance(Locale.US);",
+    "explanation": "正解：D\n\n結論：\nNumberFormatは抽象クラスなので、通常コンストラクタで直接生成するのではなく、getInstance、getIntegerInstance、getCurrencyInstance、getPercentInstanceなどのファクトリメソッドで取得します。Locale.USの汎用数値フォーマッタならNumberFormat.getInstance(Locale.US)です。\n\n選択肢の切り方：\nA：誤り。NumberFormatをnewで直接生成できません。\nB：誤り。メソッド呼び出し構文として不正です。\nC：誤り。抽象クラスを直接インスタンス化できません。\nD：正しい。ファクトリメソッドで取得しています。\n\n間違えやすいポイント：\nNumberFormatは抽象クラスです。DecimalFormatとは生成方法が異なります。"
   }
 ]
