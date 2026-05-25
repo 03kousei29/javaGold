@@ -3534,5 +3534,373 @@
     "correctChoice": "D",
     "correctText": "同じcommon.apiパッケージを複数モジュールが提供しているためエラーになる",
     "explanation": "正解：D\n\n結論：\nモジュールシステムでは、同じパッケージを複数の名前付きモジュールに分割して提供するsplit packageは問題になります。appがalphaとbetaの両方をrequiresし、両方がcommon.apiを提供しているため、解決時またはコンパイル時にエラーになります。\n\n選択肢の切り方：\nA：誤り。分割パッケージ問題により正常に扱えません。\nB：正しい。common.apiがalphaとbetaに分割されています。\nC：誤り。どちらかが単純に優先されるわけではありません。\nD：誤り。exportsは公開宣言であり、分割パッケージを許可する宣言ではありません。\n\n間違えやすいポイント：\nモジュールではクラス名だけでなくパッケージ単位で一意性が重要です。旧来のクラスパスの感覚で、先に見つかったものが優先されると考えると誤ります。"
+  },
+  {
+    "id": 222,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-jdbc-api-driver-module",
+    "question": "次のコードについて正しいものはどれか。\n\n// module-info.java\nmodule app.db {\n    requires java.sql;\n}\n\n// app/Main.java\npackage app;\n\nimport java.sql.*;\n\npublic class Main {\n    public static void main(String[] args) throws SQLException {\n        String url = \"jdbc:derby://localhost:1527/sample;create=true\";\n\n        try (Connection con = DriverManager.getConnection(url)) {\n            System.out.println(con == null);\n        }\n    }\n}\n\nなお、実行時のモジュールパスまたはクラスパスには、このURLを扱えるJDBCドライバが存在するものとする。",
+    "choices": {
+      "A": "java.sqlモジュールにはJDBC APIが含まれるが、実際のDB製品向け実装は通常JDBCドライバとして提供される",
+      "B": "requires java.sql; があれば、Apache Derby用JDBCドライバも必ずJDKに含まれる",
+      "C": "JDBC URLは常に jdbc:sql:<database> の形式でなければならない",
+      "D": "DriverManager.getConnection(url)は接続に成功してもConnectionではなくStatementを返す"
+    },
+    "correctChoice": "A",
+    "correctText": "java.sqlモジュールにはJDBC APIが含まれるが、実際のDB製品向け実装は通常JDBCドライバとして提供される",
+    "explanation": "正解：A\n\n結論：\nJDBC APIはjava.sqlモジュールに含まれますが、各データベース製品に接続するための実装は通常JDBCドライバとして別途提供されます。DriverManager.getConnection()は、利用可能なドライバの中から指定URLを扱えるものを選び、接続に成功するとConnectionを返します。\n\n選択肢の切り方：\nA：正しい。APIと実装ドライバを分けて理解します。\nB：誤り。java.sqlはAPIであり、特定DB製品のドライバ同梱を保証しません。\nC：誤り。JDBC URLは jdbc:<subprotocol>:<subname> の形です。\nD：誤り。getConnection()の戻り値はConnectionです。\n\n間違えやすいポイント：\nrequires java.sql; はJDBC APIを使うための宣言です。これだけで各DB製品のJDBCドライバまで用意されるわけではありません。"
+  },
+  {
+    "id": 223,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-drivermanager-getconnection-overloads",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\nimport java.util.*;\n\nclass DbSample223 {\n    public static void main(String[] args) throws SQLException {\n        String url = \"jdbc:derby://localhost:1527/sample;create=true\";\n\n        Properties props = new Properties();\n        props.setProperty(\"user\", \"app\");\n        props.setProperty(\"password\", \"app\");\n\n        Connection c1 = DriverManager.getConnection(url);\n        Connection c2 = DriverManager.getConnection(url, \"app\", \"app\");\n        Connection c3 = DriverManager.getConnection(url, props);\n\n        System.out.println(c1 == null);\n        System.out.println(c2 == null);\n        System.out.println(c3 == null);\n    }\n}\n\nなお、接続先は有効で、必要なJDBCドライバも利用可能であるものとする。",
+    "choices": {
+      "A": "getConnection(String, String, String)だけが有効で、他2つはコンパイルエラーになる",
+      "B": "3つともDriverManagerの有効なオーバーロードであり、接続に成功すればConnectionを返す",
+      "C": "Propertiesを使う場合、キー名は必ずusernameとpassでなければならない",
+      "D": "JDBC4.0以降でも、DriverManager利用前には必ずClass.forName()を明示しないとコンパイルできない"
+    },
+    "correctChoice": "B",
+    "correctText": "3つともDriverManagerの有効なオーバーロードであり、接続に成功すればConnectionを返す",
+    "explanation": "正解：B\n\n結論：\nDriverManager.getConnection()には、URLのみ、URLとユーザー名・パスワード、URLとPropertiesを受け取るオーバーロードがあります。いずれも接続に成功するとConnectionを返します。\n\n選択肢の切り方：\nA：誤り。3つとも代表的なオーバーロードです。\nB：正しい。すべてConnectionを返します。\nC：誤り。一般的にはuserやpasswordなど、ドライバが解釈するプロパティを使います。username/pass固定ではありません。\nD：誤り。JDBC4.0以降はDriverManagerが利用される際にドライバが自動ロードされる仕組みがあります。少なくともコンパイル上Class.forName()は必須ではありません。\n\n間違えやすいポイント：\nDriverManager.getConnection()の引数違いはよく問われます。戻り値はいずれもConnectionです。"
+  },
+  {
+    "id": 224,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-connection-methods-autocloseable",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.sql.*;\n\nclass DbSample224 {\n    public static void main(String[] args) throws SQLException {\n        String url = \"jdbc:derby://localhost:1527/shop\";\n\n        try (Connection con = DriverManager.getConnection(url)) {\n            // insert code here\n        }\n    }\n}\n\n目的は、パラメータ付きSQLを実行するためのPreparedStatementを生成することである。",
+    "choices": {
+      "A": "Statement ps = con.prepareStatement();",
+      "B": "PreparedStatement ps = con.createStatement(\"SELECT * FROM PRODUCT WHERE ID = ?\");",
+      "C": "PreparedStatement ps = con.prepareStatement(\"SELECT * FROM PRODUCT WHERE ID = ?\");",
+      "D": "CallableStatement ps = con.createStatement(\"SELECT * FROM PRODUCT WHERE ID = ?\");"
+    },
+    "correctChoice": "C",
+    "correctText": "PreparedStatement ps = con.prepareStatement(\"SELECT * FROM PRODUCT WHERE ID = ?\");",
+    "explanation": "正解：C\n\n結論：\nConnectionのprepareStatement(String sql)は、パラメータ付きSQLを送るためのPreparedStatementを生成します。ConnectionはAutoCloseableを継承するため、try-with-resourcesで扱えます。\n\n選択肢の切り方：\nA：誤り。prepareStatementにはSQL文字列が必要です。また戻り値型はPreparedStatementです。\nB：誤り。createStatement()は通常のStatementを生成するメソッドであり、SQL文字列を受け取ってPreparedStatementを返すものではありません。\nC：正しい。パラメータ付きSQLにはprepareStatement(String sql)を使います。\nD：誤り。createStatementはCallableStatementを返しません。ストアドプロシージャ用はprepareCall(String sql)です。\n\n間違えやすいポイント：\ncreateStatement、prepareStatement、prepareCallの役割を区別します。通常SQL、パラメータ付きSQL、ストアドプロシージャ呼び出しで使い分けます。"
+  },
+  {
+    "id": 225,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-sqlexception-checked-methods",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample225 {\n    static void connect() {\n        try {\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/missing\"\n            );\n            con.close();\n        } catch (SQLException e) {\n            System.out.println(e.getSQLState());\n            System.out.println(e.getErrorCode());\n        }\n    }\n\n    public static void main(String[] args) {\n        connect();\n    }\n}\n",
+    "choices": {
+      "A": "SQLExceptionは非チェック例外なのでcatchしなくてもよい",
+      "B": "getSQLState()はintを返し、getErrorCode()はStringを返す",
+      "C": "catch(SQLException e)はコンパイルエラーになる",
+      "D": "SQLExceptionはチェック例外であり、getSQLState()とgetErrorCode()で状態やベンダー固有コードを取得できる"
+    },
+    "correctChoice": "D",
+    "correctText": "SQLExceptionはチェック例外であり、getSQLState()とgetErrorCode()で状態やベンダー固有コードを取得できる",
+    "explanation": "正解：D\n\n結論：\nSQLExceptionはチェック例外です。JDBC処理ではthrowsまたはcatchが必要です。また、getSQLState()はSQLSTATEをStringで返し、getErrorCode()はベンダー固有のエラーコードをintで返します。\n\n選択肢の切り方：\nA：誤り。SQLExceptionはチェック例外です。\nB：誤り。戻り値型が逆です。getSQLState()はString、getErrorCode()はintです。\nC：誤り。SQLExceptionをcatchするのは正しい処理です。\nD：正しい。例外分類と代表メソッドの説明が合っています。\n\n間違えやすいポイント：\nSQLExceptionはRuntimeExceptionではありません。コンパイル時に例外処理が要求されます。"
+  },
+  {
+    "id": 226,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-statement-execute-query-update-resultset",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample226 {\n    public static void main(String[] args) throws SQLException {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            boolean r1 = st.execute(\"SELECT ID, NAME FROM PRODUCT\");\n            ResultSet rs1 = st.getResultSet();\n            int u1 = st.getUpdateCount();\n\n            int u2 = st.executeUpdate(\n                \"UPDATE PRODUCT SET PRICE = PRICE + 100 WHERE ID = 1\"\n            );\n\n            System.out.println(r1);\n            System.out.println(rs1 == null);\n            System.out.println(u1);\n            System.out.println(u2 >= 0);\n        }\n    }\n}\n\nSQL自体は正常に実行できるものとする。",
+    "choices": {
+      "A": "true\nfalse\n-1\ntrue",
+      "B": "false\ntrue\n0\ntrue",
+      "C": "true\ntrue\n-1\nfalse",
+      "D": "execute(String)はSELECT文に使えないためコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "true\nfalse\n-1\ntrue",
+    "explanation": "正解：A\n\n結論：\nStatement.execute(String sql)は、最初の結果がResultSetであればtrueを返します。SELECT文なのでr1はtrueです。この場合、getResultSet()でResultSetを取得できるためrs1 == nullはfalseです。一方、更新件数ではないためgetUpdateCount()は-1です。executeUpdate()はUPDATE文の更新件数をintで返すため、正常実行なら0以上になります。\n\n選択肢の切り方：\nA：正しい。execute、getResultSet、getUpdateCount、executeUpdateの組み合わせを正しく追えています。\nB：誤り。SELECTに対するexecuteはtrueです。\nC：誤り。ResultSetは取得できるためnullではありません。\nD：誤り。execute(String)はSELECTにもDMLにも使えます。\n\n間違えやすいポイント：\nexecuteQueryはSELECT専用、executeUpdateはDML/DDL向け、executeは結果の種類に応じてbooleanを返します。getResultSetとgetUpdateCountの戻り値もセットで押さえます。"
+  },
+  {
+    "id": 227,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resultset-next-required",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.sql.*;\n\nclass DbSample227 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            ResultSet rs = st.executeQuery(\n                \"SELECT ID, NAME FROM PRODUCT\"\n            );\n\n            System.out.println(rs.getString(\"NAME\"));\n        }\n    }\n}\n\nSQL自体は正常に実行できるものとする。",
+    "choices": {
+      "A": "1件目のNAMEが出力される",
+      "B": "next()を呼ばずに値取得しているためSQLExceptionがスローされる",
+      "C": "null が出力される",
+      "D": "getStringの行でコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "next()を呼ばずに値取得しているためSQLExceptionがスローされる",
+    "explanation": "正解：B\n\n結論：\nResultSetは生成直後、カーソルが先頭レコードの前に位置しています。値を取得する前にnext()を呼び、カーソルをレコードへ移動させる必要があります。\n\n選択肢の切り方：\nA：誤り。next()を呼んでいません。\nB：正しい。カーソル未移動状態で値取得しているためSQLExceptionです。\nC：誤り。nullを返す仕様ではありません。\nD：誤り。構文上は正しいためコンパイルできます。\n\n間違えやすいポイント：\nResultSet取得直後に値を読めると思い込みやすいですが、最初にnext()が必要です。"
+  },
+  {
+    "id": 228,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-executequery-update",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.sql.*;\n\nclass DbSample228 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            st.executeQuery(\n                \"UPDATE PRODUCT SET PRICE = PRICE + 100\"\n            );\n        }\n    }\n}\n",
+    "choices": {
+      "A": "更新件数が返され正常終了する",
+      "B": "executeQueryはDDL専用なのでコンパイルエラーになる",
+      "C": "UPDATE文にexecuteQueryを使用しているためSQLExceptionがスローされる",
+      "D": "ResultSetが空で返される"
+    },
+    "correctChoice": "C",
+    "correctText": "UPDATE文にexecuteQueryを使用しているためSQLExceptionがスローされる",
+    "explanation": "正解：C\n\n結論：\nexecuteQuery()はSELECT文向けです。UPDATE文のようなDMLをexecuteQueryへ渡した場合、コンパイルエラーではなくSQLExceptionになります。\n\n選択肢の切り方：\nA：誤り。更新件数取得はexecuteUpdate()です。\nB：誤り。コンパイル時には検出されません。\nC：正しい。実行時SQLExceptionです。\nD：誤り。空ResultSetを返す仕様ではありません。\n\n間違えやすいポイント：\nJDBCではSQL種別ミスの多くはコンパイルエラーではなく実行時SQLExceptionになります。"
+  },
+  {
+    "id": 229,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resultset-empty",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample229 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            ResultSet rs = st.executeQuery(\n                \"SELECT ID FROM PRODUCT WHERE 1 = 0\"\n            );\n\n            System.out.println(rs == null);\n            System.out.println(rs.next());\n        }\n    }\n}\n",
+    "choices": {
+      "A": "true と false が出力される",
+      "B": "false と false が出力される",
+      "C": "false と true が出力される",
+      "D": "executeQueryの時点でSQLExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "false と false が出力される",
+    "explanation": "正解：B\n\n結論：\nSELECT結果が0件でも、executeQuery()はnullではなく空のResultSetオブジェクトを返します。そのためrs == nullはfalseです。next()はレコードが存在しないためfalseになります。\n\n選択肢の切り方：\nA：誤り。空でもResultSet自体は生成されます。\nB：正しい。空ResultSetです。\nC：誤り。レコードは存在しません。\nD：誤り。0件検索は正常動作です。\n\n間違えやすいポイント：\n検索結果0件とResultSetがnullになることは別です。"
+  },
+  {
+    "id": 230,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-preparedstatement-placeholder",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.sql.*;\n\nclass DbSample230 {\n    public static void main(String[] args) throws Exception {\n        String sql = \"INSERT INTO PRODUCT VALUES (?, ?, ?)\";\n\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            PreparedStatement ps = con.prepareStatement(sql)\n        ) {\n            ps.setInt(1, 1);\n            ps.setString(2, \"Pen\");\n\n            ps.executeUpdate();\n        }\n    }\n}\n",
+    "choices": {
+      "A": "不足しているプレースホルダーが自動的にNULLになる",
+      "B": "0件更新として正常終了する",
+      "C": "executeUpdateの行でコンパイルエラーになる",
+      "D": "未設定プレースホルダーが存在するためSQLExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "未設定プレースホルダーが存在するためSQLExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\nPreparedStatementでは、すべてのプレースホルダーへ値を設定する必要があります。未設定のまま実行するとSQLExceptionになります。\n\n選択肢の切り方：\nA：誤り。自動NULL設定はされません。\nB：誤り。正常終了しません。\nC：誤り。コンパイル時には検出されません。\nD：正しい。3番目が未設定です。\n\n間違えやすいポイント：\nPreparedStatementはプレースホルダー数不足・超過ともにSQLException対象です。"
+  },
+  {
+    "id": 231,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-callablestatement-out",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample231 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            )\n        ) {\n            CallableStatement cs = con.prepareCall(\n                \"{ CALL COUNT_BOOK_BY_PRICE(?, ?) }\"\n            );\n\n            cs.setInt(1, 4000);\n            cs.registerOutParameter(2, Types.INTEGER);\n            cs.execute();\n\n            System.out.println(cs.getInt(2));\n        }\n    }\n}\n",
+    "choices": {
+      "A": "OUTパラメータ取得前にregisterOutParameterが必要である",
+      "B": "CallableStatementではexecute()を呼べない",
+      "C": "OUTパラメータはsetIntで設定しなければならない",
+      "D": "prepareCallではJDBCエスケープ構文を使えない"
+    },
+    "correctChoice": "A",
+    "correctText": "OUTパラメータ取得前にregisterOutParameterが必要である",
+    "explanation": "正解：A\n\n結論：\nCallableStatementでOUTパラメータを扱う場合は、実行前にregisterOutParameter(番号, SQL型)で登録する必要があります。\n\n選択肢の切り方：\nA：正しい。OUTパラメータ登録が必要です。\nB：誤り。CallableStatementでもexecute系を利用できます。\nC：誤り。OUTはregisterOutParameterです。\nD：誤り。prepareCallでは { CALL ... } のJDBCエスケープ構文を使用します。\n\n間違えやすいポイント：\nINはsetXxx、OUTはregisterOutParameterで役割が分かれています。"
+  },
+  {
+    "id": 232,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-statement-inheritance",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample232 {\n    static void test(Statement st) {\n        System.out.println(st instanceof PreparedStatement);\n        System.out.println(st instanceof CallableStatement);\n    }\n\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            )\n        ) {\n            CallableStatement cs = con.prepareCall(\n                \"{ CALL PROC_TEST(?) }\"\n            );\n\n            test(cs);\n        }\n    }\n}\n",
+    "choices": {
+      "A": "false\nfalse",
+      "B": "true\nfalse",
+      "C": "false\ntrue",
+      "D": "true\ntrue"
+    },
+    "correctChoice": "D",
+    "correctText": "true\ntrue",
+    "explanation": "正解：D\n\n結論：\nCallableStatementはPreparedStatementを継承し、PreparedStatementはStatementを継承しています。そのためCallableStatementオブジェクトは、PreparedStatementでもありCallableStatementでもあります。\n\n選択肢の切り方：\nA：誤り。どちらでもあります。\nB：誤り。CallableStatementでもあります。\nC：誤り。PreparedStatementでもあります。\nD：正しい。継承関係を正しく理解しています。\n\n間違えやすいポイント：\n継承関係は Statement → PreparedStatement → CallableStatement です。"
+  },
+  {
+    "id": 233,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-preparedstatement-parameter-retain",
+    "question": "次のコードをコンパイル、実行すると、2回目のexecuteUpdate()ではどのようなパラメータでSQLが実行されるか。\n\nimport java.sql.*;\n\nclass DbSample233 {\n    public static void main(String[] args) throws Exception {\n        String sql = \"INSERT INTO PRODUCT VALUES (?, ?, ?)\";\n\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            PreparedStatement ps = con.prepareStatement(sql)\n        ) {\n            ps.setInt(1, 10);\n            ps.setString(2, \"Pen\");\n            ps.setInt(3, 100);\n            ps.executeUpdate();\n\n            ps.setInt(1, 20);\n            ps.setInt(3, 200);\n            ps.executeUpdate();\n        }\n    }\n}\n",
+    "choices": {
+      "A": "(20, null, 200)",
+      "B": "(20, \"Pen\", 200)",
+      "C": "(20, \"\", 200)",
+      "D": "2回目は2番目が未設定になるためSQLException"
+    },
+    "correctChoice": "B",
+    "correctText": "(20, \"Pen\", 200)",
+    "explanation": "正解：B\n\n結論：\nPreparedStatementのパラメータ値は、明示的に変更されるまで保持されます。2回目では1番目と3番目だけを再設定しているため、2番目には1回目に設定した\"Pen\"が残ります。\n\n選択肢の切り方：\nA：誤り。再設定していない値が自動的にnullになるわけではありません。\nB：正しい。2番目の値は保持されます。\nC：誤り。空文字へ自動変換されません。\nD：誤り。1回目に設定済みなので未設定ではありません。\n\n間違えやすいポイント：\nPreparedStatementはSQL文だけでなく、設定済みパラメータも保持します。複数回実行時は、どの番号を上書きしたかを追う必要があります。"
+  },
+  {
+    "id": 234,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-preparedstatement-setnull",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample234 {\n    public static void main(String[] args) throws Exception {\n        String sql = \"UPDATE PRODUCT SET NAME = ?, PRICE = ? WHERE ID = ?\";\n\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            PreparedStatement ps = con.prepareStatement(sql)\n        ) {\n            ps.setNull(1, Types.VARCHAR);\n            ps.setObject(2, 300, Types.INTEGER);\n            ps.setInt(3, 1);\n\n            int count = ps.executeUpdate();\n            System.out.println(count >= 0);\n        }\n    }\n}\n",
+    "choices": {
+      "A": "setNullは第2引数にJavaの型名String.classを渡す必要がある",
+      "B": "setObjectでSQL型を指定することはできない",
+      "C": "setNullとsetObjectはプレースホルダーへSQL型を意識して値を設定できる",
+      "D": "setNullを使うと必ずNullPointerExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "setNullとsetObjectはプレースホルダーへSQL型を意識して値を設定できる",
+    "explanation": "正解：C\n\n結論：\nsetNull(int index, int sqlType)では、java.sql.Typesで表されるSQL型を指定してNULLを設定します。また、setObject(int index, Object value, int sqlType)では、値と対応するSQL型を指定できます。\n\n選択肢の切り方：\nA：誤り。setNullの第2引数はClassではなくTypes.VARCHARなどのSQL型を表すintです。\nB：誤り。setObjectにはSQL型を指定するオーバーロードがあります。\nC：正しい。SQL型を指定して値やNULLを設定できます。\nD：誤り。SQLのNULLを設定するためのメソッドであり、必ずNullPointerExceptionになるわけではありません。\n\n間違えやすいポイント：\nJavaのnullとSQLのNULLは区別して考えます。JDBCではSQL型をjava.sql.Typesで指定する場面があります。"
+  },
+  {
+    "id": 235,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-preparedstatement-too-many-parameters",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.sql.*;\n\nclass DbSample235 {\n    public static void main(String[] args) throws Exception {\n        String sql = \"DELETE FROM PRODUCT WHERE ID = ?\";\n\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            PreparedStatement ps = con.prepareStatement(sql)\n        ) {\n            ps.setInt(1, 10);\n            ps.setString(2, \"extra\");\n            ps.executeUpdate();\n        }\n    }\n}\n",
+    "choices": {
+      "A": "2番目の値は無視され、ID=10の行が削除される",
+      "B": "setString(2, \"extra\")の行でコンパイルエラーになる",
+      "C": "executeUpdate()はSELECT専用なのでSQLExceptionがスローされる",
+      "D": "プレースホルダー数を超えて値を設定しているためSQLExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "プレースホルダー数を超えて値を設定しているためSQLExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\nSQLにはプレースホルダーが1つしかありません。存在しない2番目のプレースホルダーへ値を設定しようとするとSQLExceptionになります。\n\n選択肢の切り方：\nA：誤り。余分な値が単に無視されるわけではありません。\nB：誤り。setString(int, String)というメソッド呼び出し自体はコンパイルできます。\nC：正しい。実行時にJDBC側で不正なパラメータ番号として扱われます。\nD：誤り。executeUpdate()はDELETEなどのDMLに使えます。\n\n間違えやすいポイント：\nパラメータ番号の過不足はJavaコンパイル時ではなく、JDBC実行時のSQLExceptionとして現れます。"
+  },
+  {
+    "id": 236,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-preparedstatement-execute-query-no-arg",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.sql.*;\n\nclass DbSample236 {\n    public static void main(String[] args) throws Exception {\n        String sql = \"SELECT NAME FROM PRODUCT WHERE ID = ?\";\n\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            PreparedStatement ps = con.prepareStatement(sql)\n        ) {\n            ps.setInt(1, 1);\n\n            // insert code here\n\n            if (rs.next()) {\n                System.out.println(rs.getString(1));\n            }\n        }\n    }\n}\n",
+    "choices": {
+      "A": "ResultSet rs = ps.executeQuery();",
+      "B": "ResultSet rs = ps.executeQuery(sql);",
+      "C": "int rs = ps.executeUpdate();",
+      "D": "ResultSet rs = ps.getUpdateCount();"
+    },
+    "correctChoice": "A",
+    "correctText": "ResultSet rs = ps.executeQuery();",
+    "explanation": "正解：A\n\n結論：\nPreparedStatementは生成時にSQL文を渡しているため、SELECTを実行する場合は引数なしのexecuteQuery()を呼びます。\n\n選択肢の切り方：\nA：正しい。PreparedStatementのSELECT実行として適切です。\nB：誤り。StatementのexecuteQuery(String)と混同しています。PreparedStatementではSQLをすでに保持しています。\nC：誤り。executeUpdate()はintを返し、SELECT向けではありません。\nD：誤り。getUpdateCount()はintを返します。\n\n間違えやすいポイント：\nStatementはSQL文字列を実行時に渡しますが、PreparedStatementは生成時にSQLを渡し、execute系は基本的に引数なしです。"
+  },
+  {
+    "id": 237,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-statement-two-resultsets",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample237 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            ResultSet rs1 = st.executeQuery(\"SELECT ID FROM PRODUCT\");\n            ResultSet rs2 = st.executeQuery(\"SELECT NAME FROM PRODUCT\");\n\n            System.out.println(rs1.isClosed());\n            System.out.println(rs2.isClosed());\n        }\n    }\n}\n\nJDBCドライバは標準的なStatementの動作に従うものとする。",
+    "choices": {
+      "A": "1つのStatementは複数のResultSetを同時に保持できるため、両方false",
+      "B": "SELECTを2回実行すると必ずSQLExceptionになる",
+      "C": "2回目のexecuteQueryの行で必ずコンパイルエラーになる",
+      "D": "2回目のexecuteQueryにより、1つ目のResultSetは自動的にクローズされ得る"
+    },
+    "correctChoice": "D",
+    "correctText": "2回目のexecuteQueryにより、1つ目のResultSetは自動的にクローズされ得る",
+    "explanation": "正解：D\n\n結論：\n1つのStatementオブジェクトが同時に保持できるResultSetは通常1つです。同じStatementで次のResultSetを取得すると、前のResultSetは自動的にクローズされます。\n\n選択肢の切り方：\nA：誤り。同時に複数保持できるとは限りません。\nB：正しい。前のResultSetが閉じられる点が重要です。\nC：誤り。メソッド呼び出し自体はコンパイルできます。\nD：誤り。SELECTを2回実行すること自体が必ず禁止されるわけではありません。\n\n間違えやすいポイント：\nResultSetの寿命はStatementにも依存します。複数ResultSetを同時に扱いたい場合はStatementを分ける発想が必要です。"
+  },
+  {
+    "id": 238,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resultset-column-index-name",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.sql.*;\n\nclass DbSample238 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement();\n            ResultSet rs = st.executeQuery(\n                \"SELECT ID, NAME FROM PRODUCT\"\n            )\n        ) {\n            if (rs.next()) {\n                System.out.println(rs.getInt(1));\n                System.out.println(rs.getString(\"NAME\"));\n                System.out.println(rs.getString(\"PRICE\"));\n            }\n        }\n    }\n}\n\nPRODUCT表にレコードは存在するが、SELECT結果にはPRICE列が含まれていないものとする。",
+    "choices": {
+      "A": "IDとNAMEが出力された後、存在しない列名PRICEの取得でSQLExceptionがスローされる",
+      "B": "PRICEはSELECTしていないためnullが出力される",
+      "C": "getInt(1)の行でコンパイルエラーになる",
+      "D": "列番号は0始まりなのでgetInt(1)で2列目が取得される"
+    },
+    "correctChoice": "A",
+    "correctText": "IDとNAMEが出力された後、存在しない列名PRICEの取得でSQLExceptionがスローされる",
+    "explanation": "正解：A\n\n結論：\nResultSetでは列番号または列名で値を取得できます。ただし、存在しない列番号や列名を指定するとSQLExceptionがスローされます。このSELECT結果にはPRICE列がないため、getString(\"PRICE\")でSQLExceptionになります。\n\n選択肢の切り方：\nA：正しい。IDとNAMEまでは取得でき、PRICEで失敗します。\nB：誤り。存在しない列が自動的にnullになるわけではありません。\nC：誤り。getInt(int)は有効なメソッドです。\nD：誤り。JDBCの列番号は1始まりです。\n\n間違えやすいポイント：\nResultSetの列番号は1始まりです。また、表に列が存在していてもSELECT結果に含まれていなければ取得対象にはなりません。"
+  },
+  {
+    "id": 239,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resultset-get-mapping",
+    "question": "次のResultSetの取得メソッドの対応として正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample239 {\n    static void read(ResultSet rs) throws SQLException {\n        byte a = rs.getByte(\"TINY_COL\");\n        short b = rs.getShort(\"SMALL_COL\");\n        boolean c = rs.getBoolean(\"BIT_COL\");\n        Blob d = rs.getBlob(\"BLOB_COL\");\n        Clob e = rs.getClob(\"CLOB_COL\");\n    }\n}\n",
+    "choices": {
+      "A": "TINYINTはgetShort、SMALLINTはgetByteで取得する",
+      "B": "BITはgetStringでしか取得できない",
+      "C": "TINYINTはgetByte、SMALLINTはgetShort、BITはgetBooleanで取得できる",
+      "D": "BLOBとCLOBはどちらもgetStringで取得しなければならない"
+    },
+    "correctChoice": "C",
+    "correctText": "TINYINTはgetByte、SMALLINTはgetShort、BITはgetBooleanで取得できる",
+    "explanation": "正解：C\n\n結論：\nResultSetの代表的な対応として、TINYINTはgetByte、SMALLINTはgetShort、BITはgetBoolean、BLOBはgetBlob、CLOBはgetClobで取得できます。\n\n選択肢の切り方：\nA：誤り。TINYINTとSMALLINTの対応が逆です。\nB：誤り。BITはgetBooleanで取得できます。\nC：誤り。BLOBはgetBlob、CLOBはgetClobが対応します。\nD：正しい。基本対応を正しく示しています。\n\n間違えやすいポイント：\nSQL型とJava側取得メソッドの対応は暗記だけでなく、型の大きさやデータ種別から整理すると覚えやすいです。"
+  },
+  {
+    "id": 240,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-executeupdate-ddl",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample240 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            int c1 = st.executeUpdate(\n                \"CREATE TABLE SAMPLE(ID INT)\"\n            );\n            int c2 = st.executeUpdate(\n                \"UPDATE PRODUCT SET PRICE = PRICE + 1\"\n            );\n\n            System.out.println(c1);\n            System.out.println(c2 >= 0);\n        }\n    }\n}\n\nSQLは正常に実行できるものとする。",
+    "choices": {
+      "A": "DDL文のexecuteUpdateは0を返し、DML文のexecuteUpdateは更新件数を返す",
+      "B": "CREATE TABLEはSELECTではないためexecuteUpdateでコンパイルエラーになる",
+      "C": "UPDATE文のexecuteUpdateは常に-1を返す",
+      "D": "DDL文は必ずResultSetを返す"
+    },
+    "correctChoice": "A",
+    "correctText": "DDL文のexecuteUpdateは0を返し、DML文のexecuteUpdateは更新件数を返す",
+    "explanation": "正解：A\n\n結論：\nexecuteUpdate(String sql)はINSERT、UPDATE、DELETEなどのDMLや、CREATE TABLEなどのDDLに使えます。DMLでは更新件数、DDLでは0を返します。\n\n選択肢の切り方：\nA：正しい。DDLとDMLの戻り値の違いを押さえます。\nB：誤り。DDLにもexecuteUpdateを使えます。\nC：誤り。UPDATEでは通常更新件数を返します。\nD：誤り。DDLはResultSetを返す処理ではありません。\n\n間違えやすいポイント：\nexecuteUpdateという名前ですが、UPDATE文だけでなくDML全般やDDLにも使われます。"
+  },
+  {
+    "id": 241,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resultset-metadata",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.sql.*;\n\nclass DbSample241 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement();\n            ResultSet rs = st.executeQuery(\n                \"SELECT ID, NAME, PRICE FROM PRODUCT\"\n            )\n        ) {\n            // insert code here\n            System.out.println(meta.getColumnCount());\n        }\n    }\n}\n\n目的は、ResultSetの列情報を取得することである。",
+    "choices": {
+      "A": "Connection meta = rs.getMetaData();",
+      "B": "ResultSetMetaData meta = rs.getMetaData();",
+      "C": "Statement meta = rs.getStatementMetaData();",
+      "D": "ResultSet meta = rs.getMetaData();"
+    },
+    "correctChoice": "B",
+    "correctText": "ResultSetMetaData meta = rs.getMetaData();",
+    "explanation": "正解：B\n\n結論：\nResultSetの列情報を取得するには、ResultSet#getMetaData()を使用します。戻り値はResultSetMetaDataです。\n\n選択肢の切り方：\nA：誤り。戻り値はConnectionではありません。\nB：正しい。列数や列名などを取得できます。\nC：誤り。getStatementMetaDataというメソッドではありません。\nD：誤り。戻り値はResultSetではなくResultSetMetaDataです。\n\n間違えやすいポイント：\nResultSetは行データ、ResultSetMetaDataは列構造情報です。名前が似ているため戻り値型を正確に押さえます。"
+  },
+  {
+    "id": 242,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resource-close-order",
+    "question": "次のコードについて、リソースのクローズ順として正しい説明はどれか。\n\nimport java.sql.*;\n\nclass DbSample242 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement();\n            ResultSet rs = st.executeQuery(\n                \"SELECT ID FROM PRODUCT\"\n            )\n        ) {\n            while (rs.next()) {\n                System.out.println(rs.getInt(1));\n            }\n        }\n    }\n}\n",
+    "choices": {
+      "A": "try-with-resourcesでは宣言順にcon、st、rsの順でクローズされる",
+      "B": "ResultSetはtry-with-resourcesに指定できないためコンパイルエラーになる",
+      "C": "ConnectionだけがAutoCloseableなので、StatementとResultSetはクローズされない",
+      "D": "try-with-resourcesでは逆順にrs、st、conの順でクローズされる"
+    },
+    "correctChoice": "D",
+    "correctText": "try-with-resourcesでは逆順にrs、st、conの順でクローズされる",
+    "explanation": "正解：D\n\n結論：\ntry-with-resourcesに複数のリソースを指定した場合、クローズは宣言と逆順に行われます。このコードではrs、st、conの順にcloseされます。\n\n選択肢の切り方：\nA：誤り。宣言順ではなく逆順です。\nB：正しい。ResultSet、Statement、Connectionの順です。\nC：誤り。StatementやResultSetもAutoCloseableとして扱えます。\nD：誤り。ResultSetもtry-with-resourcesで扱えます。\n\n間違えやすいポイント：\nJDBCでは依存関係上もResultSet → Statement → Connectionの順で閉じるのが自然です。try-with-resourcesは逆順クローズです。"
+  },
+  {
+    "id": 243,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-callablestatement-in-out",
+    "question": "次のストアドプロシージャを呼び出すコードとして正しいものはどれか。\n\nストアドプロシージャ:\nCOUNT_BOOK_BY_PRICE(\n    IN MAX_PRICE INTEGER,\n    OUT BOOK_COUNT INTEGER\n)\n\nimport java.sql.*;\n\nclass DbSample243 {\n    static int call(Connection con) throws SQLException {\n        // insert code here\n    }\n}\n",
+    "choices": {
+      "A": "PreparedStatement cs = con.prepareStatement(\"{ CALL COUNT_BOOK_BY_PRICE(?, ?) }\");\ncs.registerOutParameter(2, Types.INTEGER);\ncs.executeQuery();\nreturn cs.getInt(2);",
+      "B": "Statement cs = con.createStatement(\"{ CALL COUNT_BOOK_BY_PRICE(?, ?) }\");\ncs.setInt(1, 4000);\ncs.execute();\nreturn cs.getInt(2);",
+      "C": "CallableStatement cs = con.prepareCall(\"{ CALL COUNT_BOOK_BY_PRICE(?, ?) }\");\ncs.setInt(1, 4000);\ncs.registerOutParameter(2, Types.INTEGER);\ncs.execute();\nreturn cs.getInt(2);",
+      "D": "CallableStatement cs = con.prepareCall(\"CALL COUNT_BOOK_BY_PRICE\");\ncs.setInt(2, 4000);\ncs.execute();\nreturn cs.getInt(1);"
+    },
+    "correctChoice": "C",
+    "correctText": "CallableStatement cs = con.prepareCall(\"{ CALL COUNT_BOOK_BY_PRICE(?, ?) }\");\ncs.setInt(1, 4000);\ncs.registerOutParameter(2, Types.INTEGER);\ncs.execute();\nreturn cs.getInt(2);",
+    "explanation": "正解：C\n\n結論：\nストアドプロシージャ呼び出しにはConnection#prepareCall(String)でCallableStatementを生成します。INパラメータはsetXxx、OUTパラメータはregisterOutParameterで登録し、実行後にgetXxxでOUT値を取得します。\n\n選択肢の切り方：\nA：正しい。IN/OUTの番号とメソッドが正しいです。\nB：誤り。createStatementはSQL文字列を受け取ってCallableStatementを返しません。\nC：誤り。PreparedStatementにはregisterOutParameterやgetIntによるOUT取得はありません。\nD：誤り。エスケープ構文とパラメータ番号の対応が不適切です。\n\n間違えやすいポイント：\nCallableStatementはPreparedStatementの一種ですが、OUTパラメータを扱うためのregisterOutParameterが重要です。"
+  },
+  {
+    "id": 244,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-execute-boolean-result",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample244 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            boolean a = st.execute(\"SELECT ID FROM PRODUCT\");\n            boolean b = st.execute(\"DELETE FROM PRODUCT WHERE ID = -1\");\n\n            System.out.println(a);\n            System.out.println(b);\n        }\n    }\n}\n\nSQLは正常に実行できるものとする。",
+    "choices": {
+      "A": "true\ntrue",
+      "B": "true\nfalse",
+      "C": "false\ntrue",
+      "D": "false\nfalse"
+    },
+    "correctChoice": "B",
+    "correctText": "true\nfalse",
+    "explanation": "正解：B\n\n結論：\nStatement.execute(String)は、実行結果がResultSetの場合にtrueを返し、更新件数または結果なしの場合にfalseを返します。SELECTはResultSetを返すためtrue、DELETEは更新件数を返すためfalseです。\n\n選択肢の切り方：\nA：誤り。DELETEはResultSetではありません。\nB：正しい。SELECTはtrue、DELETEはfalseです。\nC：誤り。SELECTはResultSetなのでtrueです。\nD：誤り。SELECTの判定が違います。\n\n間違えやすいポイント：\nexecuteのbooleanは成功/失敗ではありません。ResultSetかどうかを表します。"
   }
 ]
