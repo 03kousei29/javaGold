@@ -4558,5 +4558,1125 @@
     "correctChoice": "D",
     "correctText": "NumberFormat nf = NumberFormat.getInstance(Locale.US);",
     "explanation": "正解：D\n\n結論：\nNumberFormatは抽象クラスなので、通常コンストラクタで直接生成するのではなく、getInstance、getIntegerInstance、getCurrencyInstance、getPercentInstanceなどのファクトリメソッドで取得します。Locale.USの汎用数値フォーマッタならNumberFormat.getInstance(Locale.US)です。\n\n選択肢の切り方：\nA：誤り。NumberFormatをnewで直接生成できません。\nB：誤り。メソッド呼び出し構文として不正です。\nC：誤り。抽象クラスを直接インスタンス化できません。\nD：正しい。ファクトリメソッドで取得しています。\n\n間違えやすいポイント：\nNumberFormatは抽象クラスです。DecimalFormatとは生成方法が異なります。"
+  },
+  {
+    "id": 286,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-thread-basic-concurrent-order",
+    "question": "次のコードについて正しい説明はどれか。\n\nclass ThreadSample286 {\n    public static void main(String[] args) {\n        Thread t1 = new Thread(() -> System.out.print(\"A\"));\n        Thread t2 = new Thread(() -> System.out.print(\"B\"));\n\n        t1.start();\n        t2.start();\n\n        System.out.print(\"M\");\n    }\n}\n",
+    "choices": {
+      "A": "必ずABMの順で出力される",
+      "B": "必ずMABの順で出力される",
+      "C": "A、B、Mの出力順序は実行ごとに変わる可能性がある",
+      "D": "start()を呼ぶと、その場でrun()が完全に終了してから次の行へ進む"
+    },
+    "correctChoice": "C",
+    "correctText": "A、B、Mの出力順序は実行ごとに変わる可能性がある",
+    "explanation": "正解：C\n\n結論：\nstart()を呼ぶと新しいスレッドが実行可能状態になりますが、どのスレッドがいつ実行されるかはOSのスケジューリングに依存します。そのため、t1、t2、mainスレッドの出力順序は保証されません。\n\n選択肢の切り方：\nA：誤り。先にstartしたt1が必ず先に出力するとは限りません。\nB：誤り。mainスレッドの出力が必ず先になるとも限りません。\nC：正しい。マルチスレッドでは実行順序は保証されません。\nD：誤り。start()は別スレッドの実行を開始させるメソッドであり、run()を同期的に最後まで実行するものではありません。\n\n間違えやすいポイント：\nコード上のstart()呼び出し順と実際の処理完了順は一致するとは限りません。Java Goldでは「必ず」という選択肢に注意します。"
+  },
+  {
+    "id": 287,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-thread-subclass-start-run",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nclass Worker287 extends Thread {\n    public void run() {\n        System.out.println(\"run:\" + Thread.currentThread().getName());\n    }\n}\n\nclass ThreadSample287 {\n    public static void main(String[] args) {\n        Thread t = new Worker287();\n\n        t.run();\n        System.out.println(\"main:\" + Thread.currentThread().getName());\n    }\n}\n",
+    "choices": {
+      "A": "run:main\nmain:main",
+      "B": "run:Thread-0\nmain:main",
+      "C": "run:Worker287\nmain:main",
+      "D": "t.run()の行でIllegalThreadStateExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "run:main\nmain:main",
+    "explanation": "正解：A\n\n結論：\nrun()を直接呼び出した場合、新しいスレッドは開始されません。通常のインスタンスメソッド呼び出しとして、mainスレッド上でrun()が実行されます。そのためThread.currentThread().getName()はmainです。\n\n選択肢の切り方：\nA：正しい。run()直接呼び出しなのでmainスレッドで実行されます。\nB：誤り。Thread-0になるのはstart()で新しいスレッドとして実行された場合です。\nC：誤り。スレッド名はクラス名になるわけではありません。\nD：誤り。run()を直接呼ぶだけならIllegalThreadStateExceptionにはなりません。\n\n間違えやすいポイント：\nstart()は新しいスレッドを開始し、その結果run()が呼ばれます。run()を直接呼ぶと単なる通常メソッド呼び出しです。"
+  },
+  {
+    "id": 288,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-thread-start-twice",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nclass Worker288 extends Thread {\n    public void run() {\n        System.out.print(\"X\");\n    }\n}\n\nclass ThreadSample288 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Worker288();\n\n        t.start();\n        t.join();\n        t.start();\n    }\n}\n",
+    "choices": {
+      "A": "XX が出力されて正常終了する",
+      "B": "X が出力された後、2回目のstart()でIllegalThreadStateExceptionがスローされる",
+      "C": "2回目のstart()でInterruptedExceptionがスローされる",
+      "D": "join()の行でコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "X が出力された後、2回目のstart()でIllegalThreadStateExceptionがスローされる",
+    "explanation": "正解：B\n\n結論：\n一度start()したThreadオブジェクトは、処理が終了してTERMINATEDになった後でも再度start()できません。同じThreadオブジェクトに2回目のstart()を呼ぶとIllegalThreadStateExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。同じThreadオブジェクトは再利用できません。\nB：正しい。1回目は実行され、2回目のstart()で実行時例外です。\nC：誤り。InterruptedExceptionはjoinやsleepなどで扱うチェック例外であり、2回目start()の例外ではありません。\nD：誤り。mainがthrows Exceptionしているためjoin()のチェック例外処理は満たしています。\n\n間違えやすいポイント：\nThreadはタスクの再利用オブジェクトではありません。再実行したい場合は新しいThreadオブジェクトを作ります。"
+  },
+  {
+    "id": 289,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-thread-name-currentthread",
+    "question": "次のコードをコンパイル、実行するとどのような結果になる可能性があるか。\n\nclass ThreadSample289 {\n    public static void main(String[] args) throws Exception {\n        Runnable r = () -> {\n            System.out.println(Thread.currentThread().getName());\n        };\n\n        Thread t = new Thread(r, \"worker-A\");\n        t.start();\n        t.join();\n\n        System.out.println(Thread.currentThread().getName());\n    }\n}\n",
+    "choices": {
+      "A": "Thread-0\nmain",
+      "B": "worker-A\nmain",
+      "C": "main\nworker-A",
+      "D": "worker-A\nThread-0"
+    },
+    "correctChoice": "B",
+    "correctText": "worker-A\nmain",
+    "explanation": "正解：B\n\n結論：\nnew Thread(Runnable target, String name)でスレッド名をworker-Aに指定しています。Runnable内でThread.currentThread().getName()を呼ぶと、実行中のスレッド名worker-Aが取得されます。join()によりworker-Aの終了を待ってからmainスレッド名を出力します。\n\n選択肢の切り方：\nA：誤り。明示的に名前を指定しているためThread-0ではありません。\nB：正しい。Runnable側はworker-A、main側はmainです。\nC：誤り。join()しているためこの順序にはなりません。\nD：誤り。最後の出力はmainスレッドの名前です。\n\n間違えやすいポイント：\nThread.currentThread()は「今そのコードを実行しているスレッド」を返します。Threadオブジェクトの参照名ではありません。"
+  },
+  {
+    "id": 290,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-runnable-lambda-thread-constructor",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nclass ThreadSample290 {\n    public static void main(String[] args) throws Exception {\n        // insert code here\n\n        t.start();\n        t.join();\n    }\n}\n\n目的は、Runnableのラムダ式をThreadコンストラクタに渡し、別スレッドでOKを出力することである。",
+    "choices": {
+      "A": "Thread t = new Thread(() -> String.valueOf(\"OK\"));",
+      "B": "Runnable t = new Thread(() -> System.out.println(\"OK\"));",
+      "C": "Thread t = () -> System.out.println(\"OK\");",
+      "D": "Thread t = new Thread(() -> System.out.println(\"OK\"), \"task-1\");"
+    },
+    "correctChoice": "D",
+    "correctText": "Thread t = new Thread(() -> System.out.println(\"OK\"), \"task-1\");",
+    "explanation": "正解：D\n\n結論：\nRunnableは引数なし・戻り値なしのrun()を持つ関数型インターフェースです。ラムダ式() -> System.out.println(\"OK\")はRunnableとして扱えます。Thread(Runnable target, String name)コンストラクタに渡すことで、名前付きThreadを生成できます。\n\n選択肢の切り方：\nA：誤り。ラムダ本体が値を返す式であり、Runnableのvoid run()に適合しません。\nB：誤り。変数型がRunnableだと、その後t.start()やt.join()を呼べません。\nC：誤り。Threadは関数型インターフェースではないためラムダ式の代入先にできません。\nD：正しい。RunnableラムダをThreadコンストラクタへ渡しています。\n\n間違えやすいポイント：\nラムダ式を代入できるのは関数型インターフェースです。Threadそのものはクラスであり、ラムダの代入先にはなりません。"
+  },
+  {
+    "id": 291,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-thread-state-new-runnable",
+    "question": "次のコードをコンパイル、実行した場合の説明として正しいものはどれか。\n\nclass ThreadSample291 {\n    public static void main(String[] args) {\n        Thread t = new Thread(() -> {\n            for (int i = 0; i < 1000; i++) {\n                Math.sqrt(i);\n            }\n        });\n\n        System.out.println(t.getState());\n        t.start();\n        System.out.println(t.getState());\n    }\n}\n",
+    "choices": {
+      "A": "1回目はNEW、2回目はRUNNABLEまたはTERMINATEDなどになり得る",
+      "B": "1回目も2回目も必ずNEWになる",
+      "C": "start()を呼んだ直後は必ずWAITINGになる",
+      "D": "getState()はstaticメソッドなのでt.getState()はコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "1回目はNEW、2回目はRUNNABLEまたはTERMINATEDなどになり得る",
+    "explanation": "正解：A\n\n結論：\nThreadオブジェクトを生成しただけで、まだstart()していない状態はNEWです。start()を呼ぶと実行可能状態になりますが、その後いつ実行され、いつ終了するかはスケジューリングに依存します。そのため、2回目のgetState()ではRUNNABLEの可能性もあれば、すでに処理が終わってTERMINATEDの可能性もあります。\n\n選択肢の切り方：\nA：正しい。NEW後、start()により状態が変化します。\nB：誤り。start()後もNEWのままではありません。\nC：誤り。start()直後に必ずWAITINGになるわけではありません。\nD：誤り。getState()はインスタンス参照のスレッド状態を取得するメソッドです。\n\n間違えやすいポイント：\nstart()後の状態を必ず1つに固定して読むのは危険です。スレッドの実行タイミングは保証されません。"
+  },
+  {
+    "id": 292,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-thread-terminated-start-again",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nclass ThreadSample292 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> System.out.print(\"A\"));\n\n        t.start();\n        t.join();\n\n        System.out.println(t.getState());\n        t.start();\n    }\n}\n",
+    "choices": {
+      "A": "A と NEW が出力され、2回目のstart()でもAが出力される",
+      "B": "A と RUNNABLE が出力され、正常終了する",
+      "C": "join()の行で必ずIllegalThreadStateExceptionがスローされる",
+      "D": "A と TERMINATED が出力され、2回目のstart()でIllegalThreadStateExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "A と TERMINATED が出力され、2回目のstart()でIllegalThreadStateExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\njoin()によりtの終了を待っているため、join()後のtの状態はTERMINATEDです。一度終了したThreadオブジェクトを再度start()することはできず、2回目のstart()でIllegalThreadStateExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。終了後にNEWへ戻ることはありません。\nB：誤り。join()後なのでRUNNABLEではありません。\nC：誤り。join()自体は終了待ちの有効なメソッドです。\nD：正しい。終了後の再startは禁止です。\n\n間違えやすいポイント：\nThreadオブジェクトのライフサイクルはNEWからTERMINATEDへ進みますが、TERMINATEDからNEWへ戻ることはありません。"
+  },
+  {
+    "id": 293,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-join-checked-exception",
+    "question": "次のコードについて正しいものはどれか。\n\nclass ThreadSample293 {\n    public static void main(String[] args) {\n        Thread t = new Thread(() -> System.out.println(\"run\"));\n\n        t.start();\n        t.join();\n\n        System.out.println(\"end\");\n    }\n}\n",
+    "choices": {
+      "A": "run と end が必ずこの順で出力される",
+      "B": "join()はチェック例外InterruptedExceptionを投げる可能性があるためコンパイルエラーになる",
+      "C": "join()はstaticメソッドなのでt.join()はコンパイルエラーになる",
+      "D": "join()を呼ぶと必ずTIMED_WAITINGになる"
+    },
+    "correctChoice": "B",
+    "correctText": "join()はチェック例外InterruptedExceptionを投げる可能性があるためコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nThread#join()はInterruptedExceptionをthrowsするメソッドです。InterruptedExceptionはチェック例外なので、catchするか、mainメソッドにthrowsを書く必要があります。このコードではどちらもないためコンパイルエラーです。\n\n選択肢の切り方：\nA：誤り。実行結果以前にコンパイルできません。\nB：正しい。join()の例外処理が不足しています。\nC：誤り。join()はインスタンス参照のスレッド終了を待つメソッドです。\nD：誤り。引数なしjoin()は時間指定ではありません。さらに、このコードではコンパイルエラーが先です。\n\n間違えやすいポイント：\njoin()、join(long)、sleep(long)はInterruptedExceptionの例外処理が必要です。"
+  },
+  {
+    "id": 294,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-join-order-guarantee",
+    "question": "次のコードをコンパイル、実行するとどのような出力順になるか。\n\nclass ThreadSample294 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> System.out.print(\"A\"));\n\n        t.start();\n        t.join();\n        System.out.print(\"B\");\n    }\n}\n",
+    "choices": {
+      "A": "必ずAB",
+      "B": "必ずBA",
+      "C": "ABまたはBA",
+      "D": "join()を呼んでいるためBは出力されない"
+    },
+    "correctChoice": "A",
+    "correctText": "必ずAB",
+    "explanation": "正解：A\n\n結論：\njoin()は、対象スレッドが終了するまで現在のスレッドを待機させます。このコードではmainスレッドがt.join()でtの終了を待つため、tがAを出力して終了した後にBが出力されます。\n\n選択肢の切り方：\nA：正しい。join()によりAの完了後にBです。\nB：誤り。Bはjoin()後なので先には出ません。\nC：誤り。join()があるため順序が保証されます。\nD：誤り。tが終了すればjoin()は戻り、Bも出力されます。\n\n間違えやすいポイント：\nマルチスレッドでは通常順序保証がありませんが、join()は対象スレッドの終了待ちにより順序を作れます。"
+  },
+  {
+    "id": 295,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-sleep-current-thread",
+    "question": "次のコードについて正しいものはどれか。\n\nclass ThreadSample295 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> System.out.print(\"A\"));\n\n        t.start();\n        Thread.sleep(100);\n        System.out.print(\"B\");\n    }\n}\n",
+    "choices": {
+      "A": "Thread.sleep(100)はtスレッドを必ず100ミリ秒停止させる",
+      "B": "Thread.sleep(100)は現在実行中のmainスレッドを一時停止させる",
+      "C": "sleepの引数は秒単位なので100秒停止する",
+      "D": "sleepはInterruptedExceptionを投げないためthrows Exceptionは不要である"
+    },
+    "correctChoice": "B",
+    "correctText": "Thread.sleep(100)は現在実行中のmainスレッドを一時停止させる",
+    "explanation": "正解：B\n\n結論：\nThread.sleep(long millis)はstaticメソッドで、現在実行中のスレッドを指定ミリ秒だけ中断します。このコードではmainスレッド上でThread.sleep(100)を呼んでいるため、一時停止するのはmainスレッドです。\n\n選択肢の切り方：\nA：誤り。tスレッドを指定して停止するメソッドではありません。\nB：正しい。sleepは現在のスレッドに作用します。\nC：誤り。TimeUnitを指定しないThread.sleep(long)の単位はミリ秒です。\nD：誤り。sleepはInterruptedExceptionを投げる可能性があります。\n\n間違えやすいポイント：\nsleepはstaticメソッドです。特定のThreadオブジェクトを眠らせるものではなく、呼び出し中のスレッドを中断します。"
+  },
+  {
+    "id": 296,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-sleep-checked-exception",
+    "question": "次のコードをコンパイルするとどうなるか。\n\nclass ThreadSample296 {\n    public static void main(String[] args) {\n        Thread.sleep(10);\n        System.out.println(\"end\");\n    }\n}\n",
+    "choices": {
+      "A": "正常にコンパイルでき、endが出力される",
+      "B": "Thread.sleep(10)の行でIllegalThreadStateExceptionがスローされる",
+      "C": "Thread.sleep(10)の行でチェック例外の処理不足によりコンパイルエラーになる",
+      "D": "Thread.sleepの引数にintリテラルは渡せないためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "Thread.sleep(10)の行でチェック例外の処理不足によりコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nThread.sleep(long millis)はInterruptedExceptionをthrowsします。InterruptedExceptionはチェック例外なので、catchするかthrows宣言が必要です。このコードにはどちらもないためコンパイルエラーです。\n\n選択肢の切り方：\nA：誤り。例外処理不足でコンパイルできません。\nB：誤り。sleepの例外処理不足はコンパイル時に検出されます。\nC：正しい。InterruptedExceptionの処理が必要です。\nD：誤り。intリテラル10はlongへ拡大変換できるため、引数として渡せます。\n\n間違えやすいポイント：\nsleepやjoinの引数にint値を渡すこと自体は可能です。問題になるのはInterruptedExceptionの処理です。"
+  },
+  {
+    "id": 297,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-yield-no-guarantee",
+    "question": "次のコードについて正しい説明はどれか。\n\nclass ThreadSample297 {\n    public static void main(String[] args) {\n        Thread t1 = new Thread(() -> {\n            Thread.yield();\n            System.out.print(\"A\");\n        });\n        Thread t2 = new Thread(() -> System.out.print(\"B\"));\n\n        t1.start();\n        t2.start();\n    }\n}\n",
+    "choices": {
+      "A": "yield()により必ずBがAより先に出力される",
+      "B": "yield()はInterruptedExceptionを投げるためcatchが必要である",
+      "C": "yield()はThreadインスタンスからしか呼べない",
+      "D": "yield()は現在のスレッドに実行機会を譲るヒントを出すが、順序は保証されない"
+    },
+    "correctChoice": "D",
+    "correctText": "yield()は現在のスレッドに実行機会を譲るヒントを出すが、順序は保証されない",
+    "explanation": "正解：D\n\n結論：\nThread.yield()は、現在のスレッドが他のスレッドへ実行機会を譲ることをスケジューラに示すstaticメソッドです。ただし、実際にどのスレッドが次に実行されるかは保証されません。\n\n選択肢の切り方：\nA：誤り。yield()を呼んでもBが必ず先とは限りません。\nB：誤り。yield()はInterruptedExceptionをthrowsしません。\nC：誤り。yield()はstaticメソッドです。\nD：正しい。yieldはヒントであり、順序保証ではありません。\n\n間違えやすいポイント：\nyield()はsleep()やjoin()のようなチェック例外処理を必要としません。また、実行順序を確定させるメソッドでもありません。"
+  },
+  {
+    "id": 298,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-waiting-timed-waiting",
+    "question": "スレッド状態に関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "join()は時間指定がない場合WAITING、join(long millis)はTIMED_WAITINGになり得る",
+      "B": "sleep(long millis)はWAITINGになり、TIMED_WAITINGにはならない",
+      "C": "引数なしwait()は必ずBLOCKEDになる",
+      "D": "synchronizedのロック取得待ちはWAITINGである"
+    },
+    "correctChoice": "A",
+    "correctText": "join()は時間指定がない場合WAITING、join(long millis)はTIMED_WAITINGになり得る",
+    "explanation": "正解：A\n\n結論：\n引数なしのjoin()やwait()による待機はWAITINGになり得ます。一方、join(long millis)、wait(long millis)、sleep(long millis)のように時間指定を伴う待機はTIMED_WAITINGになり得ます。\n\n選択肢の切り方：\nA：正しい。時間指定の有無でWAITINGとTIMED_WAITINGを区別できます。\nB：誤り。sleep(long millis)はTIMED_WAITINGになり得ます。\nC：誤り。引数なしwait()はWAITINGになり得ます。\nD：誤り。synchronizedのロック取得待ちはBLOCKEDです。\n\n間違えやすいポイント：\nBLOCKED、WAITING、TIMED_WAITINGは混同しやすいです。ロック取得待ちはBLOCKED、時間なし待機はWAITING、時間指定待機はTIMED_WAITINGです。"
+  },
+  {
+    "id": 299,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-interrupt-sleep",
+    "question": "次のコードをコンパイル、実行するとどのような結果になる可能性が高いか。\n\nclass ThreadSample299 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> {\n            try {\n                Thread.sleep(10000);\n                System.out.print(\"S\");\n            } catch (InterruptedException e) {\n                System.out.print(\"I\");\n            }\n        });\n\n        t.start();\n        Thread.sleep(100);\n        t.interrupt();\n        t.join();\n    }\n}\n",
+    "choices": {
+      "A": "S",
+      "B": "I",
+      "C": "SI",
+      "D": "何も出力されず必ず終了しない"
+    },
+    "correctChoice": "B",
+    "correctText": "I",
+    "explanation": "正解：B\n\n結論：\ntスレッドがsleep中にmainスレッドからinterrupt()されると、sleepはInterruptedExceptionをスローして待機を解除します。このコードではcatch句でIを出力します。\n\n選択肢の切り方：\nA：誤り。sleepが最後まで完了すればSですが、interruptにより中断されます。\nB：正しい。InterruptedExceptionをcatchしてIを出力します。\nC：誤り。sleep後のSとcatchのIが両方出るわけではありません。\nD：誤り。割り込みで待機が解除され、join後に終了します。\n\n間違えやすいポイント：\nwait、join、sleepなどで待機中のスレッドにinterrupt()すると、InterruptedExceptionが発生して待機が解除されます。"
+  },
+  {
+    "id": 300,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-interrupt-not-waiting",
+    "question": "次のコードについて正しい説明はどれか。\n\nclass ThreadSample300 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> {\n            long end = System.currentTimeMillis() + 200;\n            while (System.currentTimeMillis() < end) {\n            }\n            System.out.print(\"A\");\n        });\n\n        t.start();\n        t.interrupt();\n        t.join();\n    }\n}\n",
+    "choices": {
+      "A": "interrupt()により必ずInterruptedExceptionがスローされる",
+      "B": "interrupt()を呼ぶとスレッドは必ずTERMINATEDになる",
+      "C": "待機中でないスレッドにinterrupt()しても、直ちに例外がスローされるとは限らない",
+      "D": "interrupt()はstaticメソッドなのでt.interrupt()はコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "待機中でないスレッドにinterrupt()しても、直ちに例外がスローされるとは限らない",
+    "explanation": "正解：C\n\n結論：\ninterrupt()は対象スレッドに割り込み要求を行い、割り込みステータスを設定します。対象スレッドがsleep、wait、joinなどで待機中の場合はInterruptedExceptionがスローされ待機が解除されます。しかし、このコードのように単に実行中の場合、直ちにInterruptedExceptionがスローされるとは限りません。\n\n選択肢の切り方：\nA：誤り。待機中でなければ必ず例外が発生するわけではありません。\nB：誤り。interrupt()だけで必ず終了状態になるわけではありません。\nC：正しい。interruptは強制終了ではありません。\nD：誤り。interrupt()はインスタンス参照のスレッドに割り込みを行うメソッドです。\n\n間違えやすいポイント：\ninterruptはスレッドを強制停止するメソッドではありません。割り込み要求をどう扱うかはスレッド側の処理に依存します。"
+  },
+  {
+    "id": 301,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-interrupt-status-check",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nclass ThreadSample301 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> {\n            while (!Thread.currentThread().isInterrupted()) {\n                break;\n            }\n            System.out.print(Thread.currentThread().isInterrupted());\n        });\n\n        t.start();\n        t.interrupt();\n        t.join();\n    }\n}\n\nなお、t.start()後、tのrun()開始前にmainスレッドからinterrupt()が実行されたものとする。",
+    "choices": {
+      "A": "false",
+      "B": "InterruptedExceptionがスローされる",
+      "C": "isInterrupted()は存在しないためコンパイルエラーになる",
+      "D": "true"
+    },
+    "correctChoice": "D",
+    "correctText": "true",
+    "explanation": "正解：D\n\n結論：\n待機中でないスレッドにinterrupt()が呼ばれた場合、割り込みステータスが設定されます。設問ではrun()開始前にinterrupt()されたものとしているため、run()開始時点でisInterrupted()はtrueです。while条件はfalseとなり、最後にtrueが出力されます。\n\n選択肢の切り方：\nA：誤り。InterruptedExceptionが発生してクリアされた場面ではありません。\nB：誤り。sleep/wait/join中ではないため、ここではInterruptedExceptionは発生しません。\nC：誤り。isInterrupted()はThreadの割り込み状態を確認するメソッドです。\nD：正しい。割り込みステータスが設定されています。\n\n間違えやすいポイント：\nInterruptedExceptionが発生すると割り込み状態はクリアされますが、待機中でない場合は割り込みステータスが設定されるだけです。"
+  },
+  {
+    "id": 302,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-priority-no-guarantee",
+    "question": "次のコードについて正しい説明はどれか。\n\nclass ThreadSample302 {\n    public static void main(String[] args) {\n        Thread high = new Thread(() -> System.out.print(\"H\"));\n        Thread low = new Thread(() -> System.out.print(\"L\"));\n\n        high.setPriority(Thread.MAX_PRIORITY);\n        low.setPriority(Thread.MIN_PRIORITY);\n\n        low.start();\n        high.start();\n    }\n}\n",
+    "choices": {
+      "A": "必ずHLの順で出力される",
+      "B": "必ずLHの順で出力される",
+      "C": "優先度を設定しても、実際の実行順序は保証されない",
+      "D": "setPriorityは存在しないためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "優先度を設定しても、実際の実行順序は保証されない",
+    "explanation": "正解：C\n\n結論：\nスレッドには優先度がありますが、実際にどのスレッドへいつCPU実行機会が割り当てられるかはOSやスケジューラに依存します。優先度を高くしたからといって、必ず先に実行されるわけではありません。\n\n選択肢の切り方：\nA：誤り。高優先度スレッドが必ず先とは限りません。\nB：誤り。lowを先にstartしたからといって必ず先に出るとも限りません。\nC：正しい。優先度は順序保証ではありません。\nD：誤り。setPriorityはThreadのメソッドです。\n\n間違えやすいポイント：\n優先度はスケジューリングのヒントとして扱われますが、Javaプログラム側で実行順序を保証するものではありません。"
+  },
+  {
+    "id": 303,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-synchronized-instance-method-lock",
+    "question": "次のコードについて正しい説明はどれか。\n\nclass Counter303 {\n    private int value;\n\n    public synchronized void inc() {\n        value++;\n    }\n\n    public synchronized void dec() {\n        value--;\n    }\n}\n\nclass ThreadSample303 {\n    public static void main(String[] args) {\n        Counter303 c = new Counter303();\n        new Thread(() -> c.inc()).start();\n        new Thread(() -> c.dec()).start();\n    }\n}\n",
+    "choices": {
+      "A": "inc()とdec()は同じCounter303インスタンスのロックを取得して実行される",
+      "B": "synchronizedはstaticメソッドにしか指定できないためコンパイルエラーになる",
+      "C": "inc()とdec()は別々のロックを必ず取得する",
+      "D": "synchronizedメソッドではロックは取得されない"
+    },
+    "correctChoice": "A",
+    "correctText": "inc()とdec()は同じCounter303インスタンスのロックを取得して実行される",
+    "explanation": "正解：A\n\n結論：\nインスタンスのsynchronizedメソッドを実行すると、そのメソッドを呼び出した対象インスタンス、つまりthisのロックを取得してから処理に入ります。このコードではinc()もdec()も同じcに対して呼ばれているため、同じCounter303インスタンスのロックを使います。\n\n選択肢の切り方：\nA：正しい。インスタンスsynchronizedメソッドのロック対象はthisです。\nB：誤り。synchronizedはインスタンスメソッドにも指定できます。\nC：誤り。同じインスタンスに対するsynchronizedメソッドは同じロックです。\nD：誤り。synchronizedメソッドではロックを取得します。\n\n間違えやすいポイント：\nインスタンスメソッドのsynchronizedは、メソッドごとに別ロックではなく、対象インスタンスのロックを使います。"
+  },
+  {
+    "id": 304,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-synchronized-block-this",
+    "question": "次の2つのメソッドについて正しい説明はどれか。\n\nclass Counter304 {\n    private int value;\n\n    public synchronized void inc() {\n        value++;\n    }\n\n    public void dec() {\n        synchronized (this) {\n            value--;\n        }\n    }\n}\n",
+    "choices": {
+      "A": "inc()とdec()は必ず異なるロックを使用する",
+      "B": "inc()はthisのロック、dec()のsynchronized(this)もthisのロックを使用する",
+      "C": "synchronized(this)はstaticメソッド内でしか使えない",
+      "D": "synchronizedブロック内ではフィールドを変更できない"
+    },
+    "correctChoice": "B",
+    "correctText": "inc()はthisのロック、dec()のsynchronized(this)もthisのロックを使用する",
+    "explanation": "正解：B\n\n結論：\nインスタンスのsynchronizedメソッドはthisのロックを取得します。また、synchronized(this)も同じthisのロックを明示的に取得します。そのため、同じインスタンスに対するinc()とdec()は同じロックで排他制御されます。\n\n選択肢の切り方：\nA：誤り。ロック対象は同じthisです。\nB：正しい。どちらもthisのロックです。\nC：誤り。synchronized(this)はインスタンスメソッド内で使えます。\nD：誤り。synchronizedは排他制御であり、フィールド変更を禁止するものではありません。\n\n間違えやすいポイント：\nsynchronizedメソッドとsynchronized文は書き方が違いますが、ロック対象が同じなら同じ排他制御になります。"
+  },
+  {
+    "id": 305,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-static-synchronized-class-lock",
+    "question": "次のコードについて正しい説明はどれか。\n\nclass StaticSample305 {\n    static synchronized void a() {\n        System.out.print(\"A\");\n    }\n\n    static void b() {\n        synchronized (StaticSample305.class) {\n            System.out.print(\"B\");\n        }\n    }\n}\n",
+    "choices": {
+      "A": "a()は各インスタンスのロックを取得し、b()は別のロックを取得する",
+      "B": "staticメソッドではsynchronizedを使用できない",
+      "C": "static synchronizedメソッドとsynchronized(StaticSample305.class)は同じクラスオブジェクトのロックを使う",
+      "D": "StaticSample305.classはロック対象に指定できない"
+    },
+    "correctChoice": "C",
+    "correctText": "static synchronizedメソッドとsynchronized(StaticSample305.class)は同じクラスオブジェクトのロックを使う",
+    "explanation": "正解：C\n\n結論：\nstatic synchronizedメソッドは、インスタンスではなくクラスオブジェクトのロックを取得します。synchronized(StaticSample305.class)も同じクラスオブジェクトのロックを取得します。\n\n選択肢の切り方：\nA：誤り。static synchronizedは各インスタンスのロックではありません。\nB：誤り。staticメソッドにもsynchronizedを指定できます。\nC：正しい。どちらもStaticSample305.classのロックです。\nD：誤り。Classオブジェクトもロック対象にできます。\n\n間違えやすいポイント：\nインスタンスsynchronizedはthis、static synchronizedはクラスオブジェクトのロックです。"
+  },
+  {
+    "id": 306,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-wait-without-lock",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nclass WaitSample306 {\n    public static void main(String[] args) throws Exception {\n        Object lock = new Object();\n        lock.wait();\n        System.out.println(\"end\");\n    }\n}\n",
+    "choices": {
+      "A": "end が出力される",
+      "B": "lock.wait()の行でコンパイルエラーになる",
+      "C": "wait()はThreadクラスのstaticメソッドなのでObjectからは呼べない",
+      "D": "lock.wait()の行でIllegalMonitorStateExceptionがスローされる"
+    },
+    "correctChoice": "D",
+    "correctText": "lock.wait()の行でIllegalMonitorStateExceptionがスローされる",
+    "explanation": "正解：D\n\n結論：\nwait()はObjectクラスのメソッドですが、呼び出すにはそのオブジェクトのロックを所有している必要があります。このコードではsynchronized(lock)の中で呼んでいないため、実行時にIllegalMonitorStateExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。wait()の呼び出し時点で例外になります。\nB：誤り。mainがthrows Exceptionしているため、InterruptedExceptionの処理は満たしています。\nC：誤り。wait()はObjectクラスのインスタンスメソッドです。\nD：正しい。ロック未所有でwait()を呼んでいます。\n\n間違えやすいポイント：\nwait/notify/notifyAllはObjectのメソッドです。ただし、対象オブジェクトのロックを所有しているsynchronized範囲内で呼ぶ必要があります。"
+  },
+  {
+    "id": 307,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-wait-releases-lock-notifyall",
+    "question": "wait()とnotifyAll()に関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "wait()を呼ぶと、対象オブジェクトのロックを保持したままWAITINGになる",
+      "B": "notifyAll()を呼ぶと、待機中のすべてのスレッドに待機解除が通知される",
+      "C": "notify()は待機中のすべてのスレッドを必ず同時に実行状態にする",
+      "D": "notifyAll()はsynchronized範囲外で呼ぶ必要がある"
+    },
+    "correctChoice": "B",
+    "correctText": "notifyAll()を呼ぶと、待機中のすべてのスレッドに待機解除が通知される",
+    "explanation": "正解：B\n\n結論：\nwait()を呼んだスレッドは、対象オブジェクトのロックを解放して待機状態になります。notify()は待機中のいずれか1つのスレッドに通知し、notifyAll()は待機中のすべてのスレッドに通知します。\n\n選択肢の切り方：\nA：誤り。wait()はロックを解放して待機します。\nB：正しい。notifyAll()は待機中のすべてへ通知します。\nC：誤り。notify()は1つのスレッドへの通知です。また通知後すぐ同時実行されるわけではありません。\nD：誤り。notifyAll()もロック所有中、つまりsynchronized範囲内で呼ぶ必要があります。\n\n間違えやすいポイント：\n通知されたスレッドは、通知後すぐに実行再開するとは限りません。通知した側がロックを解放した後、再びロック取得を待ちます。"
+  },
+  {
+    "id": 308,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-wait-timeout-interrupt-notify",
+    "question": "wait()による待機が解除される状況として正しいものはどれか。",
+    "choices": {
+      "A": "notify()またはnotifyAll()が呼ばれた場合だけであり、interrupt()や時間経過では解除されない",
+      "B": "wait()は一度呼ぶとプログラム終了まで解除されない",
+      "C": "wait(long millis)では、notify/notifyAll、interrupt、指定時間経過で解除され得る",
+      "D": "wait(long millis)はmillis秒単位で待機する"
+    },
+    "correctChoice": "C",
+    "correctText": "wait(long millis)では、notify/notifyAll、interrupt、指定時間経過で解除され得る",
+    "explanation": "正解：C\n\n結論：\nwait()の待機解除は、他スレッドからnotify()またはnotifyAll()が呼ばれた場合、他スレッドからinterrupt()された場合などに起こります。またwait(long millis)では、指定したミリ秒が経過した場合にも解除され得ます。\n\n選択肢の切り方：\nA：誤り。interrupt()でも解除され、時間指定waitでは時間経過でも解除されます。\nB：誤り。通知や割り込みで解除されます。\nC：正しい。代表的な解除条件を正しく示しています。\nD：誤り。wait(long millis)の単位はミリ秒です。\n\n間違えやすいポイント：\nwait(long millis)の単位はThread.sleep(long millis)やjoin(long millis)と同じくミリ秒です。"
+  },
+  {
+    "id": 309,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-volatile-visibility",
+    "question": "volatileに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "volatileを付けると、複数操作からなるインクリメントが必ず原子的になる",
+      "B": "volatileはローカル変数にのみ指定できる",
+      "C": "volatileを付けるとsynchronizedブロックと同じ排他制御が行われる",
+      "D": "volatileを付けると、その変数への変更が他のスレッドから見えやすくなる"
+    },
+    "correctChoice": "D",
+    "correctText": "volatileを付けると、その変数への変更が他のスレッドから見えやすくなる",
+    "explanation": "正解：D\n\n結論：\nvolatileは、メンバ変数に対する変更が他のスレッドから最新の値として参照されるようにするための指定です。可視性の問題を扱いますが、複数操作全体を排他的に実行する仕組みではありません。\n\n選択肢の切り方：\nA：誤り。i++のような読み取り、加算、書き込みの複合操作を原子的にするわけではありません。\nB：誤り。volatileはフィールドに指定します。\nC：誤り。排他制御はsynchronizedなどで行います。\nD：正しい。可視性を高めるための指定です。\n\n間違えやすいポイント：\nvolatileはスレッドセーフを何でも保証する魔法ではありません。可視性と排他制御を区別します。"
+  },
+  {
+    "id": 310,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-collections-synchronizedlist",
+    "question": "Collectionsクラスの同期化コレクションに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "Collections.synchronizedList(list)は、同期化されたListを返す",
+      "B": "Collections.synchronizedList(list)は元のlistを必ずTreeSetへ変換する",
+      "C": "Collections.synchronizedMap(map)はListを返す",
+      "D": "Collections.synchronizedSet(set)はスレッドプールを生成する"
+    },
+    "correctChoice": "A",
+    "correctText": "Collections.synchronizedList(list)は、同期化されたListを返す",
+    "explanation": "正解：A\n\n結論：\njava.util.Collectionsには、同期化されたコレクションを返すstaticメソッドが用意されています。synchronizedCollection、synchronizedList、synchronizedSet、synchronizedMapなどが該当します。\n\n選択肢の切り方：\nA：正しい。同期化されたListを返します。\nB：誤り。TreeSetへ変換するメソッドではありません。\nC：誤り。synchronizedMapは同期化されたMapを返します。\nD：誤り。スレッドプール生成はExecutorsなどの役割です。\n\n間違えやすいポイント：\nCollections.synchronizedXxxはコレクションを同期化するラッパーを返すメソッドです。Executorフレームワークとは別の話です。"
+  },
+  {
+    "id": 311,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-executors-factory-methods",
+    "question": "Executorsクラスのファクトリメソッドに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "newSingleThreadExecutor()は必ずScheduledExecutorServiceを返す",
+      "B": "newCachedThreadPool()は常に1つのスレッドだけを使う",
+      "C": "newFixedThreadPool(int nThreads)は指定数のスレッドを再利用するExecutorServiceを返す",
+      "D": "newScheduledThreadPool(int corePoolSize)はExecutorServiceではなくThreadを直接返す"
+    },
+    "correctChoice": "C",
+    "correctText": "newFixedThreadPool(int nThreads)は指定数のスレッドを再利用するExecutorServiceを返す",
+    "explanation": "正解：C\n\n結論：\nExecutors.newFixedThreadPool(int nThreads)は、指定した数のスレッドを再利用するスレッドプールを持つExecutorServiceを返します。newSingleThreadExecutorはシングルスレッド、newCachedThreadPoolは必要に応じて拡張可能なスレッドプールです。\n\n選択肢の切り方：\nA：誤り。newSingleThreadExecutorはExecutorServiceを返します。\nB：誤り。newCachedThreadPoolは拡張可能なスレッドプールです。\nC：正しい。固定数のスレッドプールです。\nD：誤り。newScheduledThreadPoolはScheduledExecutorServiceを返します。\n\n間違えやすいポイント：\nExecutorsのメソッド名は似ています。Single、Fixed、Cached、Scheduledの違いを押さえます。"
+  },
+  {
+    "id": 312,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-executor-execute-vs-submit-runnable",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass ExecutorSample312 {\n    public static void main(String[] args) throws Exception {\n        ExecutorService es = Executors.newSingleThreadExecutor();\n\n        Future<?> f = es.submit(() -> System.out.print(\"A\"));\n        System.out.println(f.get());\n\n        es.shutdown();\n    }\n}\n",
+    "choices": {
+      "A": "Aが出力された後、trueが出力される",
+      "B": "submit(Runnable)はFutureを返さないためコンパイルエラーになる",
+      "C": "Runnableは戻り値を返すため、f.get()は\"A\"を返す",
+      "D": "Aが出力された後、nullが出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "Aが出力された後、nullが出力される",
+    "explanation": "正解：D\n\n結論：\nExecutorService#submit(Runnable)はFuture<?>を返します。Runnableは戻り値を返せないため、正常完了した場合、Future#get()の結果はnullです。このコードではタスク内でAを出力し、その後f.get()の結果nullが出力されます。\n\n選択肢の切り方：\nA：誤り。Future#get()は成功可否のbooleanを返すわけではありません。\nB：誤り。submit(Runnable)はFuture<?>を返します。\nC：誤り。Runnableのrun()はvoidです。\nD：正しい。submit(Runnable)の正常完了結果はnullです。\n\n間違えやすいポイント：\nexecute(Runnable)は戻り値なし、submit(Runnable)はFuture<?>を返します。ただしRunnable自体の結果値はnullです。"
+  },
+  {
+    "id": 313,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-callable-submit-future-get",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.concurrent.*;\n\nclass ExecutorSample313 {\n    public static void main(String[] args) throws Exception {\n        ExecutorService es = Executors.newSingleThreadExecutor();\n\n        Callable<String> task = () -> \"OK\";\n        Future<String> f = es.submit(task);\n\n        System.out.println(f.get());\n        es.shutdown();\n    }\n}\n",
+    "choices": {
+      "A": "null が出力される",
+      "B": "OK が出力される",
+      "C": "CallableはThreadコンストラクタにしか渡せないためコンパイルエラーになる",
+      "D": "submit(Callable)はFutureを返さないためコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "OK が出力される",
+    "explanation": "正解：B\n\n結論：\nCallable<V>はcall()で値を返せるタスクです。ExecutorService#submit(Callable<T>)に渡すとFuture<T>が返り、Future#get()で計算結果を取得できます。このコードでは\"OK\"が返ります。\n\n選択肢の切り方：\nA：誤り。Callableは値を返せます。\nB：正しい。Future#get()でOKを取得しています。\nC：誤り。CallableはExecutorServiceのタスクとしてsubmitできます。Threadコンストラクタには直接渡せません。\nD：誤り。submit(Callable)はFutureを返します。\n\n間違えやすいポイント：\nRunnableは戻り値なし、Callableは戻り値ありです。Callableはnew Thread(...)へ直接渡せない点も重要です。"
+  },
+  {
+    "id": 314,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-callable-not-thread-constructor",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.util.concurrent.*;\n\nclass ExecutorSample314 {\n    public static void main(String[] args) throws Exception {\n        Callable<Integer> task = () -> 10;\n\n        // insert code here\n\n        es.shutdown();\n    }\n}\n\n目的は、CallableをExecutorServiceに送信し、戻り値10を出力することである。",
+    "choices": {
+      "A": "ExecutorService es = Executors.newSingleThreadExecutor();\nFuture<Integer> f = es.submit(task);\nSystem.out.println(f.get());",
+      "B": "Thread es = new Thread(task);\nes.start();",
+      "C": "ExecutorService es = Executors.newSingleThreadExecutor();\nes.execute(task);",
+      "D": "ExecutorService es = Executors.newSingleThreadExecutor();\nSystem.out.println(task.run());"
+    },
+    "correctChoice": "A",
+    "correctText": "ExecutorService es = Executors.newSingleThreadExecutor();\nFuture<Integer> f = es.submit(task);\nSystem.out.println(f.get());",
+    "explanation": "正解：A\n\n結論：\nCallableはExecutorService#submit(Callable<T>)に渡して実行します。submitはFuture<T>を返し、get()で結果を取得できます。このコードでは10が出力されます。\n\n選択肢の切り方：\nA：正しい。Callableをsubmitし、Future#get()で結果を取得しています。\nB：誤り。ThreadコンストラクタはRunnableを受け取ります。Callableは直接渡せません。\nC：誤り。executeはRunnableを受け取るメソッドであり、Callableを渡せません。\nD：誤り。Callableのメソッドはrun()ではなくcall()です。\n\n間違えやすいポイント：\nCallableは戻り値と例外を扱えますが、ThreadではなくExecutorServiceにsubmitして使うのが基本です。"
+  },
+  {
+    "id": 315,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-future-get-blocks-result",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.concurrent.*;\n\nclass ExecutorSample315 {\n    public static void main(String[] args) throws Exception {\n        ExecutorService es = Executors.newSingleThreadExecutor();\n\n        Future<Integer> f = es.submit(() -> {\n            Thread.sleep(100);\n            return 7;\n        });\n\n        System.out.println(f.get());\n        es.shutdown();\n    }\n}\n",
+    "choices": {
+      "A": "7 が出力される",
+      "B": "null が出力される",
+      "C": "Future[7] が出力される",
+      "D": "get()は待機しないため必ずTimeoutExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "7 が出力される",
+    "explanation": "正解：A\n\n結論：\nFuture#get()は、タスクが完了するまで待機し、完了後に結果を返します。このCallableは100ミリ秒sleepした後に7を返すため、f.get()は7を返します。\n\n選択肢の切り方：\nA：正しい。Callableの戻り値をFuture#get()で取得しています。\nB：誤り。nullになるのはsubmit(Runnable)が正常完了した場合などです。\nC：誤り。Futureオブジェクトそのものの表示ではなく、get()の戻り値を出力しています。\nD：誤り。引数なしget()は完了まで待機します。タイムアウト指定はget(long, TimeUnit)です。\n\n間違えやすいポイント：\nFuture#get()は結果を受け取るまでブロックします。すぐに値がないから例外、ではありません。"
+  },
+  {
+    "id": 316,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-future-get-timeout",
+    "question": "次のコードをコンパイル、実行するとどうなる可能性が高いか。\n\nimport java.util.concurrent.*;\n\nclass ExecutorSample316 {\n    public static void main(String[] args) throws Exception {\n        ExecutorService es = Executors.newSingleThreadExecutor();\n\n        Future<String> f = es.submit(() -> {\n            Thread.sleep(1000);\n            return \"done\";\n        });\n\n        try {\n            System.out.println(f.get(10, TimeUnit.MILLISECONDS));\n        } finally {\n            es.shutdownNow();\n        }\n    }\n}\n",
+    "choices": {
+      "A": "done が出力される",
+      "B": "null が出力される",
+      "C": "TimeoutExceptionがスローされる",
+      "D": "get(long, TimeUnit)は存在しないためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "TimeoutExceptionがスローされる",
+    "explanation": "正解：C\n\n結論：\nFuture#get(long timeout, TimeUnit unit)は、指定時間内にタスクが完了しない場合、TimeoutExceptionをスローします。このコードではタスクが1000ミリ秒sleepする一方、getの待機時間は10ミリ秒なので、TimeoutExceptionになる可能性が高いです。\n\n選択肢の切り方：\nA：誤り。指定時間内に完了しない想定です。\nB：誤り。Callableの結果はnullではありません。\nC：正しい。時間切れによりTimeoutExceptionです。\nD：誤り。Futureにはget(long, TimeUnit)があります。\n\n間違えやすいポイント：\nget()は完了まで待ちますが、get(timeout, unit)は最大待機時間を超えるとTimeoutExceptionです。"
+  },
+  {
+    "id": 317,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-future-cancel-isdone",
+    "question": "次のコードについて、取り消しが成功した場合の説明として正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass ExecutorSample317 {\n    public static void main(String[] args) throws Exception {\n        ExecutorService es = Executors.newSingleThreadExecutor();\n\n        Future<?> f = es.submit(() -> {\n            try {\n                Thread.sleep(5000);\n            } catch (InterruptedException e) {\n                System.out.print(\"I \");\n            }\n        });\n\n        Thread.sleep(100);\n        f.cancel(true);\n\n        System.out.println(f.isDone());\n        System.out.println(f.isCancelled());\n        es.shutdownNow();\n    }\n}\n",
+    "choices": {
+      "A": "isDone()はfalse、isCancelled()もfalseになる",
+      "B": "cancel(true)はコンパイルエラーになる",
+      "C": "取り消し済みタスクではisDone()は必ずfalseになる",
+      "D": "isDone()とisCancelled()はいずれもtrueになり得る"
+    },
+    "correctChoice": "D",
+    "correctText": "isDone()とisCancelled()はいずれもtrueになり得る",
+    "explanation": "正解：D\n\n結論：\nFuture#cancel(true)で取り消しに成功した場合、isCancelled()はtrueになります。また、取り消しも完了状態の一種なのでisDone()もtrueになります。\n\n選択肢の切り方：\nA：誤り。取り消し成功時はtrue系になります。\nB：誤り。cancel(boolean)はFutureのメソッドです。\nC：誤り。取り消し済みも完了扱いなのでisDone()はtrueです。\nD：正しい。取り消し成功時の状態です。\n\n間違えやすいポイント：\nisDone()は正常完了だけでなく、例外終了やキャンセルでもtrueになります。"
+  },
+  {
+    "id": 318,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-shutdown-reject-new-task",
+    "question": "次のコードをコンパイル、実行するとどうなるか。\n\nimport java.util.concurrent.*;\n\nclass ExecutorSample318 {\n    public static void main(String[] args) {\n        ExecutorService es = Executors.newSingleThreadExecutor();\n\n        es.execute(() -> System.out.print(\"A\"));\n        es.shutdown();\n        es.execute(() -> System.out.print(\"B\"));\n    }\n}\n",
+    "choices": {
+      "A": "AB が必ず出力されて正常終了する",
+      "B": "Aのタスクは受け付けられるが、shutdown後の新規タスク送信でRejectedExecutionExceptionがスローされる",
+      "C": "shutdown()は受け付け済みタスクも必ず破棄する",
+      "D": "shutdown()は存在しないためコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "Aのタスクは受け付けられるが、shutdown後の新規タスク送信でRejectedExecutionExceptionがスローされる",
+    "explanation": "正解：B\n\n結論：\nExecutorService#shutdown()は順序正しくシャットダウンを開始します。以前に送信されたタスクは実行されますが、新規タスクは受け付けません。そのためshutdown後にexecuteで新しいタスクを送るとRejectedExecutionExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。shutdown後の新規タスクは受け付けられません。\nB：正しい。既存タスクは処理対象、新規タスクは拒否です。\nC：誤り。shutdown()は受け付け済みタスクを通常実行します。\nD：誤り。shutdown()はExecutorServiceのメソッドです。\n\n間違えやすいポイント：\nshutdownは即時停止ではなく、新規受付停止です。即時停止を試みるのはshutdownNowです。"
+  },
+  {
+    "id": 319,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-shutdownnow-return-waiting-tasks",
+    "question": "次のコードについて正しい説明はどれか。\n\nimport java.util.*;\nimport java.util.concurrent.*;\n\nclass ExecutorSample319 {\n    public static void main(String[] args) throws Exception {\n        ExecutorService es = Executors.newSingleThreadExecutor();\n\n        es.submit(() -> {\n            try {\n                Thread.sleep(1000);\n            } catch (InterruptedException e) {\n            }\n        });\n        es.submit(() -> System.out.print(\"B\"));\n\n        List<Runnable> list = es.shutdownNow();\n        System.out.println(list.size() >= 0);\n    }\n}\n",
+    "choices": {
+      "A": "shutdownNow()は戻り値を持たないためコンパイルエラーになる",
+      "B": "shutdownNow()は必ずすべてのタスクを正常完了させてから戻る",
+      "C": "shutdownNow()は待機中タスクの停止を試み、未実行タスクのリストを返す",
+      "D": "shutdownNow()を呼ぶとExecutorServiceはRUNNING状態に戻る"
+    },
+    "correctChoice": "C",
+    "correctText": "shutdownNow()は待機中タスクの停止を試み、未実行タスクのリストを返す",
+    "explanation": "正解：C\n\n結論：\nshutdownNow()は実行中タスクの停止を試み、待機中のタスクの処理を開始せずに停止し、その未実行タスクのリストを返します。ただし、実行中タスクが確実に即停止するとは限りません。\n\n選択肢の切り方：\nA：誤り。shutdownNow()はList<Runnable>を返します。\nB：誤り。正常完了を待つメソッドではありません。\nC：正しい。shutdownNow()の役割と戻り値が合っています。\nD：誤り。シャットダウン方向へ進み、新規タスク受付には戻りません。\n\n間違えやすいポイント：\nshutdownNow()は強制停止を保証する魔法ではありません。割り込みなどで停止を試みるメソッドです。"
+  },
+  {
+    "id": 320,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-awaittermination-after-shutdown",
+    "question": "awaitTerminationに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "shutdown要求後、タスク完了・タイムアウト・割り込みのいずれかまで待機する",
+      "B": "ExecutorServiceを生成するstaticメソッドである",
+      "C": "新規タスクを送信するメソッドである",
+      "D": "呼び出すと必ずfalseを返す"
+    },
+    "correctChoice": "A",
+    "correctText": "shutdown要求後、タスク完了・タイムアウト・割り込みのいずれかまで待機する",
+    "explanation": "正解：A\n\n結論：\nExecutorService#awaitTermination(long timeout, TimeUnit unit)は、シャットダウン要求後、すべてのタスク完了、タイムアウト、現在スレッドへの割り込みのいずれかが起こるまで待機します。完了した場合はtrue、タイムアウトした場合はfalseを返します。\n\n選択肢の切り方：\nA：正しい。awaitTerminationの役割です。\nB：誤り。生成はExecutorsのnewXxx系メソッドです。\nC：誤り。タスク送信はexecuteやsubmitです。\nD：誤り。状況に応じてtrueもfalseも返ります。\n\n間違えやすいポイント：\nshutdown()は完了待ちをしません。完了待ちが必要ならawaitTerminationを組み合わせます。"
+  },
+  {
+    "id": 321,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-timeunit-conversion",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.concurrent.*;\n\nclass TimeUnitSample321 {\n    public static void main(String[] args) {\n        System.out.println(TimeUnit.SECONDS.toMillis(2));\n        System.out.println(TimeUnit.MILLISECONDS.toMicros(3));\n    }\n}\n",
+    "choices": {
+      "A": "2\n3",
+      "B": "2000\n3000",
+      "C": "2000\n3",
+      "D": "2\n3000"
+    },
+    "correctChoice": "B",
+    "correctText": "2000\n3000",
+    "explanation": "正解：B\n\n結論：\nTimeUnit.SECONDS.toMillis(2)は2秒をミリ秒に変換するため2000です。TimeUnit.MILLISECONDS.toMicros(3)は3ミリ秒をマイクロ秒に変換するため3000です。\n\n選択肢の切り方：\nA：誤り。単位変換されていません。\nB：正しい。秒→ミリ秒、ミリ秒→マイクロ秒です。\nC：誤り。2行目の変換を見落としています。\nD：誤り。1行目の変換を見落としています。\n\n間違えやすいポイント：\nTimeUnitは時間単位を明示する列挙型です。sleepやawaitTerminationなどの単位指定でも使われます。"
+  },
+  {
+    "id": 322,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-scheduledexecutor-schedule-callable",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.concurrent.*;\n\nclass ScheduledSample322 {\n    public static void main(String[] args) throws Exception {\n        ScheduledExecutorService es = Executors.newSingleThreadScheduledExecutor();\n\n        ScheduledFuture<String> f = es.schedule(\n            () -> \"OK\",\n            10,\n            TimeUnit.MILLISECONDS\n        );\n\n        System.out.println(f.get());\n        es.shutdown();\n    }\n}\n",
+    "choices": {
+      "A": "null が出力される",
+      "B": "ScheduledFutureはFutureのサブインタフェースではないためget()できない",
+      "C": "OK が出力される",
+      "D": "schedule(Callable, long, TimeUnit)は存在しないためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "OK が出力される",
+    "explanation": "正解：C\n\n結論：\nScheduledExecutorService#schedule(Callable<V>, long, TimeUnit)は、指定遅延後にCallableを1回実行し、ScheduledFuture<V>を返します。ScheduledFutureはFutureのサブインタフェースなのでget()で結果を取得できます。\n\n選択肢の切り方：\nA：誤り。Callableは戻り値を返します。\nB：誤り。ScheduledFutureはFutureのサブインタフェースです。\nC：正しい。Callableの戻り値OKを取得します。\nD：誤り。Callableを受け取るscheduleメソッドは存在します。\n\n間違えやすいポイント：\nRunnableをscheduleした場合のget()はnullですが、Callableをscheduleした場合は戻り値を取得できます。"
+  },
+  {
+    "id": 323,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-scheduledexecutor-schedule-runnable",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.concurrent.*;\n\nclass ScheduledSample323 {\n    public static void main(String[] args) throws Exception {\n        ScheduledExecutorService es = Executors.newSingleThreadScheduledExecutor();\n\n        ScheduledFuture<?> f = es.schedule(\n            () -> System.out.print(\"R\"),\n            10,\n            TimeUnit.MILLISECONDS\n        );\n\n        System.out.println(f.get());\n        es.shutdown();\n    }\n}\n",
+    "choices": {
+      "A": "Rtrue が出力される",
+      "B": "R10 が出力される",
+      "C": "Runnableをscheduleに渡すことはできないためコンパイルエラーになる",
+      "D": "Rnull が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "Rnull が出力される",
+    "explanation": "正解：D\n\n結論：\nScheduledExecutorService#schedule(Runnable, long, TimeUnit)は、指定遅延後にRunnableを1回実行し、ScheduledFuture<?>を返します。Runnableは戻り値を返せないため、正常完了時のFuture#get()はnullです。タスク内でRを出力した後、printlnでnullが出力されます。\n\n選択肢の切り方：\nA：誤り。Future#get()はbooleanではありません。\nB：誤り。遅延時間が戻り値になるわけではありません。\nC：誤り。Runnableを受け取るscheduleメソッドもあります。\nD：正しい。Runnableの結果はnullです。\n\n間違えやすいポイント：\nsubmit(Runnable)と同様に、schedule(Runnable)でも正常完了結果はnullです。"
+  },
+  {
+    "id": 324,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-schedule-fixed-rate-vs-fixed-delay",
+    "question": "scheduleAtFixedRateとscheduleWithFixedDelayの説明として正しいものはどれか。",
+    "choices": {
+      "A": "scheduleAtFixedRateはタスク終了後からdelay分待って次を開始する",
+      "B": "scheduleWithFixedDelayは一定周期の開始時刻に基づいて繰り返す",
+      "C": "どちらも1回だけ実行して必ず終了する",
+      "D": "scheduleWithFixedDelayはタスク終了後から指定delayを空けて次を開始する"
+    },
+    "correctChoice": "D",
+    "correctText": "scheduleWithFixedDelayはタスク終了後から指定delayを空けて次を開始する",
+    "explanation": "正解：D\n\n結論：\nscheduleAtFixedRateは、initialDelay後に1回実行し、その後はperiodで指定した一定周期に基づいて繰り返します。一方、scheduleWithFixedDelayは、タスクが終了してからdelayで指定した時間だけ間隔を空けて次の実行を開始します。\n\n選択肢の切り方：\nA：誤り。これはscheduleWithFixedDelayの説明です。\nB：誤り。これはscheduleAtFixedRateに近い説明です。\nC：誤り。キャンセル、終了、例外などがない限り繰り返し実行されます。\nD：正しい。終了後からdelayを空けるのがfixed delayです。\n\n間違えやすいポイント：\nfixed rateは開始周期基準、fixed delayは終了後の間隔基準です。"
+  },
+  {
+    "id": 325,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-cyclicbarrier-basic-action",
+    "question": "次のコードをコンパイル、実行した場合の説明として正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass BarrierSample325 {\n    public static void main(String[] args) throws Exception {\n        CyclicBarrier barrier = new CyclicBarrier(\n            2,\n            () -> System.out.print(\"GO \")\n        );\n\n        Runnable task = () -> {\n            try {\n                System.out.print(\"W \");\n                barrier.await();\n                System.out.print(\"E \");\n            } catch (Exception e) {\n                System.out.print(\"X \");\n            }\n        };\n\n        new Thread(task).start();\n        new Thread(task).start();\n    }\n}\n",
+    "choices": {
+      "A": "2つのスレッドがawaitに到達するとバリアーアクションが実行され、その後待機スレッドが再開する",
+      "B": "CyclicBarrierは1スレッド専用なので2スレッドでは必ず例外になる",
+      "C": "await()は戻り値を持たないためコンパイルエラーになる",
+      "D": "バリアーアクションは最初のスレッドがawaitに到達した瞬間に必ず実行される"
+    },
+    "correctChoice": "A",
+    "correctText": "2つのスレッドがawaitに到達するとバリアーアクションが実行され、その後待機スレッドが再開する",
+    "explanation": "正解：A\n\n結論：\nCyclicBarrierは、指定されたパーティ数のスレッドがバリアーポイントに到達するまで待機させます。このコードでは2スレッドがawaitに到達するとバリアーがトリップし、バリアーアクションGOが実行され、その後待機していたスレッドが処理を再開します。\n\n選択肢の切り方：\nA：正しい。CyclicBarrierの基本動作です。\nB：誤り。複数スレッドの待ち合わせに使います。\nC：誤り。await()はintを返しますが、戻り値を使わなくても構いません。\nD：誤り。パーティ数が揃ったときに実行されます。\n\n間違えやすいポイント：\nバリアーアクションは全パーティが揃った時点で実行されます。最初の1人が到着しただけでは実行されません。"
+  },
+  {
+    "id": 326,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-flow-subscription-request",
+    "question": "Flow APIのSubscriptionに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "SubscriptionはSubscriber側が必ずnewしてPublisherへ渡す",
+      "B": "SubscriberはonSubscribeで受け取ったSubscriptionを使ってrequestやcancelを行える",
+      "C": "request(long n)はPublisherからSubscriberへエラーを通知するメソッドである",
+      "D": "cancel()を呼んでもデータ受信は必ず継続する"
+    },
+    "correctChoice": "B",
+    "correctText": "SubscriberはonSubscribeで受け取ったSubscriptionを使ってrequestやcancelを行える",
+    "explanation": "正解：B\n\n結論：\nFlow APIでは、PublisherがSubscriberのonSubscribeにSubscriptionを渡します。SubscriberはそのSubscriptionを使ってrequest(long n)で受信したいデータ数を要求したり、cancel()で購読をキャンセルしたりします。\n\n選択肢の切り方：\nA：誤り。Subscriptionは通常Publisher側からSubscriberへ渡されます。\nB：正しい。バックプレッシャー制御の中心です。\nC：誤り。requestはデータ数の要求です。エラー通知はonErrorです。\nD：誤り。cancel後は以降のデータを受信しない方向になります。\n\n間違えやすいポイント：\nSubscriptionは、SubscriberがPublisherへ要求量を伝えるための接点です。onSubscribeで受け取り、requestで量を制御します。"
+  },
+  {
+    "id": 327,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-submissionpublisher-constructor-commonpool",
+    "question": "SubmissionPublisherの引数なしコンストラクタに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "ForkJoinPool.commonPool()由来の共通スレッドプールと既定バッファサイズを使用する",
+      "B": "必ずnewSingleThreadExecutor()を内部で作成する",
+      "C": "Subscriberを1つだけ登録できるPublisherを作成する",
+      "D": "Executorを指定しないとコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "ForkJoinPool.commonPool()由来の共通スレッドプールと既定バッファサイズを使用する",
+    "explanation": "正解：A\n\n結論：\nSubmissionPublisher<T>の引数なしコンストラクタでは、ForkJoinPool.commonPool()で取得される共通スレッドプールと、Flow.defaultBufferSize()で取得される既定バッファサイズが使用されます。\n\n選択肢の切り方：\nA：正しい。引数なしコンストラクタの既定動作です。\nB：誤り。newSingleThreadExecutor()固定ではありません。\nC：誤り。Subscriberを1つだけに制限する説明ではありません。\nD：誤り。引数なしコンストラクタがあります。\n\n間違えやすいポイント：\nSubmissionPublisherは内部で非同期配信を行うためExecutorを使いますが、引数なしでも既定のExecutorとバッファサイズが使われます。"
+  },
+  {
+    "id": 328,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-submissionpublisher-subscribe-onSubscribe",
+    "question": "SubmissionPublisher#subscribeに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "subscribeを呼ぶと、SubscriberのonErrorだけが必ず同期的に呼ばれる",
+      "B": "subscribeを呼ぶと、指定したSubscriberが追加され、onSubscribeが非同期に呼び出され得る",
+      "C": "subscribeはデータを1件発行するメソッドである",
+      "D": "subscribeはclose後に新規データを発行するためのメソッドである"
+    },
+    "correctChoice": "B",
+    "correctText": "subscribeを呼ぶと、指定したSubscriberが追加され、onSubscribeが非同期に呼び出され得る",
+    "explanation": "正解：B\n\n結論：\nSubmissionPublisher#subscribe(Flow.Subscriber<T>)は、指定したSubscriberを追加し、データ配信を開始できるようにします。追加時にはSubscriberのonSubscribeが非同期に呼び出されます。\n\n選択肢の切り方：\nA：誤り。正常な購読開始はonSubscribeです。\nB：正しい。subscribeの基本動作です。\nC：誤り。データ発行はsubmitやofferです。\nD：誤り。close後は新たなデータ発行を受け付けません。\n\n間違えやすいポイント：\nsubscribeは購読登録、submit/offerはデータ発行、closeは完了通知です。役割を分けて覚えます。"
+  },
+  {
+    "id": 329,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-submissionpublisher-submit-offer-close",
+    "question": "SubmissionPublisherのsubmit、offer、closeに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "submitはSubscriberを登録するメソッドである",
+      "B": "offerは必ずブロックし、ドロップ処理はできない",
+      "C": "closeはSubscriberのonErrorを必ず呼び出す",
+      "D": "closeを呼ぶと、以降の新たなデータ発行は受け付けない"
+    },
+    "correctChoice": "D",
+    "correctText": "closeを呼ぶと、以降の新たなデータ発行は受け付けない",
+    "explanation": "正解：D\n\n結論：\nSubmissionPublisher#close()は、すでにクローズされていない限り、各SubscriberのonCompleteを非同期に呼び出し、以後の新たなデータ発行を受け付けません。submitは各Subscriberへデータを発行し、offerはブロックせずに発行を試みるメソッドです。\n\n選択肢の切り方：\nA：誤り。Subscriber登録はsubscribeです。\nB：誤り。offerはブロックしない発行を試み、onDropを扱えます。\nC：誤り。正常closeではonCompleteです。\nD：正しい。close後は新規発行を受け付けません。\n\n間違えやすいポイント：\nsubmitはブロックし得る発行、offerはブロックせずに発行を試みる、closeは完了通知です。"
+  },
+  {
+    "id": 330,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-flow-subscriber-implements",
+    "question": "Flow.Subscriberを実装するクラスの宣言として適切なものはどれか。",
+    "choices": {
+      "A": "class S implements Flow.Subscriber<String> { /* 必要メソッドを実装 */ }",
+      "B": "class S extends Flow.Subscriber<String> { }",
+      "C": "class S implements Flow.Publisher<String> { public void onNext(String s) {} }",
+      "D": "class S implements Subscriber<String> { } と書けばimportなしで必ず使える"
+    },
+    "correctChoice": "A",
+    "correctText": "class S implements Flow.Subscriber<String> { /* 必要メソッドを実装 */ }",
+    "explanation": "正解：A\n\n結論：\nFlow.Subscriber<T>はFlowクラスにネストされたstaticインタフェースです。完全修飾に近い形で書くなら、implements Flow.Subscriber<String> のように実装します。実装クラスではonSubscribe、onNext、onError、onCompleteなどを実装します。\n\n選択肢の切り方：\nA：正しい。Flow.Subscriber<T>をimplementsしています。\nB：誤り。Subscriberはインタフェースなのでextendsではありません。\nC：誤り。Publisherは発行側のインタフェースです。\nD：誤り。Subscriberを単純名で使うには適切なimportが必要です。\n\n間違えやすいポイント：\nFlow.Publisher、Flow.Subscriber、Flow.Subscription、Flow.Processorは役割が違います。Subscriberは受信側です。"
+  },
+  {
+    "id": 331,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-forkjoinpool-commonpool-parallelstream",
+    "question": "ForkJoinPool.commonPool()に関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "parallelStreamやSubmissionPublisherの既定処理で使われ得る共通スレッドプールである",
+      "B": "常に1つのスレッドだけを持つExecutorServiceである",
+      "C": "Threadクラスのサブクラスではないため並列処理には使えない",
+      "D": "submitされたタスクを必ず順番どおり単一スレッドで処理する"
+    },
+    "correctChoice": "A",
+    "correctText": "parallelStreamやSubmissionPublisherの既定処理で使われ得る共通スレッドプールである",
+    "explanation": "正解：A\n\n結論：\nForkJoinPoolは、タスクを分割して並列処理し、結果を結合するためのExecutorService実装です。commonPool()で取得する共通スレッドプールは、並列ストリームやSubmissionPublisherの既定処理で使われ得ます。\n\n選択肢の切り方：\nA：正しい。共通プールの代表的な利用場面です。\nB：誤り。単一スレッド専用ではありません。\nC：誤り。ExecutorService実装として並列処理に使われます。\nD：誤り。単一スレッドで順番処理する説明ではありません。\n\n間違えやすいポイント：\nparallelStreamでは、通常プログラム側でスレッドを直接管理せず、ForkJoinPool.commonPool()が利用されます。"
+  },
+  {
+    "id": 332,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-parallelstream-isparallel",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass ParallelSample332 {\n    public static void main(String[] args) {\n        var s1 = List.of(1, 2, 3).stream();\n        var s2 = List.of(1, 2, 3).parallelStream();\n\n        System.out.println(s1.isParallel());\n        System.out.println(s2.isParallel());\n    }\n}\n",
+    "choices": {
+      "A": "true\ntrue",
+      "B": "false\nfalse",
+      "C": "false\ntrue",
+      "D": "true\nfalse"
+    },
+    "correctChoice": "C",
+    "correctText": "false\ntrue",
+    "explanation": "正解：C\n\n結論：\nCollection#stream()は順次ストリームを返し、Collection#parallelStream()は並列ストリームを返します。BaseStream#isParallel()で並列実行されるストリームかどうかを確認できます。\n\n選択肢の切り方：\nA：誤り。stream()は通常順次です。\nB：誤り。parallelStream()は並列ストリームです。\nC：正しい。s1はfalse、s2はtrueです。\nD：誤り。結果が逆です。\n\n間違えやすいポイント：\nstream()とparallelStream()の違いは、isParallel()で明確に確認できます。"
+  },
+  {
+    "id": 333,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-parallel-sequential-last-call",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass ParallelSample333 {\n    public static void main(String[] args) {\n        var s = List.of(\"a\", \"b\").stream()\n            .parallel()\n            .sequential();\n\n        System.out.println(s.isParallel());\n    }\n}\n",
+    "choices": {
+      "A": "true が出力される",
+      "B": "parallel()とsequential()を同じパイプラインで呼ぶとコンパイルエラーになる",
+      "C": "isParallel()の呼び出しでIllegalStateExceptionが必ずスローされる",
+      "D": "false が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "false が出力される",
+    "explanation": "正解：D\n\n結論：\nBaseStream#parallel()は同等の並列ストリームを返し、sequential()は同等の順次ストリームを返します。このコードでは最後にsequential()を呼んでいるため、isParallel()はfalseです。\n\n選択肢の切り方：\nA：誤り。最後にsequential()へ切り替えています。\nB：誤り。parallel()とsequential()は中間的に切り替え可能です。\nC：誤り。終端操作前の状態確認としてisParallel()を呼べます。\nD：正しい。順次ストリームです。\n\n間違えやすいポイント：\nparallel()とsequential()はストリームの実行モードを切り替えます。最後にどちらを呼んだかを見ます。"
+  },
+  {
+    "id": 334,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-parallel-foreachordered",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass ParallelSample334 {\n    public static void main(String[] args) {\n        List<String> list = List.of(\"b\", \"a\", \"c\");\n\n        list.parallelStream()\n            .map(String::toUpperCase)\n            .forEachOrdered(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "ABC が必ず出力される",
+      "B": "A、B、Cが必ずランダムな順で出力される",
+      "C": "BAC が出力される",
+      "D": "forEachOrderedは並列ストリームでは使えないためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "BAC が出力される",
+    "explanation": "正解：C\n\n結論：\nList由来のストリームには遭遇順序があります。parallelStream()で並列化しても、forEachOrdered()は遭遇順序を尊重して処理するため、b, a, cを大文字化したBACが出力されます。\n\n選択肢の切り方：\nA：誤り。ソートしていないためABCにはなりません。\nB：誤り。forEachOrderedは遭遇順序を尊重します。\nC：正しい。元の順序のまま大文字化されます。\nD：誤り。forEachOrderedは並列ストリームでも利用できます。\n\n間違えやすいポイント：\nparallelStreamだから必ず順不同になるわけではありません。forEachとforEachOrderedの違いが重要です。"
+  },
+  {
+    "id": 335,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-parallel-findfirst",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass ParallelSample335 {\n    public static void main(String[] args) {\n        Optional<String> result = List.of(\"b\", \"a\", \"c\")\n            .parallelStream()\n            .filter(s -> s.compareTo(\"a\") >= 0)\n            .findFirst();\n\n        System.out.println(result.orElse(\"none\"));\n    }\n}\n",
+    "choices": {
+      "A": "a が必ず出力される",
+      "B": "b が出力される",
+      "C": "c が必ず出力される",
+      "D": "findFirstは並列ストリームでは使えないためコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "b が出力される",
+    "explanation": "正解：B\n\n結論：\nList由来のストリームには遭遇順序があります。filter条件はb、a、cのすべてが満たします。findFirst()は遭遇順序を持つストリームでは最初の要素を返すため、parallelStreamでもbになります。\n\n選択肢の切り方：\nA：誤り。自然順序で最小のaを探す処理ではありません。\nB：正しい。遭遇順序の最初はbです。\nC：誤り。最後の要素を返すわけではありません。\nD：誤り。findFirstは並列ストリームでも使えます。\n\n間違えやすいポイント：\nfindFirstはソートや最小値取得ではありません。遭遇順序の最初を返します。"
+  },
+  {
+    "id": 336,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-parallel-reduce-three-args-identity",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass ParallelSample336 {\n    public static void main(String[] args) {\n        int result = List.of(10, 20, 30)\n            .parallelStream()\n            .reduce(\n                1,\n                (sum, num) -> sum + num,\n                (a, b) -> a + b\n            );\n\n        System.out.println(result);\n    }\n}\n",
+    "choices": {
+      "A": "61 が出力される",
+      "B": "63 が出力される可能性がある",
+      "C": "60 が必ず出力される",
+      "D": "3引数reduceはIntStream専用なのでコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "63 が出力される可能性がある",
+    "explanation": "正解：B\n\n結論：\nStream<T>の3引数reduceでは、並列処理時に各サブストリームでidentityが使われ、その結果をcombinerで結合します。List.of(10,20,30)が3つに分割される例では、1+10、1+20、1+30が作られ、それらを足して63になります。\n\n選択肢の切り方：\nA：誤り。単純に1+10+20+30だけとは限りません。\nB：正しい。テキスト例の並列分割では63になります。\nC：誤り。identityの影響を無視しています。\nD：誤り。3引数reduceはStream<T>で提供されます。\n\n間違えやすいポイント：\n並列reduceではidentityがサブストリームごとに使われ得ます。順次reduceと同じ感覚で読むと誤ります。"
+  },
+  {
+    "id": 337,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-parallel-collect-three-args",
+    "question": "次のコードをコンパイル、実行すると、結果のSetに含まれる要素はどれか。\n\nimport java.util.*;\n\nclass ParallelSample337 {\n    public static void main(String[] args) {\n        Set<Integer> set = List.of(10, 20, 30)\n            .parallelStream()\n            .collect(\n                HashSet::new,\n                HashSet::add,\n                HashSet::addAll\n            );\n\n        System.out.println(set.containsAll(List.of(10, 20, 30)));\n    }\n}\n",
+    "choices": {
+      "A": "false が出力される",
+      "B": "HashSet::addAllの行でコンパイルエラーになる",
+      "C": "true が出力される",
+      "D": "parallelStreamではcollectを使えないためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "true が出力される",
+    "explanation": "正解：C\n\n結論：\n3引数collectは、第一引数に可変コンテナの生成処理、第二引数に要素をコンテナへ追加する処理、第三引数にサブ結果同士を結合する処理を指定します。このコードでは各要素がHashSetに追加され、サブ結果はaddAllで結合されます。\n\n選択肢の切り方：\nA：誤り。10、20、30はSetに含まれます。\nB：誤り。HashSet::addAllは結合処理として使えます。\nC：正しい。すべての要素が含まれます。\nD：誤り。parallelStreamでもcollectは利用できます。\n\n間違えやすいポイント：\nparallel collectでは、部分結果をどう結合するかを第三引数で指定します。"
+  },
+  {
+    "id": 338,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-copyonwritearraylist-removeif-lazy-stream",
+    "question": "次の説明として正しいものはどれか。",
+    "choices": {
+      "A": "synchronizedListなら拡張for文中で直接removeしても絶対にConcurrentModificationExceptionは起きない",
+      "B": "中間操作mapやfilterは、宣言した時点で必ず即座に全要素へ実行される",
+      "C": "ArrayList.removeIf(Predicate)は存在しないため、要素削除には必ずIteratorが必要である",
+      "D": "CopyOnWriteArrayListは変更操作時に元になる配列のコピーを作成するリストである"
+    },
+    "correctChoice": "D",
+    "correctText": "CopyOnWriteArrayListは変更操作時に元になる配列のコピーを作成するリストである",
+    "explanation": "正解：D\n\n結論：\nCopyOnWriteArrayListは、変更操作時に元になる配列のコピーを作成して操作するリストです。一方、同期化リストでもイテレータ使用中の構造変更には注意が必要です。また、ストリームの中間操作は終端操作が実行されるまで基本的に実行されません。\n\n選択肢の切り方：\nA：誤り。synchronizedListでも拡張for文内で直接removeするとConcurrentModificationExceptionが起こり得ます。\nB：誤り。中間操作は遅延実行され、終端操作時に動きます。\nC：誤り。CollectionにはremoveIf(Predicate)があります。\nD：正しい。CopyOnWriteArrayListの特徴です。\n\n間違えやすいポイント：\n同期化コレクション、CopyOnWrite系、removeIf、ストリームの遅延実行は似ているようで別の論点です。"
+  },
+  {
+    "id": 339,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-reduce-sequential-identity",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.stream.*;\n\nclass ReduceSample339 {\n    public static void main(String[] args) {\n        int result = IntStream.range(1, 6)\n            .reduce(10, (x, y) -> x + y);\n\n        System.out.println(result);\n    }\n}\n",
+    "choices": {
+      "A": "25 が出力される",
+      "B": "15 が出力される",
+      "C": "10 が出力される",
+      "D": "reduceの行でコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "25 が出力される",
+    "explanation": "正解：A\n\n結論：\nIntStream.range(1, 6)は1, 2, 3, 4, 5を生成します。reduce(10, (x, y) -> x + y)では、identityの10を初期値として、各要素を順に加算します。結果は10 + 1 + 2 + 3 + 4 + 5 = 25です。\n\n選択肢の切り方：\nA：正しい。初期値10を含めた合計です。\nB：誤り。これは初期値10を無視した1〜5の合計です。\nC：誤り。ストリームが空ではないためidentityだけにはなりません。\nD：誤り。IntStreamにはidentityつきreduceがあります。\n\n間違えやすいポイント：\nidentityは単なるデフォルト値ではなく、リダクションの初期値として計算に参加します。"
+  },
+  {
+    "id": 340,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-reduce-empty-identity",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.stream.*;\n\nclass ReduceSample340 {\n    public static void main(String[] args) {\n        int result = IntStream.empty()\n            .reduce(10, (x, y) -> x + y);\n\n        System.out.println(result);\n    }\n}\n",
+    "choices": {
+      "A": "0 が出力される",
+      "B": "10 が出力される",
+      "C": "OptionalInt.empty が出力される",
+      "D": "NoSuchElementExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "10 が出力される",
+    "explanation": "正解：B\n\n結論：\nidentityを指定したreduceでは、ストリームが空の場合、identityがそのまま結果になります。このコードではIntStream.empty()なので、accumulatorは一度も実行されず、10が返ります。\n\n選択肢の切り方：\nA：誤り。sum()ではなくidentityつきreduceです。\nB：正しい。空ストリームではidentityが返ります。\nC：誤り。OptionalIntを返すのはidentityなしのreduceです。\nD：誤り。getAsInt()などを呼んでいないため例外ではありません。\n\n間違えやすいポイント：\nidentityありreduceは戻り値がプリミティブ値、identityなしreduceはOptional系になります。"
+  },
+  {
+    "id": 341,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-reduce-parallel-two-args",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\n\nclass ReduceSample341 {\n    public static void main(String[] args) {\n        int result = List.of(10, 20, 30)\n            .parallelStream()\n            .reduce(\n                0,\n                (sum, num) -> sum + num\n            );\n\n        System.out.println(result);\n    }\n}\n",
+    "choices": {
+      "A": "3引数reduceではないため、parallelStreamではコンパイルエラーになる",
+      "B": "必ず0が出力される",
+      "C": "60 が出力される",
+      "D": "reduceはparallelStreamでは使用できない"
+    },
+    "correctChoice": "C",
+    "correctText": "60 が出力される",
+    "explanation": "正解：C\n\n結論：\nStream<T>にはidentityとBinaryOperatorを受け取る2引数reduceもあります。List.of(10, 20, 30)のIntegerストリームで、初期値0から各要素を加算するため、結果は60になります。\n\n選択肢の切り方：\nA：誤り。parallelStreamでも2引数reduceは使えます。\nB：誤り。要素があるためidentityだけにはなりません。\nC：正しい。10 + 20 + 30 = 60です。\nD：誤り。reduceは並列ストリームでも使用できます。\n\n間違えやすいポイント：\n並列ストリーム対応として3引数reduceがありますが、2引数reduceが使えなくなるわけではありません。"
+  },
+  {
+    "id": 342,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-collect-intstream-objintconsumer",
+    "question": "次のコードについて正しい説明はどれか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass CollectSample342 {\n    public static void main(String[] args) {\n        ArrayList<Integer> list = IntStream.of(1, 2, 3)\n            .collect(\n                ArrayList::new,\n                ArrayList::add,\n                ArrayList::addAll\n            );\n\n        System.out.println(list);\n    }\n}\n",
+    "choices": {
+      "A": "[6] が出力される",
+      "B": "IntStreamでは3引数collectを使用できないためコンパイルエラーになる",
+      "C": "collectの第2引数はObjIntConsumer相当として要素をコンテナへ追加できる",
+      "D": "collectの第1引数には必ず既存インスタンスを渡す必要がある"
+    },
+    "correctChoice": "C",
+    "correctText": "collectの第2引数はObjIntConsumer相当として要素をコンテナへ追加できる",
+    "explanation": "正解：C\n\n結論：\nIntStreamにも3引数collectがあります。第一引数は結果コンテナの生成、第二引数はコンテナとint要素を受け取って追加する処理、第三引数は部分結果を結合する処理です。このコードは実行すると[1, 2, 3]を持つArrayListを生成できます。\n\n選択肢の切り方：\nA：誤り。合計値を1要素として格納していません。\nB：誤り。特殊化ストリームにも3引数collectがあります。\nC：正しい。IntStreamの3引数collectにおける第2引数の役割を正しく説明しています。\nD：誤り。第1引数はSupplierで、結果コンテナを生成します。\n\n間違えやすいポイント：\nStream<T>のcollectではBiConsumer<R,T>ですが、IntStreamではObjIntConsumer<R>相当になります。型の違いに注意します。"
+  },
+  {
+    "id": 343,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-parallel-degree-not-manual",
+    "question": "並列ストリームの並列度に関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "parallelStream()を使う場合、分割数は必ずプログラム内で明示指定しなければならない",
+      "B": "並列ストリームでは、並列度やタスク分割は通常ForkJoinPoolが管理する",
+      "C": "parallelStream()は必ずシングルスレッドで実行される",
+      "D": "並列化すれば、どの処理でも必ず順次処理より高速になる"
+    },
+    "correctChoice": "B",
+    "correctText": "並列ストリームでは、並列度やタスク分割は通常ForkJoinPoolが管理する",
+    "explanation": "正解：B\n\n結論：\n並列ストリームでは、サブストリームへの分割やタスク実行は通常ForkJoinPoolが管理します。プログラム側で常に明示的に並列度を指定するわけではありません。また、並列処理には分割・統合のオーバーヘッドもあるため、必ず高速化されるとは限りません。\n\n選択肢の切り方：\nA：誤り。通常はプログラム側で分割数を直接制御しません。\nB：正しい。ForkJoinPoolが管理します。\nC：誤り。並列実行され得ます。\nD：誤り。オーバーヘッドにより遅くなることもあります。\n\n間違えやすいポイント：\nparallelStreamは魔法の高速化ではありません。処理内容やデータ量によって効果が変わります。"
+  },
+  {
+    "id": 344,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-async-future-concept",
+    "question": "非同期処理とFutureに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "非同期処理では、必ず現在のスレッドが処理完了まで停止する",
+      "B": "FutureはExecutorServiceでは使用できない",
+      "C": "非同期処理では処理結果を後から受け取る仕組みは使えない",
+      "D": "非同期処理では、重い処理の完了を待たずに次の処理を進められる場合がある"
+    },
+    "correctChoice": "D",
+    "correctText": "非同期処理では、重い処理の完了を待たずに次の処理を進められる場合がある",
+    "explanation": "正解：D\n\n結論：\n非同期処理とは、ある処理の完了をその場で待たずに、次の処理を進められるようにする考え方です。ExecutorServiceにタスクをsubmitするとFutureが返り、必要なタイミングでget()して結果を取得できます。\n\n選択肢の切り方：\nA：誤り。これは同期処理のイメージです。\nB：誤り。ExecutorService#submitはFutureを返します。\nC：誤り。Futureなどで後から結果を受け取れます。\nD：正しい。非同期処理の基本イメージです。\n\n間違えやすいポイント：\n非同期は「結果が不要」という意味ではありません。結果を後で受け取る仕組みとしてFutureがあります。"
+  },
+  {
+    "id": 345,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-copyonwritearrayset",
+    "question": "CopyOnWriteArraySetに関する説明として正しいものはどれか。",
+    "choices": {
+      "A": "内部でCopyOnWriteArrayListを使用して操作を行うSetである",
+      "B": "重複要素を必ず保持するListである",
+      "C": "変更操作時に元配列を直接破壊的に変更することだけが目的である",
+      "D": "java.util.concurrentパッケージには存在しない"
+    },
+    "correctChoice": "A",
+    "correctText": "内部でCopyOnWriteArrayListを使用して操作を行うSetである",
+    "explanation": "正解：A\n\n結論：\nCopyOnWriteArraySet<E>は、内部でCopyOnWriteArrayList<E>を使用して操作を行うSetです。CopyOnWriteArrayListと同様に、変更時にコピーを作る性質があります。\n\n選択肢の切り方：\nA：正しい。CopyOnWriteArraySetの基本です。\nB：誤り。Setなので重複要素を保持しません。\nC：誤り。コピーオンライトは元配列を直接変更するという説明ではありません。\nD：誤り。java.util.concurrentに存在します。\n\n間違えやすいポイント：\nCopyOnWriteArrayListはList、CopyOnWriteArraySetはSetです。名前は似ていますが、重複許可の有無が違います。"
+  },
+  {
+    "id": 346,
+    "chapter": 5,
+    "difficulty": "hard",
+    "topic": "chapter5-removeif-lazy-intermediate",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass LazySample346 {\n    public static void main(String[] args) {\n        List<String> list = new ArrayList<>(List.of(\"a\", \"bb\", \"ccc\"));\n\n        Stream<String> s = list.stream()\n            .filter(x -> {\n                System.out.print(x);\n                return x.length() > 1;\n            });\n\n        list.removeIf(x -> x.length() == 1);\n\n        System.out.print(\"|\");\n        s.forEach(System.out::print);\n        System.out.println(list);\n    }\n}\n",
+    "choices": {
+      "A": "abbccc|bbccc[bb, ccc] が出力される",
+      "B": "|[bb, ccc] のみが出力される",
+      "C": "removeIfは存在しないためコンパイルエラーになる",
+      "D": "|bbcccbbccc[bb, ccc] が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "|bbcccbbccc[bb, ccc] が出力される",
+    "explanation": "正解：D\n\n結論：\nストリームの中間操作filterは、宣言した時点では実行されず、終端操作forEachが呼ばれたときに実行されます。先にremoveIfで長さ1の\"a\"が削除されるため、終端操作時に処理される要素は\"bb\"と\"ccc\"です。filter内でbbcccが出力され、その後forEachでもbbcccが出力され、最後に[bb, ccc]が出力されます。\n\n選択肢の切り方：\nA：誤り。filterは宣言時には実行されないため、removeIf前にaは出力されません。\nB：誤り。filter内とforEach内の出力があります。\nC：誤り。CollectionにはremoveIf(Predicate)があります。\nD：正しい。中間操作の遅延実行とremoveIfの効果を追えています。\n\n間違えやすいポイント：\n中間操作は終端操作が実行されるまで動きません。ストリーム生成後に元コレクションを変更した場合、いつ評価されるかが重要です。"
+  },
+  {
+    "id": 347,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resultset-get-mapping-numeric-text",
+    "question": "次のResultSetの取得メソッドの対応として正しいものはどれか。\n\nimport java.sql.*;\nimport java.math.*;\n\nclass DbSample347 {\n    static void read(ResultSet rs) throws SQLException {\n        // SQL型とJava側取得メソッドの対応を考える\n    }\n}\n",
+    "choices": {
+      "A": "DECIMALはgetDouble、REALはgetBigDecimal、FLOATはgetFloatで取得する",
+      "B": "VARCHARはgetBlobで取得し、DECIMALはgetStringでしか取得できない",
+      "C": "REALはgetBoolean、FLOATはgetByteで取得する",
+      "D": "DECIMALはgetBigDecimal、REALはgetFloat、FLOATはgetDouble、VARCHARはgetStringで取得できる"
+    },
+    "correctChoice": "D",
+    "correctText": "DECIMALはgetBigDecimal、REALはgetFloat、FLOATはgetDouble、VARCHARはgetStringで取得できる",
+    "explanation": "正解：D\n\n結論：\nResultSetの代表的な取得メソッドとして、DECIMALはgetBigDecimal、REALはgetFloat、FLOATはgetDouble、VARCHARはgetStringで取得できます。\n\n選択肢の切り方：\nA：誤り。DECIMALとREAL、FLOATの対応が崩れています。\nB：誤り。VARCHARは通常getStringで取得します。\nC：誤り。REALやFLOATをbooleanやbyteとして扱う対応ではありません。\nD：正しい。テキストの対応表に沿った組み合わせです。\n\n間違えやすいポイント：\nSQLのFLOATはJavaのfloatではなく、ResultSetではgetDoubleで取得する対応として整理します。REALがgetFloat、DECIMALがgetBigDecimalです。"
+  },
+  {
+    "id": 348,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-resultset-get-mapping-date-time",
+    "question": "次のコードについて、SQL型とResultSetの取得メソッドの対応として正しいものはどれか。\n\nimport java.sql.*;\n\nclass DbSample348 {\n    static void read(ResultSet rs) throws SQLException {\n        Date d = rs.getDate(\"D_COL\");\n        Time t = rs.getTime(\"T_COL\");\n        Timestamp ts = rs.getTimestamp(\"TS_COL\");\n    }\n}\n",
+    "choices": {
+      "A": "DATEはgetDate、TIMEはgetTime、TIMESTAMPはgetTimestampで取得できる",
+      "B": "DATEはgetTime、TIMEはgetTimestamp、TIMESTAMPはgetDateで取得する",
+      "C": "DATE、TIME、TIMESTAMPはいずれもgetStringでしか取得できない",
+      "D": "Timestamp型はjava.sqlには存在しないためコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "DATEはgetDate、TIMEはgetTime、TIMESTAMPはgetTimestampで取得できる",
+    "explanation": "正解：A\n\n結論：\nResultSetの取得メソッドでは、SQL型DATEはgetDate、TIMEはgetTime、TIMESTAMPはgetTimestampで取得できます。java.sql.Date、java.sql.Time、java.sql.Timestampはいずれもjava.sqlパッケージに存在します。\n\n選択肢の切り方：\nA：正しい。日付・時刻系SQL型と取得メソッドの対応が合っています。\nB：誤り。対応が入れ替わっています。\nC：誤り。専用の取得メソッドがあります。\nD：誤り。Timestampはjava.sql.Timestampとして存在します。\n\n間違えやすいポイント：\njava.util.Dateとjava.sql.Dateの違いもありますが、JDBCのResultSetではjava.sql系の日付・時刻型として整理します。"
+  },
+  {
+    "id": 349,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-statement-execute-update-result-accessors",
+    "question": "次のコードについて正しい説明はどれか。\n\nimport java.sql.*;\n\nclass DbSample349 {\n    public static void main(String[] args) throws Exception {\n        try (\n            Connection con = DriverManager.getConnection(\n                \"jdbc:derby://localhost:1527/shop\"\n            );\n            Statement st = con.createStatement()\n        ) {\n            boolean result = st.execute(\n                \"UPDATE PRODUCT SET PRICE = PRICE + 10 WHERE ID = 1\"\n            );\n            ResultSet rs = st.getResultSet();\n            int count = st.getUpdateCount();\n\n            System.out.println(result);\n            System.out.println(rs == null);\n            System.out.println(count >= 0);\n        }\n    }\n}\n\nSQLは正常に実行できるものとする。",
+    "choices": {
+      "A": "true\nfalse\nfalse",
+      "B": "false\ntrue\ntrue",
+      "C": "true\ntrue\n-1",
+      "D": "execute(String)はUPDATE文に使えないためコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "false\ntrue\ntrue",
+    "explanation": "正解：B\n\n結論：\nStatement#execute(String)は、結果がResultSetの場合はtrue、更新件数または結果なしの場合はfalseを返します。UPDATE文ではResultSetではなく更新件数が結果となるため、executeの戻り値はfalseです。この場合getResultSet()はnull、getUpdateCount()は更新件数を返すため0以上になり得ます。\n\n選択肢の切り方：\nA：誤り。UPDATE文はResultSetを返す処理ではありません。\nB：正しい。false、ResultSetなし、更新件数ありです。\nC：誤り。executeの戻り値とgetUpdateCountの扱いが不適切です。\nD：誤り。execute(String)はUPDATE文にも使用できます。\n\n間違えやすいポイント：\nexecuteQueryはSELECT向け、executeUpdateは更新系向けですが、executeは結果の種類をbooleanで判定できる汎用メソッドです。"
+  },
+  {
+    "id": 350,
+    "chapter": 7,
+    "difficulty": "hard",
+    "topic": "chapter7-callablestatement-inout-parameter",
+    "question": "CallableStatementでINOUTパラメータを扱うコードとして正しいものはどれか。\n\nストアドプロシージャ:\nADJUST_PRICE(\n    INOUT PRICE_VALUE INTEGER\n)\n\nimport java.sql.*;\n\nclass DbSample350 {\n    static int call(Connection con) throws SQLException {\n        // insert code here\n    }\n}\n",
+    "choices": {
+      "A": "CallableStatement cs = con.prepareCall(\"{ CALL ADJUST_PRICE(?) }\");\ncs.execute();\ncs.setInt(1, 1000);\nreturn cs.getInt(1);",
+      "B": "PreparedStatement cs = con.prepareStatement(\"{ CALL ADJUST_PRICE(?) }\");\ncs.registerOutParameter(1, Types.INTEGER);\ncs.setInt(1, 1000);\ncs.execute();\nreturn cs.getInt(1);",
+      "C": "CallableStatement cs = con.prepareCall(\"{ CALL ADJUST_PRICE(?) }\");\ncs.setInt(1, 1000);\ncs.registerOutParameter(1, Types.INTEGER);\ncs.execute();\nreturn cs.getInt(1);",
+      "D": "Statement cs = con.createStatement();\ncs.setInt(1, 1000);\ncs.registerOutParameter(1, Types.INTEGER);\ncs.execute(\"{ CALL ADJUST_PRICE(?) }\");\nreturn cs.getInt(1);"
+    },
+    "correctChoice": "C",
+    "correctText": "CallableStatement cs = con.prepareCall(\"{ CALL ADJUST_PRICE(?) }\");\ncs.setInt(1, 1000);\ncs.registerOutParameter(1, Types.INTEGER);\ncs.execute();\nreturn cs.getInt(1);",
+    "explanation": "正解：C\n\n結論：\nINOUTパラメータは、呼び出し元から値を渡し、実行後に同じパラメータから値を受け取るためのものです。そのため、CallableStatementをprepareCallで生成し、setXxxで入力値を設定し、registerOutParameterでOUTとしてのSQL型を登録し、execute後にgetXxxで取得します。\n\n選択肢の切り方：\nA：誤り。入力値の設定がexecute後になっており、OUT登録もありません。\nB：誤り。registerOutParameterやgetIntはCallableStatementの機能です。PreparedStatement型では扱えません。\nC：正しい。INOUTに必要なsetInt、registerOutParameter、execute、getIntの流れです。\nD：誤り。StatementにはsetIntやregisterOutParameter、getIntはありません。\n\n間違えやすいポイント：\nINはsetXxx、OUTはregisterOutParameterとgetXxx、INOUTはその両方が必要です。"
+  },
+  {
+    "id": 351,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-getdefault-setdefault",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample351 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.CANADA_FRENCH);\n\n        Locale locale = Locale.getDefault();\n\n        System.out.println(locale);\n        System.out.println(locale.getLanguage());\n        System.out.println(locale.getCountry());\n    }\n}\n",
+    "choices": {
+      "A": "fr_CA\nfr\nCA",
+      "B": "en_CA\nen\nCA",
+      "C": "fr_FR\nfr\nFR",
+      "D": "Locale.CANADA_FRENCH\nfr\nCA"
+    },
+    "correctChoice": "A",
+    "correctText": "fr_CA\nfr\nCA",
+    "explanation": "正解：A\n\n結論：\nLocale.setDefault(Locale.CANADA_FRENCH)により、JVMのデフォルトロケールがカナダのフランス語ロケールになります。Locale.getDefault()で取得したLocaleはfr_CAで、getLanguage()はfr、getCountry()はCAを返します。\n\n選択肢の切り方：\nA：正しい。デフォルトロケールとして設定したLocale.CANADA_FRENCHの情報です。\nB：誤り。これはLocale.CANADAに近い英語カナダです。\nC：誤り。これはフランスのフランス語Locale.FRANCEです。\nD：誤り。Localeを出力しても定数名そのものは表示されません。\n\n間違えやすいポイント：\nsetDefaultで設定した値はgetDefaultで取得できます。Localeインスタンスの表示は言語コード_国コードです。"
+  },
+  {
+    "id": 352,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-display-with-argument-locale",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample352 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n\n        Locale target = Locale.GERMANY;\n\n        System.out.println(target.getDisplayLanguage());\n        System.out.println(target.getDisplayLanguage(Locale.FRANCE));\n        System.out.println(target.getDisplayCountry());\n        System.out.println(target.getDisplayCountry(Locale.FRANCE));\n    }\n}\n",
+    "choices": {
+      "A": "Deutsch\nallemand\nDeutschland\nAllemagne",
+      "B": "German\nallemand\nGermany\nAllemagne",
+      "C": "German\nGerman\nGermany\nGermany",
+      "D": "de\nfr\nDE\nFR"
+    },
+    "correctChoice": "B",
+    "correctText": "German\nallemand\nGermany\nAllemagne",
+    "explanation": "正解：B\n\n結論：\ngetDisplayLanguage()とgetDisplayCountry()の引数なし版は、デフォルトロケールの表示言語で名前を返します。ここではデフォルトがLocale.USなのでGerman、Germanyです。一方、引数にLocale.FRANCEを指定した版は、フランス語表記でallemand、Allemagneを返します。\n\n選択肢の切り方：\nA：誤り。引数なし表示はデフォルトロケールUSの英語表記です。\nB：正しい。引数なしは英語、引数ありは指定ロケールのフランス語表記です。\nC：誤り。引数Locale.FRANCEの効果を無視しています。\nD：誤り。getDisplayXxxはコードではなく表示名を返します。\n\n間違えやすいポイント：\ngetLanguage/getCountryはコード、getDisplayLanguage/getDisplayCountryは表示名です。さらに表示名は、引数なしならデフォルトロケール、引数ありならそのロケールで表されます。"
+  },
+  {
+    "id": 353,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-locale-one-arg-constructor",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass LocaleSample353 {\n    public static void main(String[] args) {\n        Locale locale = new Locale(\"fr\");\n\n        System.out.println(locale);\n        System.out.println(locale.getLanguage());\n        System.out.println(locale.getCountry().isEmpty());\n    }\n}\n",
+    "choices": {
+      "A": "fr_FR\nfr\nfalse",
+      "B": "FR\nFR\ntrue",
+      "C": "fr\nfr\ntrue",
+      "D": "IllformedLocaleExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "fr\nfr\ntrue",
+    "explanation": "正解：C\n\n結論：\nLocale(String language)コンストラクタは、言語コードだけを持つLocaleを生成します。new Locale(\"fr\")では言語コードがfr、国コードは未定義なので空です。Localeを出力するとfrになります。\n\n選択肢の切り方：\nA：誤り。国コードFRは指定していないため含まれません。\nB：誤り。言語コードfrがFRへ変わるわけではありません。\nC：正しい。言語のみのLocaleです。\nD：誤り。通常のLocaleコンストラクタでは、この値でIllformedLocaleExceptionはスローされません。\n\n間違えやすいポイント：\nLocale.FRANCEはfr_FRですが、new Locale(\"fr\")は言語のみのfrです。国コードがあるかどうかを分けて考えます。"
+  },
+  {
+    "id": 354,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-localdate-now-method",
+    "question": "次のコードについて正しい説明はどれか。\n\nimport java.time.*;\n\nclass DateSample354 {\n    public static void main(String[] args) {\n        LocalDate date = LocalDate.now();\n\n        System.out.println(date.getClass().getSimpleName());\n    }\n}\n",
+    "choices": {
+      "A": "now()はLocalDateTimeを返すため、代入行でコンパイルエラーになる",
+      "B": "now()はDateを返すため、LocalDateへ代入できない",
+      "C": "now()はnullを返す可能性があるため、必ずNullPointerExceptionになる",
+      "D": "LocalDateが出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "LocalDateが出力される",
+    "explanation": "正解：D\n\n結論：\nLocalDate.now()は、現在日付を表すLocalDateオブジェクトを返します。LocalDate型の変数へ代入でき、getClass().getSimpleName()を出力するとLocalDateです。\n\n選択肢の切り方：\nA：誤り。LocalDateTimeではなくLocalDateを返します。\nB：誤り。java.util.Dateではありません。\nC：誤り。通常、now()がnullを返す前提ではありません。\nD：正しい。LocalDateオブジェクトが生成されます。\n\n間違えやすいポイント：\nLocalDate.now()は「現在日時」ではなく「現在日付」です。時刻まで必要ならLocalDateTimeやLocalTimeを使います。"
+  },
+  {
+    "id": 355,
+    "chapter": 8,
+    "difficulty": "hard",
+    "topic": "chapter8-datetimeformatter-iso-local-time",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.time.*;\nimport java.time.format.*;\n\nclass DateSample355 {\n    public static void main(String[] args) {\n        LocalTime time = LocalTime.of(10, 15, 30);\n\n        System.out.println(time.format(DateTimeFormatter.ISO_LOCAL_TIME));\n    }\n}\n",
+    "choices": {
+      "A": "10:15:30",
+      "B": "10:15",
+      "C": "10/15/30",
+      "D": "2025-10-15T10:15:30"
+    },
+    "correctChoice": "A",
+    "correctText": "10:15:30",
+    "explanation": "正解：A\n\n結論：\nDateTimeFormatter.ISO_LOCAL_TIMEは、LocalTimeをISOのローカル時刻形式でフォーマットします。LocalTime.of(10, 15, 30)なので、10:15:30が出力されます。\n\n選択肢の切り方：\nA：正しい。ISO_LOCAL_TIMEの時刻形式です。\nB：誤り。秒を30として指定しているため秒も表示されます。\nC：誤り。スラッシュ区切りではありません。\nD：誤り。日付やTを含む日時形式ではありません。\n\n間違えやすいポイント：\nISO_LOCAL_DATEは日付、ISO_LOCAL_TIMEは時刻です。LocalDateにISO_LOCAL_TIMEを使う、またはLocalTimeにISO_LOCAL_DATEを使うような組み合わせは不適切です。"
   }
 ]
