@@ -5678,5 +5678,597 @@
     "correctChoice": "A",
     "correctText": "10:15:30",
     "explanation": "正解：A\n\n結論：\nDateTimeFormatter.ISO_LOCAL_TIMEは、LocalTimeをISOのローカル時刻形式でフォーマットします。LocalTime.of(10, 15, 30)なので、10:15:30が出力されます。\n\n選択肢の切り方：\nA：正しい。ISO_LOCAL_TIMEの時刻形式です。\nB：誤り。秒を30として指定しているため秒も表示されます。\nC：誤り。スラッシュ区切りではありません。\nD：誤り。日付やTを含む日時形式ではありません。\n\n間違えやすいポイント：\nISO_LOCAL_DATEは日付、ISO_LOCAL_TIMEは時刻です。LocalDateにISO_LOCAL_TIMEを使う、またはLocalTimeにISO_LOCAL_DATEを使うような組み合わせは不適切です。"
+  },
+  {
+    "id": 356,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-generic-method-type-parameter-unused",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\n\nclass Mock2Sample356 {\n    public static <T> void printSize(List<?> list) {\n        System.out.println(list.size());\n    }\n\n    public static void main(String[] args) {\n        Mock2Sample356.<String>printSize(List.of(10, 20, 30));\n    }\n}\n",
+    "choices": {
+      "A": "3 が出力される",
+      "B": "型パラメータTが引数に使われていないためコンパイルエラーになる",
+      "C": "List.of(10, 20, 30)はList<String>ではないためコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "3 が出力される",
+    "explanation": "正解：A\n\n結論：\nジェネリックメソッドの型パラメータ<T>は、メソッドの引数型や戻り値型に必ず登場しなければならないわけではありません。このコードでは<T>を宣言しているだけで、処理自体はList<?>のsize()を出力するため、3が出力されます。\n\n選択肢の切り方：\nA：正しい。Tを明示して呼んでも、listの要素型とは直接関係しません。\nB：誤り。型パラメータを引数に使わなくても宣言自体は可能です。\nC：誤り。引数はList<?>なので、List<Integer>も渡せます。\nD：誤り。要素をStringとして取り出していないためClassCastExceptionは発生しません。\n\n間違えやすいポイント：\n<T>があるからといって、必ず引数List<T>と結びつくとは限りません。型パラメータのスコープと実際に使われている型を見ます。"
+  },
+  {
+    "id": 357,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-treeset-generic-invariance",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\n\nclass Mock2Sample357 {\n    static void accept(TreeSet<Object> set) {\n        System.out.println(set.size());\n    }\n\n    public static void main(String[] args) {\n        TreeSet<Integer> nums = new TreeSet<>();\n        nums.add(10);\n        accept(nums);\n    }\n}\n",
+    "choices": {
+      "A": "1 が出力される",
+      "B": "TreeSet<Integer>はTreeSet<Object>へ暗黙に変換され、正常終了する",
+      "C": "accept(nums)の行でコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "accept(nums)の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nジェネリクスは基本的に不変です。IntegerはObjectのサブタイプですが、TreeSet<Integer>はTreeSet<Object>のサブタイプではありません。そのためTreeSet<Object>を受け取るメソッドにTreeSet<Integer>を渡すことはできません。\n\n選択肢の切り方：\nA：誤り。実行前にコンパイルエラーです。\nB：誤り。ジェネリクスは配列のような共変ではありません。\nC：正しい。TreeSet<Integer>とTreeSet<Object>に代入互換性はありません。\nD：誤り。コンパイル時に検出されるため実行時例外ではありません。\n\n間違えやすいポイント：\nList<Integer>がList<Object>ではないのと同じです。TreeSetでも型引数の互換性は別に考えます。"
+  },
+  {
+    "id": 358,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-arrays-aslist-not-collections",
+    "question": "次のコードをコンパイルするとどうなるか。\n\nimport java.util.*;\n\nclass Mock2Sample358 {\n    public static void main(String[] args) {\n        List<String> list = Collection.asList(\"A\", \"B\");\n        System.out.println(list);\n    }\n}\n",
+    "choices": {
+      "A": "[A, B] が出力される",
+      "B": "Collection.asListはList.ofと同じ変更不可リストを返す",
+      "C": "Collectionクラスが存在しないためコンパイルエラーになる",
+      "D": "Collection.asListというstaticメソッドはないためコンパイルエラーになる"
+    },
+    "correctChoice": "D",
+    "correctText": "Collection.asListというstaticメソッドはないためコンパイルエラーになる",
+    "explanation": "正解：D\n\n結論：\nasListはjava.util.Arraysクラスのstaticメソッドです。java.util.Collectionはインタフェースであり、Collection.asListというstaticメソッドはありません。そのためこのコードはコンパイルエラーになります。\n\n選択肢の切り方：\nA：誤り。Collection.asListは呼び出せません。\nB：誤り。そもそもCollection.asListは存在しません。Arrays.asListとList.ofの性質も異なります。\nC：誤り。Collectionインタフェース自体は存在します。\nD：正しい。asListはArrays.asListです。\n\n間違えやすいポイント：\nCollectionsクラス、Collectionインタフェース、Arraysクラスは名前が似ています。asListはArrays.asListです。"
+  },
+  {
+    "id": 359,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-map-get-key-not-index",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Mock2Sample359 {\n    public static void main(String[] args) {\n        Map<Integer, String> map = new LinkedHashMap<>();\n        map.put(10, \"A\");\n        map.put(20, \"B\");\n        map.put(30, \"C\");\n\n        System.out.println(map.get(1));\n        System.out.println(map.get(20));\n    }\n}\n",
+    "choices": {
+      "A": "B\nB",
+      "B": "null\nB",
+      "C": "A\nB",
+      "D": "map.get(1)の行でIndexOutOfBoundsExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "null\nB",
+    "explanation": "正解：B\n\n結論：\nMap#get(Object key)は、要素番号ではなくキーを指定して値を取得するメソッドです。このMapにはキー1が存在しないためmap.get(1)はnullを返します。キー20は存在するため\"B\"を返します。\n\n選択肢の切り方：\nA：誤り。get(1)は2番目の要素を意味しません。\nB：正しい。キー1は存在せず、キー20は存在します。\nC：誤り。get(1)は先頭要素でもありません。\nD：誤り。Map#getはインデックスアクセスではないため、IndexOutOfBoundsExceptionではありません。\n\n間違えやすいポイント：\nList#get(int index)とMap#get(Object key)を混同しないこと。Mapに「要素番号でgetする」考え方はありません。"
+  },
+  {
+    "id": 360,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-lambda-method-reference-invalid-return",
+    "question": "次のコードの // insert code here に「ラムダ式」として記述できるものはどれか。\n\nimport java.util.function.*;\n\nclass Mock2Sample360 {\n    public static void main(String[] args) {\n        Supplier<String> s = // insert code here\n        System.out.println(s.get().isEmpty());\n    }\n}\n",
+    "choices": {
+      "A": "() -> String::new;",
+      "B": "String::new;",
+      "C": "() -> { String::new; };",
+      "D": "() -> new String();"
+    },
+    "correctChoice": "D",
+    "correctText": "() -> new String();",
+    "explanation": "正解：D\n\n結論：\nSupplier<String>は引数なしでStringを返す関数型インターフェースです。ラムダ式として書くなら、() -> new String(); が適切です。\n\n選択肢の切り方：\nA：誤り。() -> String::new のように、ラムダ本体へメソッド参照をそのまま式として置く形は不適切です。\nB：誤り。String::newはメソッド参照であり、設問が求めるラムダ式ではありません。\nC：誤り。ブロックラムダ内でメソッド参照を文として単独記述できません。\nD：正しい。引数なしでStringを返すラムダ式です。\n\n間違えやすいポイント：\nメソッド参照は関数型インターフェースの代入先があって初めて意味を持ちます。`() -> String::new` のように、ラムダがメソッド参照そのものを返す形とは考えません。"
+  },
+  {
+    "id": 361,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-removeif-true-removes",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Mock2Sample361 {\n    public static void main(String[] args) {\n        List<String> list = new ArrayList<>(List.of(\"a\", \"bb\", \"ccc\", \"dd\"));\n\n        list.removeIf(s -> s.length() == 2);\n\n        System.out.println(list);\n    }\n}\n",
+    "choices": {
+      "A": "[a, ccc] が出力される",
+      "B": "[bb, dd] が出力される",
+      "C": "[a, bb, ccc, dd] が出力される",
+      "D": "removeIfの行でコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "[a, ccc] が出力される",
+    "explanation": "正解：A\n\n結論：\nremoveIf(Predicate<T>)は、Predicateがtrueを返した要素を削除します。このコードでは長さ2の\"bb\"と\"dd\"が削除されるため、[a, ccc]が残ります。\n\n選択肢の切り方：\nA：正しい。trueになった要素が消えます。\nB：誤り。trueになった要素が残るのではありません。\nC：誤り。ArrayListはremoveIfで要素削除できます。\nD：誤り。removeIfはCollectionのdefaultメソッドです。\n\n間違えやすいポイント：\nfilterはtrueを残す、removeIfはtrueを消す。この逆転に注意します。"
+  },
+  {
+    "id": 362,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-consumer-integer-lambda-parameter",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.util.function.*;\n\nclass Mock2Sample362 {\n    public static void main(String[] args) {\n        Consumer<Integer> c = // insert code here\n        c.accept(10);\n    }\n}\n",
+    "choices": {
+      "A": "(int i) -> System.out.println(i);",
+      "B": "(Integer i) -> System.out.println(i);",
+      "C": "(String i) -> System.out.println(i);",
+      "D": "i -> return System.out.println(i);"
+    },
+    "correctChoice": "B",
+    "correctText": "(Integer i) -> System.out.println(i);",
+    "explanation": "正解：B\n\n結論：\nConsumer<Integer>の抽象メソッドはvoid accept(Integer i)です。ラムダ引数の型を明示するならInteger iと書けます。\n\n選択肢の切り方：\nA：誤り。Consumer<Integer>の引数型を明示する場合、intではなくIntegerです。\nB：正しい。Integerを受け取り、戻り値なしで出力しています。\nC：誤り。StringはIntegerと一致しません。\nD：誤り。式ラムダでreturnは書けません。またprintlnはvoidです。\n\n間違えやすいポイント：\n型推論で `i -> ...` と書く場合は問題ありませんが、明示するなら関数型インターフェースの引数型に合わせます。"
+  },
+  {
+    "id": 363,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-stream-terminal-twice-illegalstate",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.stream.*;\n\nclass Mock2Sample363 {\n    public static void main(String[] args) {\n        Stream<String> s = Stream.of(\"A\", \"B\", \"C\");\n\n        System.out.println(s.count());\n        s.forEach(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "3\nABC が出力される",
+      "B": "count()の行でコンパイルエラーになる",
+      "C": "3 が出力された後、IllegalStateExceptionがスローされる",
+      "D": "forEachは2回目の終端操作ではないため正常終了する"
+    },
+    "correctChoice": "C",
+    "correctText": "3 が出力された後、IllegalStateExceptionがスローされる",
+    "explanation": "正解：C\n\n結論：\nStreamは一度終端操作を実行すると消費済みになります。このコードではcount()が終端操作です。その後、同じStreamに対してforEachという別の終端操作を実行しようとしているため、IllegalStateExceptionがスローされます。\n\n選択肢の切り方：\nA：誤り。同じStreamを再利用できません。\nB：誤り。count()自体は正しい終端操作です。\nC：正しい。1回目の終端操作後に再利用しています。\nD：誤り。forEachも終端操作です。\n\n間違えやすいポイント：\n終端操作を2回呼んでいないか確認します。ストリームはコレクションのように何度も使い回せません。"
+  },
+  {
+    "id": 364,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-double-array-stream-type",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Mock2Sample364 {\n    public static void main(String[] args) {\n        double[] data = {1.0, 2.0, 3.0};\n\n        Stream<Double> s = Arrays.stream(data);\n        System.out.println(s.count());\n    }\n}\n",
+    "choices": {
+      "A": "Arrays.stream(double[])はDoubleStreamを返すため、Stream<Double>へ代入できずコンパイルエラーになる",
+      "B": "3 が出力される",
+      "C": "double[]はStream<Double>に自動ボクシングされるため正常終了する",
+      "D": "Arrays.stream(data)はIntStreamを返す"
+    },
+    "correctChoice": "A",
+    "correctText": "Arrays.stream(double[])はDoubleStreamを返すため、Stream<Double>へ代入できずコンパイルエラーになる",
+    "explanation": "正解：A\n\n結論：\nArrays.stream(double[])はStream<Double>ではなくDoubleStreamを返します。プリミティブ配列から生成されるストリームは特殊化ストリームになるため、Stream<Double>へ直接代入できません。\n\n選択肢の切り方：\nA：正しい。DoubleStream型です。\nB：誤り。代入時点でコンパイルエラーです。\nC：誤り。Stream<Double>へ自動ボクシングされるわけではありません。\nD：誤り。double[]からはDoubleStreamです。\n\n間違えやすいポイント：\nint[]はIntStream、long[]はLongStream、double[]はDoubleStreamです。Stream<Integer>やStream<Double>ではありません。"
+  },
+  {
+    "id": 365,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-rangeclosed-int-long-only",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.stream.*;\n\nclass Mock2Sample365 {\n    public static void main(String[] args) {\n        var s = DoubleStream.rangeClosed(1.0, 3.0);\n        s.forEach(System.out::println);\n    }\n}\n",
+    "choices": {
+      "A": "1.0\n2.0\n3.0 が出力される",
+      "B": "1.0以上3.0未満の値が出力される",
+      "C": "DoubleStreamにrangeClosedはないためコンパイルエラーになる",
+      "D": "rangeClosedはStream<T>専用メソッドである"
+    },
+    "correctChoice": "C",
+    "correctText": "DoubleStreamにrangeClosedはないためコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nrangeClosedはIntStreamとLongStreamで提供されるメソッドです。DoubleStreamにはrangeClosedはありません。そのためDoubleStream.rangeClosed(1.0, 3.0)はコンパイルエラーになります。\n\n選択肢の切り方：\nA：誤り。DoubleStreamにrangeClosedはありません。\nB：誤り。rangeClosedという名前以前にDoubleStreamでは使えません。\nC：正しい。IntStream/LongStreamのみです。\nD：誤り。Stream<T>専用ではなく、IntStreamとLongStreamのメソッドです。\n\n間違えやすいポイント：\nrange/rangeClosedはすべての数値ストリームにあるわけではありません。DoubleStreamにはありません。"
+  },
+  {
+    "id": 366,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-stream-generate-supplier",
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.util.stream.*;\n\nclass Mock2Sample366 {\n    public static void main(String[] args) {\n        Stream<String> s = Stream.generate(// insert code here)\n            .limit(3);\n\n        s.forEach(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "x -> \"A\"",
+      "B": "() -> \"A\"",
+      "C": "\"A\"",
+      "D": "System.out::println"
+    },
+    "correctChoice": "B",
+    "correctText": "() -> \"A\"",
+    "explanation": "正解：B\n\n結論：\nStream.generate()の引数はSupplier<T>です。Supplierは引数なしで値を返すため、() -> \"A\" が適切です。\n\n選択肢の切り方：\nA：誤り。引数を1つ受け取る形なのでSupplierではありません。\nB：正しい。引数なしでStringを返します。\nC：誤り。値そのものではなくSupplierが必要です。\nD：誤り。printlnは値を消費する側であり、値を供給するSupplierではありません。\n\n間違えやすいポイント：\ngenerateは無限ストリームを作り得るため、Supplierで値を供給します。必要に応じてlimitで切り詰めます。"
+  },
+  {
+    "id": 367,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-mapmulti-basic",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Mock2Sample367 {\n    public static void main(String[] args) {\n        List<Integer> result = List.of(1, 2, 3).stream()\n            .<Integer>mapMulti((n, out) -> {\n                out.accept(n);\n                out.accept(n * 10);\n            })\n            .toList();\n\n        System.out.println(result);\n    }\n}\n",
+    "choices": {
+      "A": "[1, 2, 3] が出力される",
+      "B": "[10, 20, 30] が出力される",
+      "C": "mapMultiの引数はFunctionなのでコンパイルエラーになる",
+      "D": "[1, 10, 2, 20, 3, 30] が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "[1, 10, 2, 20, 3, 30] が出力される",
+    "explanation": "正解：D\n\n結論：\nmapMultiは、入力要素と出力用Consumerを受け取り、0個以上の要素を出力できます。このコードでは各nに対してnとn*10を出力するため、[1, 10, 2, 20, 3, 30]になります。\n\n選択肢の切り方：\nA：誤り。各要素から2要素を出力しています。\nB：誤り。n自身も出力しています。\nC：誤り。mapMultiの引数はBiConsumer系の処理です。\nD：正しい。入力順に2要素ずつ出力されます。\n\n間違えやすいポイント：\nmapMultiは単純なmapではありません。第2引数のConsumerへacceptした値が後続に流れます。"
+  },
+  {
+    "id": 368,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-optional-ofnullable-ifpresent",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Mock2Sample368 {\n    public static void main(String[] args) {\n        Optional<String> opt = Optional.ofNullable(null);\n\n        opt.ifPresent(v -> System.out.print(v.length()));\n        System.out.println(\"end\");\n    }\n}\n",
+    "choices": {
+      "A": "0end が出力される",
+      "B": "nullend が出力される",
+      "C": "NullPointerExceptionがスローされる",
+      "D": "end が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "end が出力される",
+    "explanation": "正解：D\n\n結論：\nOptional.ofNullable(null)は空のOptionalを生成します。ifPresent(Consumer<T>)は値が存在する場合だけConsumerを実行します。今回は値がないためラムダは実行されず、最後のprintlnでendだけが出力されます。\n\n選択肢の切り方：\nA：誤り。空OptionalなのでConsumerは実行されません。\nB：誤り。null値をConsumerへ渡すわけではありません。\nC：誤り。ofNullable(null)は例外を投げずOptional.emptyを返します。\nD：正しい。ifPresentは何もせず、endだけ出力されます。\n\n間違えやすいポイント：\nofNullableはOptionalオブジェクトを作るメソッドです。ifPresentではOptional自体ではなく、中身の値がConsumerに渡されます。"
+  },
+  {
+    "id": 369,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-groupingby-three-forms",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Mock2Sample369 {\n    record Sale(String area, int amount) {}\n\n    public static void main(String[] args) {\n        List<Sale> sales = List.of(\n            new Sale(\"West\", 10),\n            new Sale(\"East\", 30),\n            new Sale(\"West\", 20)\n        );\n\n        Map<String, Integer> map = sales.stream()\n            .collect(Collectors.groupingBy(\n                Sale::area,\n                TreeMap::new,\n                Collectors.summingInt(Sale::amount)\n            ));\n\n        System.out.println(map);\n    }\n}\n",
+    "choices": {
+      "A": "{East=30, West=30} が出力される",
+      "B": "{West=[10, 20], East=[30]} が出力される",
+      "C": "{West=30, East=30} が必ずこの順で出力される",
+      "D": "groupingByの第2引数にTreeMap::newは指定できない"
+    },
+    "correctChoice": "A",
+    "correctText": "{East=30, West=30} が出力される",
+    "explanation": "正解：A\n\n結論：\ngroupingBy(classifier, mapFactory, downstream)の形式です。areaごとに分類し、TreeMapに格納し、各グループのamountを合計します。TreeMapなのでキーは自然順序になり、East、Westの順で表示されます。\n\n選択肢の切り方：\nA：正しい。Eastは30、Westは10+20で30です。\nB：誤り。downstreamにsummingIntを指定しているため値はListではありません。\nC：誤り。TreeMapなのでWestが先とは限らず、自然順序です。\nD：誤り。mapFactoryとしてTreeMap::newを指定できます。\n\n間違えやすいポイント：\ngroupingByは引数の形で値型が変わります。downstreamを指定すると、値はListではなく集計結果になります。"
+  },
+  {
+    "id": 370,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-partitioningby-downstream",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Mock2Sample370 {\n    public static void main(String[] args) {\n        Map<Boolean, Long> result = Stream.of(\"a\", \"bb\", \"ccc\")\n            .collect(Collectors.partitioningBy(\n                s -> s.length() > 1,\n                Collectors.counting()\n            ));\n\n        System.out.println(result.get(false));\n        System.out.println(result.get(true));\n    }\n}\n",
+    "choices": {
+      "A": "[a]\n[bb, ccc]",
+      "B": "1\n2",
+      "C": "false\ntrue",
+      "D": "partitioningByはdownstreamを指定できないためコンパイルエラー"
+    },
+    "correctChoice": "B",
+    "correctText": "1\n2",
+    "explanation": "正解：B\n\n結論：\npartitioningBy(Predicate, downstream)を使っているため、Map<Boolean, List<T>>ではなくMap<Boolean, D>になります。downstreamがcounting()なので、false側は1件、true側は2件です。\n\n選択肢の切り方：\nA：誤り。downstream指定によりListではなく件数です。\nB：正しい。falseが1、trueが2です。\nC：誤り。値はBooleanではなくLongの件数です。\nD：誤り。partitioningByにはdownstream指定のオーバーロードがあります。\n\n間違えやすいポイント：\npartitioningBy(predicate)だけなら値はList、partitioningBy(predicate, downstream)なら値は集計結果です。"
+  },
+  {
+    "id": 371,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-flatmap-requires-function-returning-stream",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.stream.*;\n\nclass Mock2Sample371 {\n    public static void main(String[] args) {\n        Stream<String> s = Stream.of(\"A\", \"B\");\n\n        s.flatMap(Stream.of(\"X\", \"Y\"))\n            .forEach(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "AXBY が出力される",
+      "B": "XYXY が出力される",
+      "C": "flatMapには各要素をStreamへ変換するFunctionが必要なためコンパイルエラーになる",
+      "D": "Stream.of(\"X\", \"Y\")が自動的にFunctionへ変換される"
+    },
+    "correctChoice": "C",
+    "correctText": "flatMapには各要素をStreamへ変換するFunctionが必要なためコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nflatMapの引数は、各入力要素をStreamへ変換するFunctionです。単一のStreamをそのまま渡すことはできません。このコードのStream.of(\"X\", \"Y\")はStream<String>であり、Functionではないためコンパイルエラーになります。\n\n選択肢の切り方：\nA：誤り。単一StreamをflatMapへ直接渡せません。\nB：誤り。同じ理由で実行されません。\nC：正しい。flatMapはFunction<? super T, ? extends Stream<? extends R>>を要求します。\nD：誤り。StreamはFunctionへ自動変換されません。\n\n間違えやすいポイント：\nflatMapに渡すのは「Streamそのもの」ではなく「Streamを返す関数」です。"
+  },
+  {
+    "id": 372,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-stream-limit-intermediate",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.stream.*;\n\nclass Mock2Sample372 {\n    public static void main(String[] args) {\n        Stream<Integer> s = Stream.iterate(1, n -> n + 1)\n            .limit(3);\n\n        System.out.println(s.count());\n    }\n}\n",
+    "choices": {
+      "A": "無限ストリームなので必ず終了しない",
+      "B": "limitは終端操作なのでcountの行でIllegalStateExceptionがスローされる",
+      "C": "limitの引数はint専用なのでコンパイルエラーになる",
+      "D": "limitは要素を指定サイズ以内に切り詰める中間操作であり、3 が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "limitは要素を指定サイズ以内に切り詰める中間操作であり、3 が出力される",
+    "explanation": "正解：D\n\n結論：\nlimit(long maxSize)は中間操作です。ストリームの要素数を指定サイズ以内に切り詰めたストリームを返します。このコードでは無限に増えるStream.iterateをlimit(3)で3要素に制限し、count()で3を出力します。\n\n選択肢の切り方：\nA：誤り。limitで3要素に制限しています。\nB：誤り。limitは終端操作ではなく中間操作です。\nC：誤り。limitの引数型はlongであり、3は渡せます。\nD：正しい。limit後にcountで3です。\n\n間違えやすいポイント：\nlimitは中間操作です。終端操作ではないため、後続にcountやforEachなどを続けられます。"
+  },
+  {
+    "id": 373,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-module-requires-exports-access",
+    "question": "次のモジュール構成について正しいものはどれか。\n\n// com.lib/module-info.java\nmodule com.lib {\n    exports api;\n}\n\n// com.lib/api/Tool.java\npackage api;\npublic class Tool {}\n\n// com.lib/internal/Secret.java\npackage internal;\npublic class Secret {}\n\n// com.app/module-info.java\nmodule com.app {\n    requires com.lib;\n}\n\n// com.app/app/Main.java\npackage app;\n\nimport api.Tool;\nimport internal.Secret;\n\npublic class Main {\n    Tool t;\n    Secret s;\n}\n",
+    "choices": {
+      "A": "com.appはcom.libに依存しているが、アクセスできるのはexportsされたapiパッケージだけである",
+      "B": "requires com.libがあるため、com.lib内のすべてのパッケージへアクセスできる",
+      "C": "internal.Secretはpublicなので、exportsがなくても別モジュールからアクセスできる",
+      "D": "exports api; があるとinternalパッケージも自動的に公開される"
+    },
+    "correctChoice": "A",
+    "correctText": "com.appはcom.libに依存しているが、アクセスできるのはexportsされたapiパッケージだけである",
+    "explanation": "正解：A\n\n結論：\nrequiresはモジュールへの依存を表しますが、それだけで依存先モジュール内のすべてのパッケージへアクセスできるわけではありません。別モジュールからアクセス可能なのは、依存先がexportsしているパッケージです。\n\n選択肢の切り方：\nA：正しい。依存することとアクセス可能であることは別です。\nB：誤り。requiresは全パッケージ公開を意味しません。\nC：誤り。クラスがpublicでも、パッケージがexportsされていなければ別モジュールから通常アクセスできません。\nD：誤り。exportsは指定したパッケージだけを公開します。\n\n間違えやすいポイント：\n「依存する」と「アクセス可能」は違います。exportsされているパッケージかどうかを確認します。"
+  },
+  {
+    "id": 374,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-requires-transitive-not-all-packages",
+    "question": "次のモジュール構成について正しいものはどれか。\n\n// com.base/module-info.java\nmodule com.base {\n    exports base.api;\n}\n\n// com.mid/module-info.java\nmodule com.mid {\n    requires transitive com.base;\n    exports mid.api;\n}\n\n// com.app/module-info.java\nmodule com.app {\n    requires com.mid;\n}\n\n// com.app/app/Main.java\npackage app;\n\nimport base.api.BaseApi;\nimport mid.api.MidApi;\n\npublic class Main {\n    BaseApi b;\n    MidApi m;\n}\n",
+    "choices": {
+      "A": "requires transitiveは、com.base内の非exportsパッケージもすべてcom.appへ公開する",
+      "B": "com.appはcom.midをrequiresすることで、com.baseのexports済みパッケージも読み取り可能になる",
+      "C": "requires transitiveは実行時専用で、コンパイル時には効果がない",
+      "D": "requires transitiveを使うとexports宣言は不要になる"
+    },
+    "correctChoice": "B",
+    "correctText": "com.appはcom.midをrequiresすることで、com.baseのexports済みパッケージも読み取り可能になる",
+    "explanation": "正解：B\n\n結論：\nrequires transitiveは、依存を推移的に読ませるための宣言です。com.appがcom.midをrequiresすると、com.midがrequires transitiveしているcom.baseも読み取り可能になります。ただし、アクセスできるのはcom.baseがexportsしているパッケージです。\n\n選択肢の切り方：\nA：誤り。requires transitiveでも、すべてのパッケージを公開するわけではありません。\nB：正しい。推移的依存によりcom.baseを読み取れます。\nC：誤り。コンパイル時にも意味があります。\nD：誤り。アクセス可能にするにはexportsが必要です。\n\n間違えやすいポイント：\nrequires transitiveは「依存を推移させる」だけです。「すべてのパッケージをアクセス可能にする」わけではありません。"
+  },
+  {
+    "id": 375,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-javac-wildcard-current-dir",
+    "question": "次のディレクトリ構成がある。\n\nsrc\n├─ app\n│  ├─ Main.java\n│  └─ sub\n│     └─ Helper.java\n└─ module-info.java\n\nsrc/appディレクトリで次のコマンドを実行する場合の説明として正しいものはどれか。\n\njavac *.java\n",
+    "choices": {
+      "A": "app/sub/Helper.javaも必ずコンパイル対象になる",
+      "B": "*.javaはサブディレクトリ内の.javaを再帰的にすべて認識する",
+      "C": "この指定で対象になるのはsrc/app直下の.javaであり、sub配下のHelper.javaは直接対象にならない",
+      "D": "*.javaはjavacでは使用できないため必ずコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "この指定で対象になるのはsrc/app直下の.javaであり、sub配下のHelper.javaは直接対象にならない",
+    "explanation": "正解：C\n\n結論：\n*.javaは、そのディレクトリ直下のJavaソースを対象にする指定です。サブディレクトリ内の.javaを再帰的にすべて認識する指定ではありません。\n\n選択肢の切り方：\nA：誤り。sub配下は直接対象になりません。\nB：誤り。再帰的指定ではありません。\nC：正しい。現在ディレクトリ直下の.javaが対象です。\nD：誤り。*.javaという指定自体は使えます。\n\n間違えやすいポイント：\n*.javaは書けます。ただし、ディレクトリのさらに下にある.javaまで自動的に全部拾うわけではありません。"
+  },
+  {
+    "id": 376,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-javac-module-path-dependency",
+    "question": "次の状況で、com.appをコンパイルするコマンドとして適切なものはどれか。\n\nout/com.lib には、依存先モジュール com.lib がコンパイル済みで配置されている。\n\n// src/com.app/module-info.java\nmodule com.app {\n    requires com.lib;\n}\n\n// src/com.app/app/Main.java\npackage app;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"run\");\n    }\n}\n",
+    "choices": {
+      "A": "javac -d out src/com.app/module-info.java src/com.app/app/Main.java -cp out",
+      "B": "javac -d out src/com.app/module-info.java src/com.app/app/Main.java --class-path out",
+      "C": "javac -d out src/com.app/module-info.java src/com.app/app/Main.java",
+      "D": "javac -d out src/com.app/module-info.java src/com.app/app/Main.java --module-path out"
+    },
+    "correctChoice": "D",
+    "correctText": "javac -d out src/com.app/module-info.java src/com.app/app/Main.java --module-path out",
+    "explanation": "正解：D\n\n結論：\nコンパイル済みの依存モジュールを検索する場所は、--module-pathまたは-pで指定します。この例ではcom.appがcom.libに依存しているため、--module-path outが必要です。\n\n選択肢の切り方：\nA：誤り。モジュール依存の解決にクラスパスを使う形ではありません。\nB：誤り。--class-pathではなく--module-pathです。\nC：誤り。依存先モジュールの検索場所が指定されていません。\nD：正しい。依存モジュールをmodule pathから解決します。\n\n間違えやすいポイント：\nクラスパスとモジュールパスを混同しないこと。requiresで参照する依存モジュールはmodule-pathで探します。"
+  },
+  {
+    "id": 377,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-java-describe-list-show-module-resolution",
+    "question": "次のコマンド群に関する説明として正しいものはどれか。\n\njava --list-modules\njava --describe-module java.base\njava --show-module-resolution -m com.app/app.Main\n",
+    "choices": {
+      "A": "いずれもjavaコマンドで使用するオプションである",
+      "B": "いずれもjavacコマンド専用のオプションである",
+      "C": "--describe-moduleはjarコマンドでのみ使用できる",
+      "D": "--show-module-resolutionはjdepsコマンド専用である"
+    },
+    "correctChoice": "A",
+    "correctText": "いずれもjavaコマンドで使用するオプションである",
+    "explanation": "正解：A\n\n結論：\n--list-modules、--describe-module、--show-module-resolutionはjavaコマンドで使用する代表的なモジュール関連オプションです。\n\n選択肢の切り方：\nA：正しい。javaコマンドのオプションです。\nB：誤り。javac専用ではありません。\nC：誤り。--describe-moduleはjavaコマンドで使用できます。\nD：誤り。--show-module-resolutionはjava実行時のモジュール解決表示に使えます。\n\n間違えやすいポイント：\njavac、java、jar、jdeps、jlinkはオプションが似ています。どのコマンドのオプションかを区別します。"
+  },
+  {
+    "id": 378,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-jdeps-module-path-long-option",
+    "question": "次のコマンドについて正しいものはどれか。\n\njdeps -p mods --module com.app\n",
+    "choices": {
+      "A": "jdepsでは-pだけが使用でき、--module-pathは使用できない",
+      "B": "jdepsでは-pではなく--module-pathを使う必要があるため、この指定は不適切である",
+      "C": "jdepsではモジュールを指定できないため--moduleが不適切である",
+      "D": "jdepsはJavaプログラムの実行コマンドである"
+    },
+    "correctChoice": "B",
+    "correctText": "jdepsでは-pではなく--module-pathを使う必要があるため、この指定は不適切である",
+    "explanation": "正解：B\n\n結論：\njdepsでモジュールパスを指定する場合、--module-pathを使います。javaやjavacでは-pが使える場面がありますが、jdepsでは-pではなく--module-pathと考えます。\n\n選択肢の切り方：\nA：誤り。逆です。\nB：正しい。jdepsでは--module-pathを使います。\nC：誤り。jdepsはモジュールを対象に分析できます。\nD：誤り。jdepsは依存関係分析ツールです。\n\n間違えやすいポイント：\n-pの短縮形をどのコマンドでも使えると思わないこと。jdepsでは--module-pathを使う点に注意します。"
+  },
+  {
+    "id": 379,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-jlink-no-m-option",
+    "question": "次のjlinkコマンドとして正しいものはどれか。\n\n目的：modsにあるcom.appを含むランタイムイメージをimageディレクトリへ作成する。",
+    "choices": {
+      "A": "jlink -p mods -m com.app --output image",
+      "B": "jlink --module-path mods -m com.app --output image",
+      "C": "jlink --module-path mods --add-modules com.app --output image",
+      "D": "jlink -cp mods --module com.app --output image"
+    },
+    "correctChoice": "C",
+    "correctText": "jlink --module-path mods --add-modules com.app --output image",
+    "explanation": "正解：C\n\n結論：\njlinkでは、含めるモジュールを--add-modulesで指定します。javaコマンドのように-mでモジュールを指定する形ではありません。\n\n選択肢の切り方：\nA：誤り。jlinkで-mを使う指定は不適切です。\nB：誤り。--module-pathはよいですが、-mではなく--add-modulesを使います。\nC：正しい。module path、add modules、outputの指定が適切です。\nD：誤り。クラスパス実行ではありません。\n\n間違えやすいポイント：\njavaの-mとjlinkの--add-modulesを混同しないこと。jlinkに-mコマンドは使いません。"
+  },
+  {
+    "id": 380,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-deadlock-definition-undetected",
+    "question": "次のコードのように、2つのスレッドが異なる順序でロックを取得しようとする場合の説明として正しいものはどれか。\n\nclass Mock2Sample380 {\n    static final Object A = new Object();\n    static final Object B = new Object();\n\n    public static void main(String[] args) {\n        new Thread(() -> {\n            synchronized (A) {\n                synchronized (B) {\n                    System.out.print(\"T1\");\n                }\n            }\n        }).start();\n\n        new Thread(() -> {\n            synchronized (B) {\n                synchronized (A) {\n                    System.out.print(\"T2\");\n                }\n            }\n        }).start();\n    }\n}\n",
+    "choices": {
+      "A": "デッドロックは必ずコンパイルエラーとして検出される",
+      "B": "デッドロックは必ずJava VMが実行時例外として検出して終了させる",
+      "C": "これはライブロックであり、ロック待ちは発生しない",
+      "D": "互いに相手のロック解放を待ってブロックし続けるデッドロックが発生する可能性がある"
+    },
+    "correctChoice": "D",
+    "correctText": "互いに相手のロック解放を待ってブロックし続けるデッドロックが発生する可能性がある",
+    "explanation": "正解：D\n\n結論：\nデッドロックは、複数のスレッドが複数の共有リソースを使用している状況で、お互いに相手のロック解放を待ってブロックされる状態です。このコードでは、A→BとB→Aでロック取得順序が逆なので、タイミングによってデッドロックが発生する可能性があります。\n\n選択肢の切り方：\nA：誤り。デッドロックはコンパイル時に検出されません。\nB：誤り。実行時に必ず例外で検出されるわけでもありません。\nC：誤り。ロック待ちでブロックする可能性があります。\nD：正しい。典型的なデッドロックの可能性です。\n\n間違えやすいポイント：\nデッドロックはコードとしてはコンパイル可能です。試験では「コンパイルエラー」や「例外で検出」とする選択肢に注意します。"
+  },
+  {
+    "id": 381,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-deadlock-prevention-lock-order-timeout",
+    "question": "次のコードのデッドロック対策として適切なものはどれか。\n\nclass Mock2Sample381 {\n    static final Object A = new Object();\n    static final Object B = new Object();\n\n    static void task1() {\n        synchronized (A) {\n            synchronized (B) {\n                System.out.print(\"1\");\n            }\n        }\n    }\n\n    static void task2() {\n        synchronized (B) {\n            synchronized (A) {\n                System.out.print(\"2\");\n            }\n        }\n    }\n}\n",
+    "choices": {
+      "A": "すべてのスレッドでロックを取得する順序をA→Bに統一する",
+      "B": "System.out.printをprintlnに変更する",
+      "C": "AとBをfinalではなくする",
+      "D": "クラス名を変更する"
+    },
+    "correctChoice": "A",
+    "correctText": "すべてのスレッドでロックを取得する順序をA→Bに統一する",
+    "explanation": "正解：A\n\n結論：\nデッドロック対策の一つは、ロックを取得する順序を固定することです。この例ではtask1はA→B、task2はB→Aなので、両方をA→Bに統一すると循環待ちを避けやすくなります。\n\n選択肢の切り方：\nA：正しい。ロック取得順序の固定は代表的な対策です。\nB：誤り。出力方法はロック順序の問題を解決しません。\nC：誤り。finalかどうかはこのデッドロック対策の本質ではありません。\nD：誤り。クラス名は無関係です。\n\n間違えやすいポイント：\nデッドロック対策では、ロック順序の固定や待機時間のタイムアウト設定が重要です。"
+  },
+  {
+    "id": 382,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-livelock-definition",
+    "question": "次のコードのように、2つの処理がお互いに譲り合い続けて状態だけ変わるが、目的の処理に進まない状況の説明として最も適切なものはどれか。\n\nclass Mock2Sample382 {\n    static boolean leftWants = true;\n    static boolean rightWants = true;\n\n    public static void main(String[] args) {\n        while (leftWants && rightWants) {\n            leftWants = !leftWants;\n            rightWants = !rightWants;\n            leftWants = !leftWants;\n            rightWants = !rightWants;\n            break;\n        }\n        System.out.println(\"not progressed\");\n    }\n}\n",
+    "choices": {
+      "A": "デッドロック。各スレッドが完全にブロックして動かなくなることだけを指す",
+      "B": "ライブロック。処理は動き続けるが、同じような処理を繰り返して進展しない状態を指す",
+      "C": "スタベーション。高優先度スレッドだけが必ずCPUを独占する状態だけを指す",
+      "D": "コンパイルエラーで検出される同期化の誤りである"
+    },
+    "correctChoice": "B",
+    "correctText": "ライブロック。処理は動き続けるが、同じような処理を繰り返して進展しない状態を指す",
+    "explanation": "正解：B\n\n結論：\nライブロックは、複数のスレッドが互いに反応して処理を続けているものの、必要なリソースにアクセスできず処理が進まない現象です。同じ処理が永遠に繰り返されるイメージです。\n\n選択肢の切り方：\nA：誤り。完全にブロックして待つデッドロックとは区別します。\nB：正しい。動いているのに進まないのがライブロックです。\nC：誤り。これはスタベーションの説明に近いです。\nD：誤り。ライブロックもコンパイル時に検出されるものではありません。\n\n間違えやすいポイント：\nデッドロックはブロックして止まる、ライブロックは動き続けるが進まない、という違いを押さえます。"
+  },
+  {
+    "id": 383,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-starvation-definition",
+    "question": "次のコードのように、あるスレッドがリソースを使い続け、別のスレッドに実行機会がほとんど回らない状況の説明として最も適切なものはどれか。\n\nclass Mock2Sample383 {\n    static final Object LOCK = new Object();\n\n    public static void main(String[] args) {\n        Runnable high = () -> {\n            while (true) {\n                synchronized (LOCK) {\n                    break;\n                }\n            }\n        };\n\n        Runnable low = () -> {\n            synchronized (LOCK) {\n                System.out.println(\"low\");\n            }\n        };\n\n        new Thread(high).start();\n        new Thread(low).start();\n    }\n}\n",
+    "choices": {
+      "A": "ライブロック。複数スレッドが譲り合い続けて進まない状態だけを指す",
+      "B": "デッドロック。相互に相手のロックを待つ循環待ちだけを指す",
+      "C": "スタベーション。特定スレッドがリソースを独占し、他のスレッドが実行機会を得にくい状態を指す",
+      "D": "コンパイル時に必ず検出されるエラーである"
+    },
+    "correctChoice": "C",
+    "correctText": "スタベーション。特定スレッドがリソースを独占し、他のスレッドが実行機会を得にくい状態を指す",
+    "explanation": "正解：C\n\n結論：\nスタベーションは、特定のスレッドがリソースを独占することで、他のスレッドがリソースにアクセスできなくなる現象です。優先度の高いスレッドが頻繁に実行され、低いスレッドに実行機会が回らない状況などが該当します。\n\n選択肢の切り方：\nA：誤り。ライブロックは動き続けるが進展しない状態です。\nB：誤り。循環待ちの説明はデッドロックです。\nC：正しい。リソースや実行機会が偏る飢餓状態です。\nD：誤り。スタベーションもコンパイル時に検出されません。\n\n間違えやすいポイント：\nスタベーションは「飢餓」です。特定スレッドに実行機会やリソースが回らない状態を指します。"
+  },
+  {
+    "id": 384,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-blockingqueue-put-take",
+    "question": "次のコードで使っているBlockingQueueに関する説明として正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass Mock2Sample384 {\n    public static void main(String[] args) throws Exception {\n        BlockingQueue<String> q = new ArrayBlockingQueue<>(1);\n\n        q.put(\"A\");\n        System.out.println(q.take());\n    }\n}\n",
+    "choices": {
+      "A": "takeはキューが空の場合、必ずnullを即座に返す",
+      "B": "putはキューが満杯の場合、必ずIllegalStateExceptionを即座にスローする",
+      "C": "BlockingQueueを使っても、要素の受け渡しには必ずwait/notifyを直接書く必要がある",
+      "D": "BlockingQueueは、空のときの取得や満杯のときの追加で待機できるキューである"
+    },
+    "correctChoice": "D",
+    "correctText": "BlockingQueueは、空のときの取得や満杯のときの追加で待機できるキューである",
+    "explanation": "正解：D\n\n結論：\nBlockingQueueは、要素の取得時にキューが空の場合は要素が利用可能になるまで待機でき、要素の追加時にキューが満杯の場合は空きができるまで待機できます。\n\n選択肢の切り方：\nA：誤り。takeは空なら待機します。\nB：誤り。putは満杯なら待機します。\nC：誤り。BlockingQueueにより、wait/notifyを直接使わずに受け渡しを表現できます。\nD：正しい。BlockingQueueの基本機能です。\n\n間違えやすいポイント：\nQueueのoffer/poll系と、BlockingQueueのput/take系の待機動作を区別します。"
+  },
+  {
+    "id": 385,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-blockingdeque-both-ends",
+    "question": "次のコードで使用しているBlockingDequeに関する説明として正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass Mock2Sample385 {\n    public static void main(String[] args) throws Exception {\n        BlockingDeque<String> deque = new LinkedBlockingDeque<>(2);\n\n        deque.putFirst(\"A\");\n        deque.putLast(\"B\");\n\n        System.out.println(deque.takeFirst());\n        System.out.println(deque.takeLast());\n    }\n}\n",
+    "choices": {
+      "A": "BlockingDequeはBlockingQueueと同様の待機機能を持つ両端キューである",
+      "B": "BlockingDequeはMapの一種である",
+      "C": "BlockingDequeでは先頭への追加や末尾からの取得はできない",
+      "D": "LinkedBlockingDequeは上限設定できない実装である"
+    },
+    "correctChoice": "A",
+    "correctText": "BlockingDequeはBlockingQueueと同様の待機機能を持つ両端キューである",
+    "explanation": "正解：A\n\n結論：\nBlockingDequeは、BlockingQueueと同様の待機機能を持つ両端キューです。先頭・末尾の両方から要素を追加、取得できます。LinkedBlockingDequeはリンクノードをベースとした、上限設定が可能なBlockingDeque実装です。\n\n選択肢の切り方：\nA：正しい。BlockingDequeの説明です。\nB：誤り。Deque/Queue系のインタフェースです。\nC：誤り。putFirst、takeLastなどが使えます。\nD：誤り。コンストラクタで容量を指定できます。\n\n間違えやすいポイント：\nBlockingDequeはBlockingQueueのような待機機能を両端キューに拡張したものと捉えます。"
+  },
+  {
+    "id": 386,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-concurrentmap-interface",
+    "question": "次のコードで使われているConcurrentMapに関する説明として正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass Mock2Sample386 {\n    public static void main(String[] args) {\n        ConcurrentMap<String, Integer> map = new ConcurrentHashMap<>();\n        map.putIfAbsent(\"A\", 1);\n        map.putIfAbsent(\"A\", 2);\n        System.out.println(map.get(\"A\"));\n    }\n}\n",
+    "choices": {
+      "A": "ConcurrentMapはListの拡張である",
+      "B": "ConcurrentMapはMapを拡張し、並行実行時の安全性や原子的操作を提供する",
+      "C": "ConcurrentMapではputIfAbsentは使用できない",
+      "D": "ConcurrentMapの実装クラスは必ずTreeMapである"
+    },
+    "correctChoice": "B",
+    "correctText": "ConcurrentMapはMapを拡張し、並行実行時の安全性や原子的操作を提供する",
+    "explanation": "正解：B\n\n結論：\nConcurrentMap<K,V>はMap<K,V>を拡張したインタフェースであり、スレッドの同時実行においてデータの安全性や原子的な操作を扱うためのメソッドを提供します。\n\n選択肢の切り方：\nA：誤り。Mapの拡張です。\nB：正しい。ConcurrentMapの役割です。\nC：誤り。putIfAbsentなどの並行処理向け操作があります。\nD：誤り。代表的な実装にConcurrentHashMapがあります。\n\n間違えやすいポイント：\nConcurrentMapはMap系です。QueueやListではありません。"
+  },
+  {
+    "id": 387,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-concurrent-collection-class-mapping",
+    "question": "次の並行処理コレクションクラスの説明として正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass Mock2Sample387 {\n    public static void main(String[] args) {\n        ArrayBlockingQueue<String> a = new ArrayBlockingQueue<>(10);\n        LinkedBlockingQueue<String> b = new LinkedBlockingQueue<>(10);\n        ConcurrentLinkedQueue<String> c = new ConcurrentLinkedQueue<>();\n        System.out.println(a.remainingCapacity() >= 0);\n    }\n}\n",
+    "choices": {
+      "A": "ArrayBlockingQueueはリンクノードベースの上限なしキューである",
+      "B": "LinkedBlockingQueueは配列ベースで必ず上限なしである",
+      "C": "ArrayBlockingQueueは配列ベースの上限付きBlockingQueue実装である",
+      "D": "ConcurrentLinkedQueueはBlockingQueueの実装であり、put/take専用である"
+    },
+    "correctChoice": "C",
+    "correctText": "ArrayBlockingQueueは配列ベースの上限付きBlockingQueue実装である",
+    "explanation": "正解：C\n\n結論：\nArrayBlockingQueueは配列をベースとした上限付きBlockingQueue実装です。LinkedBlockingQueueはリンクノードベースで上限設定が可能です。ConcurrentLinkedQueueはリンクノードベースの上限なしスレッドセーフキューです。\n\n選択肢の切り方：\nA：誤り。ArrayBlockingQueueは配列ベースです。\nB：誤り。LinkedBlockingQueueはリンクノードベースで、上限設定も可能です。\nC：正しい。ArrayBlockingQueueの説明です。\nD：誤り。ConcurrentLinkedQueueはBlockingQueueではなく、put/take専用ではありません。\n\n間違えやすいポイント：\nArray/Linked/Blocking/ConcurrentLinkedの名前から、ベース構造と待機機能の有無を区別します。"
+  },
+  {
+    "id": 388,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-concurrenthashmap-skiplist",
+    "question": "次の並行処理コレクションの対応として正しいものはどれか。\n\nimport java.util.concurrent.*;\n\nclass Mock2Sample388 {\n    public static void main(String[] args) {\n        ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();\n        ConcurrentSkipListMap<String, Integer> sorted = new ConcurrentSkipListMap<>();\n        ConcurrentSkipListSet<String> set = new ConcurrentSkipListSet<>();\n\n        map.put(\"B\", 2);\n        sorted.put(\"A\", 1);\n        set.add(\"C\");\n    }\n}\n",
+    "choices": {
+      "A": "ConcurrentHashMapはTreeMapと同等のソート操作を行うクラスである",
+      "B": "ConcurrentSkipListMapはHashMapと同等の順序なし操作だけを行うクラスである",
+      "C": "ConcurrentSkipListSetは内部でConcurrentHashMapだけを使用するHashSet相当のクラスである",
+      "D": "ConcurrentHashMapはHashMap相当、ConcurrentSkipListMapはTreeMap相当、ConcurrentSkipListSetはTreeSet相当の並行処理用クラスである"
+    },
+    "correctChoice": "D",
+    "correctText": "ConcurrentHashMapはHashMap相当、ConcurrentSkipListMapはTreeMap相当、ConcurrentSkipListSetはTreeSet相当の並行処理用クラスである",
+    "explanation": "正解：D\n\n結論：\nConcurrentHashMapはHashMapと同等のコレクション操作を行う並行処理用クラスです。ConcurrentSkipListMapはConcurrentNavigableMap実装で、TreeMapと同等のソートされたMap操作を行います。ConcurrentSkipListSetは内部でConcurrentSkipListMapを使用し、TreeSet相当の操作を行うSetです。\n\n選択肢の切り方：\nA：誤り。ConcurrentHashMapはソートMapではありません。\nB：誤り。ConcurrentSkipListMapはソートされたMapです。\nC：誤り。ConcurrentSkipListSetはConcurrentSkipListMapを内部で使います。\nD：正しい。対応関係が合っています。\n\n間違えやすいポイント：\nHashMap相当はConcurrentHashMap、TreeMap相当はConcurrentSkipListMap、TreeSet相当はConcurrentSkipListSetです。"
+  },
+  {
+    "id": 389,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-jdbc-update-executequery-sqlexception",
+    "question": "次のコードについて正しい説明はどれか。\n\nimport java.sql.*;\n\nclass Mock2Sample389 {\n    public static void main(String[] args) throws Exception {\n        try (Connection con = DriverManager.getConnection(\"jdbc:derby://localhost:1527/app\")) {\n            Statement st = con.createStatement();\n            ResultSet rs = st.executeQuery(\"UPDATE item SET price = 100\");\n            System.out.println(rs.next());\n        }\n    }\n}\n",
+    "choices": {
+      "A": "コンパイルは通るが、UPDATE文にexecuteQueryを使っているためSQLExceptionが発生し得る",
+      "B": "executeQueryにUPDATE文を渡すと必ずコンパイルエラーになる",
+      "C": "UPDATE文なのでResultSetに更新件数が格納される",
+      "D": "executeQueryはSQL文字列を受け取れない"
+    },
+    "correctChoice": "A",
+    "correctText": "コンパイルは通るが、UPDATE文にexecuteQueryを使っているためSQLExceptionが発生し得る",
+    "explanation": "正解：A\n\n結論：\nexecuteQuery(String sql)はSQL文字列を受け取るメソッドなので、コンパイル自体は可能です。ただし、SELECTではなくUPDATE文をexecuteQueryで実行すると、適切でないためSQLExceptionが発生し得ます。\n\n選択肢の切り方：\nA：正しい。コンパイルエラーではなくSQLExceptionの論点です。\nB：誤り。SQL文字列の内容はコンパイル時に判定されません。\nC：誤り。更新件数はexecuteUpdateの戻り値として扱います。\nD：誤り。executeQueryはStringを受け取ります。\n\n間違えやすいポイント：\nSQL文の種類の誤りはJavaのコンパイルエラーではなく、実行時のSQLExceptionとして現れます。"
+  },
+  {
+    "id": 390,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-locale-invalid-methods-constructors",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\n\nclass Mock2Sample390 {\n    public static void main(String[] args) {\n        Locale a = Locale.getInstance();\n        Locale b = Locale.setDefault(Locale.UK);\n        Locale c = new Locale();\n\n        System.out.println(a + \" \" + b + \" \" + c);\n    }\n}\n",
+    "choices": {
+      "A": "すべて正しいため、現在のLocaleが出力される",
+      "B": "Locale.getInstance()、Locale.setDefaultの戻り値代入、new Locale()のいずれも不適切でコンパイルエラーになる",
+      "C": "setDefaultはLocaleを返すため、bだけは正しい",
+      "D": "new Locale()はデフォルトロケールを返すため、cだけは正しい"
+    },
+    "correctChoice": "B",
+    "correctText": "Locale.getInstance()、Locale.setDefaultの戻り値代入、new Locale()のいずれも不適切でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nLocale.getInstance()というメソッドはありません。また、Locale.setDefault(Locale.UK)の戻り値はvoidなのでLocale変数へ代入できません。さらに、new Locale()の引数なしコンストラクタも使用できません。\n\n選択肢の切り方：\nA：誤り。複数箇所で不正です。\nB：正しい。すべてテキスト記載の注意点です。\nC：誤り。setDefaultはvoidです。\nD：誤り。Localeの引数なし生成はできません。\n\n間違えやすいポイント：\nLocaleはgetDefault()とsetDefault()を混同しやすいです。setDefaultは設定するだけで戻り値はvoidです。"
+  },
+  {
+    "id": 391,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-formatstyle-enum-constants",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.time.format.*;\n\nclass Mock2Sample391 {\n    public static void main(String[] args) {\n        FormatStyle a = FormatStyle.FULL;\n        FormatStyle b = FormatStyle.LONG;\n        FormatStyle c = FormatStyle.MEDIUM;\n        FormatStyle d = FormatStyle.SHORT;\n\n        System.out.println(a + \",\" + b + \",\" + c + \",\" + d);\n    }\n}\n",
+    "choices": {
+      "A": "FormatStyleにはFULLとSHORTしか存在しないためコンパイルエラーになる",
+      "B": "FormatStyleにはNORMALが必ず必要である",
+      "C": "FormatStyleの列挙定数はFULL、LONG、MEDIUM、SHORTである",
+      "D": "FormatStyleはクラスなのでnew FormatStyle()で生成する必要がある"
+    },
+    "correctChoice": "C",
+    "correctText": "FormatStyleの列挙定数はFULL、LONG、MEDIUM、SHORTである",
+    "explanation": "正解：C\n\n結論：\njava.time.format.FormatStyleは列挙型で、FULL、LONG、MEDIUM、SHORTの4つの定数を持ちます。\n\n選択肢の切り方：\nA：誤り。LONGとMEDIUMも存在します。\nB：誤り。NORMALという定数はありません。\nC：正しい。4つの定数が正しいです。\nD：誤り。enumなのでnewして生成しません。\n\n間違えやすいポイント：\nFormatStyleの定数は4つです。FULL/LONG/MEDIUM/SHORTをセットで覚えます。"
+  },
+  {
+    "id": 392,
+    "chapter": 12,
+    "difficulty": "hard",
+    "topic": "mock2-numberformat-locale-integer-instance",
+    "question": "次のコードをコンパイル、実行した場合の説明として正しいものはどれか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass Mock2Sample392 {\n    public static void main(String[] args) {\n        NumberFormat jpInt = NumberFormat.getIntegerInstance(Locale.JAPAN);\n        NumberFormat deInt = NumberFormat.getIntegerInstance(Locale.GERMANY);\n        NumberFormat jpNum = NumberFormat.getInstance(Locale.JAPAN);\n\n        System.out.println(jpInt.format(1234));\n        System.out.println(deInt.format(1234));\n        System.out.println(jpNum.format(1234.15));\n    }\n}\n",
+    "choices": {
+      "A": "getIntegerInstance(Locale.JAPAN)は1234を小数付きの1,234.0にする",
+      "B": "Locale.GERMANYでも区切り記号は必ずカンマになる",
+      "C": "NumberFormat.getInstance()は常に整数化する",
+      "D": "日本では1234が1,234、ドイツでは1234が1.234形式になり、getInstanceは通常の数値フォーマットを行う"
+    },
+    "correctChoice": "D",
+    "correctText": "日本では1234が1,234、ドイツでは1234が1.234形式になり、getInstanceは通常の数値フォーマットを行う",
+    "explanation": "正解：D\n\n結論：\nLocale.JAPANでNumberFormat.getIntegerInstance()を使うと、1234は1,234のようにフォーマットされます。Locale.GERMANYでは区切り記号が異なり、1.234のようになります。また、NumberFormat.getInstance()はLocaleに応じた通常の数値フォーマットであり、getIntegerInstanceのように整数専用変換をするものではありません。\n\n選択肢の切り方：\nA：誤り。IntegerInstanceは整数形式です。\nB：誤り。ドイツでは区切り記号がカンマではなくピリオドになります。\nC：誤り。getInstanceは通常の数値フォーマットです。\nD：正しい。Localeごとの区切りとgetInstanceの役割が合っています。\n\n間違えやすいポイント：\ngetIntegerInstanceとgetInstanceは違います。Localeによって区切り記号も変わります。"
   }
 ]

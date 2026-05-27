@@ -784,7 +784,9 @@ const CHAPTER_TITLES = {
   8: "ローカライズ",
   9: "基礎知識編",
   10: "あとで復習",
-  11: "模擬試験1"
+  11: "模擬試験1",
+  12: "練習問題まとめ",
+  13: "模擬試験2"
 };
 const GOLD_CHAPTERS = [1,2,3,4,5,6,7,8];
 
@@ -1116,6 +1118,12 @@ function currentModeTitle() {
   if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 11) {
     return "模擬試験1";
   }
+  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 12) {
+    return "練習問題まとめ";
+  }
+  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 13) {
+    return "模擬試験2";
+  }
   return state.selectedChapters.map(n => chapterLabel(n)).join("・");
 }
 function showMenu() {
@@ -1176,7 +1184,9 @@ function buildMenu() {
     { label: "第6章", chapters: [6], desc: "ファイルI/O" },
     { label: "第7章", chapters: [7], desc: "JDBC" },
     { label: "第8章", chapters: [8], desc: "ローカライズ" },
-    { label: "模擬試験1", chapters: [11], desc: "問題追加予定の本番形式演習" },
+    { label: "模擬試験1", chapters: [11], desc: "第1回の本番形式演習" },
+    { label: "練習問題まとめ", chapters: [12], desc: "練習問題まとめ" },
+    { label: "模擬試験2", chapters: [13], desc: "第3回の本番形式演習" },
   ];
   menuButtons.innerHTML = "";
   items.forEach(item => {
