@@ -6270,5 +6270,917 @@
     "correctChoice": "D",
     "correctText": "日本では1234が1,234、ドイツでは1234が1.234形式になり、getInstanceは通常の数値フォーマットを行う",
     "explanation": "正解：D\n\n結論：\nLocale.JAPANでNumberFormat.getIntegerInstance()を使うと、1234は1,234のようにフォーマットされます。Locale.GERMANYでは区切り記号が異なり、1.234のようになります。また、NumberFormat.getInstance()はLocaleに応じた通常の数値フォーマットであり、getIntegerInstanceのように整数専用変換をするものではありません。\n\n選択肢の切り方：\nA：誤り。IntegerInstanceは整数形式です。\nB：誤り。ドイツでは区切り記号がカンマではなくピリオドになります。\nC：誤り。getInstanceは通常の数値フォーマットです。\nD：正しい。Localeごとの区切りとgetInstanceの役割が合っています。\n\n間違えやすいポイント：\ngetIntegerInstanceとgetInstanceは違います。Localeによって区切り記号も変わります。"
+  },
+  {
+    "id": 393,
+    "chapter": 13,
+    "difficulty": "hard",
+    "topic": "chapter13-list-set-replace-393",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Chapter13Sample01 {\n    public static void main(String[] args) {\n        List<String> list = new ArrayList<>(List.of(\"A\", \"B\", \"C\"));\n\n        String old = list.set(1, list.get(0) + list.size());\n\n        System.out.println(list);\n        System.out.println(old);\n        System.out.println(list.size());\n    }\n}",
+    "choices": {
+      "A": "[A, A3, C]\nB\n3",
+      "B": "[A, A3, B, C]\nB\n4",
+      "C": "[A, B, C]\nA3\n3",
+      "D": "setの行でUnsupportedOperationExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "[A, A3, C]\nB\n3",
+    "explanation": "正解：A\n\n結論：\nList#set(index, element)は指定位置の要素を置き換え、戻り値として置き換え前の要素を返します。新しい要素を追加する操作ではないため、リストのサイズは変わりません。\n\n選択肢の切り方：\nA：正しい。インデックス1のBがA3に置き換わり、戻り値oldはB、サイズは3のままです。\nB：誤り。setはaddと違い、要素を挿入しません。\nC：誤り。setの戻り値は新しい要素ではなく、置き換え前の要素です。\nD：誤り。new ArrayList<>(...)で生成したリストは変更可能です。\n\n間違えやすいポイント：\nsetは「追加」ではなく「置換」です。戻り値とサイズ変化をセットで確認します。"
+  },
+  {
+    "id": 394,
+    "chapter": 13,
+    "difficulty": "hard",
+    "topic": "chapter13-optional-print-394",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Chapter13Sample02 {\n    public static void main(String[] args) {\n        Optional<String> value = Optional.of(\"gold\")\n            .map(String::toUpperCase);\n\n        Object obj = value;\n\n        System.out.println(value);\n        System.out.println(obj);\n        System.out.println(value.get());\n    }\n}",
+    "choices": {
+      "A": "GOLD\nGOLD\nGOLD",
+      "B": "Optional[GOLD]\nOptional[GOLD]\nGOLD",
+      "C": "Optional[gold]\nOptional[gold]\ngold",
+      "D": "get()の行でNoSuchElementExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "Optional[GOLD]\nOptional[GOLD]\nGOLD",
+    "explanation": "正解：B\n\n結論：\nOptionalの値をそのままprintlnに渡すと、中身だけではなくOptionalのtoString()結果が出力されます。Optional.of(\"gold\").map(String::toUpperCase)により、中身はGOLDになります。\n\n選択肢の切り方：\nA：誤り。Optional自体を出力すると中身だけのGOLDにはなりません。\nB：正しい。valueもobjも参照している実体はOptionalなのでOptional[GOLD]と表示され、get()では中身のGOLDが取り出されます。\nC：誤り。map(String::toUpperCase)により中身は大文字になります。\nD：誤り。Optionalは空ではないためget()で例外は発生しません。\n\n間違えやすいポイント：\nOptionalをObject型の変数に代入しても、toString()の実体はOptionalのままです。中身を出したい場合はget()などで取り出す必要があります。"
+  },
+  {
+    "id": 395,
+    "chapter": 13,
+    "difficulty": "hard",
+    "topic": "chapter13-method-reference-argument-395",
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\nimport java.util.function.*;\n\nclass Chapter13Sample03 {\n    public static void main(String[] args) {\n        Optional<String> value = Optional.empty();\n\n        Supplier<Optional<String>> s = value::or(Optional::empty);\n\n        System.out.println(s.get());\n    }\n}",
+    "choices": {
+      "A": "Optional.empty が出力される",
+      "B": "Optional[empty] が出力される",
+      "C": "メソッド参照の行でコンパイルエラーになる",
+      "D": "実行時にNullPointerExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "メソッド参照の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nメソッド参照は、value::or(Optional::empty)のように呼び出し時の引数を直接書き込む形式では使えません。引数を渡したい場合はラムダ式で value.or(Optional::empty) のように記述します。\n\n選択肢の切り方：\nA：誤り。Optional.or自体は空の場合にSupplierを評価できますが、このメソッド参照の書き方が不正です。\nB：誤り。Optional.emptyは文字列ではなく空のOptionalです。さらにコンパイルできません。\nC：正しい。メソッド参照に実引数を埋め込む構文にはできません。\nD：誤り。実行時例外ではなく、コンパイル時に検出されます。\n\n間違えやすいポイント：\nobj::method は「あとで呼ばれるメソッド」を表すだけで、obj::method(arg)のように引数付き呼び出しをその場で書くものではありません。"
+  },
+  {
+    "id": 396,
+    "chapter": 13,
+    "difficulty": "hard",
+    "topic": "chapter13-var-lambda-target-type-396",
+    "question": "次のコードについて正しいものはどれか。\n\nclass Chapter13Sample04 {\n    public static void main(String[] args) {\n        var f = (a, b) -> a + b;\n\n        System.out.println(f.apply(10, 20));\n    }\n}",
+    "choices": {
+      "A": "30 が出力される",
+      "B": "1020 が出力される",
+      "C": "applyの行でNoSuchMethodErrorがスローされる",
+      "D": "ラムダ式をvarだけで受けているためコンパイルエラーになる"
+    },
+    "correctChoice": "D",
+    "correctText": "ラムダ式をvarだけで受けているためコンパイルエラーになる",
+    "explanation": "正解：D\n\n結論：\nラムダ式は単独では型を決定できません。左辺にFunction、BinaryOperator、BiFunctionなどの関数型インターフェースがあることで初めて引数型や戻り値型が決まります。varだけではターゲット型を推論できないためコンパイルエラーです。\n\n選択肢の切り方：\nA：誤り。数値加算のように見えますが、ラムダ式自体の型が決まらないため実行できません。\nB：誤り。String連結になるかどうか以前に、ターゲット型がありません。\nC：誤り。実行時のNoSuchMethodErrorではなくコンパイルエラーです。\nD：正しい。ラムダ式には明確な関数型インターフェースが必要です。\n\n間違えやすいポイント：\nvarは右辺から型を推論しますが、ラムダ式の型推論には左辺のターゲット型が必要です。両者だけでは循環して決められません。"
+  },
+  {
+    "id": 397,
+    "chapter": 13,
+    "difficulty": "hard",
+    "topic": "chapter13-stream-sorted-no-terminal-397",
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Chapter13Sample05 {\n    public static void main(String[] args) {\n        List<String> list = new ArrayList<>(List.of(\"c\", \"a\", \"b\"));\n\n        list.stream().sorted();\n\n        list.set(0, \"z\");\n\n        System.out.println(list);\n    }\n}",
+    "choices": {
+      "A": "[z, a, b] が出力される",
+      "B": "[a, b, z] が出力される",
+      "C": "[a, b, c] が出力される",
+      "D": "sorted()の行でUnsupportedOperationExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "[z, a, b] が出力される",
+    "explanation": "正解：A\n\n結論：\nstream().sorted()は元のListを並べ替える操作ではなく、ソート済みの要素を流す新しいStreamを返す中間操作です。さらに終端操作もないため、この行だけでは要素の処理も行われません。その後set(0, \"z\")により先頭だけが置き換わります。\n\n選択肢の切り方：\nA：正しい。元の順序c, a, bの先頭cだけがzに置き換わります。\nB：誤り。sorted()の結果をListへ反映してからsetしているわけではありません。\nC：誤り。元のListはsorted()では変更されません。\nD：誤り。stream().sorted()自体は変更操作ではないため、例外は発生しません。\n\n間違えやすいポイント：\nStreamの中間操作は遅延評価です。また、sorted()は元のコレクションを直接変更しません。結果を使うには終端操作や代入が必要です。"
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Chapter13Sample06 {\n    public static void main(String[] args) {\n        Stream<Integer> boxed = Stream.of(10, 20, 30);\n        var a = IntStream.of(10, 20, 30).average();\n\n        System.out.println(a);\n\n        var b = boxed.average();\n        System.out.println(b);\n    }\n}",
+    "choices": {
+      "A": "boxed.average() の行でコンパイルエラーになる",
+      "B": "OptionalDouble[20.0] が2回出力される",
+      "C": "Optional[20.0] が出力された後、OptionalDouble[20.0] が出力される",
+      "D": "average()は全Streamで使用できるが、空の場合だけ例外になる"
+    },
+    "correctChoice": "A",
+    "correctText": "boxed.average() の行でコンパイルエラーになる",
+    "explanation": "正解：A\n\n結論：\naverage()はIntStream、LongStream、DoubleStreamなどの基本型ストリームに用意されているメソッドです。Stream<Integer>にはaverage()は存在しないため、boxed.average()の行でコンパイルエラーになります。\n\n選択肢の切り方：\nA：正しい。boxedはStream<Integer>であり、average()を直接呼べません。\nB：誤り。IntStream側はOptionalDouble[20.0]ですが、Stream<Integer>側でコンパイルできません。\nC：誤り。Stream<Integer>.average()というメソッドはありません。\nD：誤り。average()が全Streamで使えるわけではありません。\n\n間違えやすいポイント：\n戻り値がOptionalDoubleであることだけでなく、そもそもaverage()を呼べるストリーム型かを確認します。",
+    "topic": "chapter13-primitive-average-only-398",
+    "difficulty": "hard",
+    "id": 398
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Chapter13Sample07 {\n    public static void main(String[] args) {\n        List<String> list = List.of(\"A\", \"B\");\n        Stream<String> stream = Stream.of(\"C\");\n\n        Stream.concat(list, stream)\n            .forEach(System.out::print);\n    }\n}",
+    "choices": {
+      "A": "ABC が出力される",
+      "B": "Stream.concat(list, stream) の行でコンパイルエラーになる",
+      "C": "実行時にClassCastExceptionがスローされる",
+      "D": "listが自動的にlist.stream()へ変換される"
+    },
+    "correctChoice": "B",
+    "correctText": "Stream.concat(list, stream) の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nStream.concatの引数は2つのStreamです。ListはStreamではないため、Stream.concat(list, stream)とは書けません。list.stream()のように明示的にStreamへ変換する必要があります。\n\n選択肢の切り方：\nA：誤り。Listが自動変換されるわけではないため実行まで進みません。\nB：正しい。第1引数がStreamではありません。\nC：誤り。実行時例外ではなくコンパイルエラーです。\nD：誤り。JavaはListを暗黙にStreamへ変換しません。\n\n間違えやすいポイント：\nStream.concatは便利ですが、Collectionを直接受け取るメソッドではありません。",
+    "topic": "chapter13-stream-concat-argument-type-399",
+    "difficulty": "hard",
+    "id": 399
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行した場合の説明として正しいものはどれか。\n\nimport java.util.concurrent.atomic.*;\n\nclass Chapter13Sample08 {\n    public static void main(String[] args) throws Exception {\n        AtomicInteger total = new AtomicInteger();\n\n        Runnable task = () -> {\n            for (int i = 0; i < 1000; i++) {\n                total.incrementAndGet();\n            }\n        };\n\n        Thread t1 = new Thread(task);\n        Thread t2 = new Thread(task);\n\n        t1.start();\n        t2.start();\n        t1.join();\n        t2.join();\n\n        System.out.println(total.get());\n    }\n}",
+    "choices": {
+      "A": "1000 が必ず出力される",
+      "B": "1000以上2000未満の値が出力される可能性がある",
+      "C": "2000 が出力される",
+      "D": "AtomicIntegerはスレッドから更新できないためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "2000 が出力される",
+    "explanation": "正解：C\n\n結論：\nAtomicIntegerのincrementAndGet()は原子的に加算します。2つのスレッドがそれぞれ1000回加算し、joinで両方の終了を待ってからget()しているため、結果は2000になります。\n\n選択肢の切り方：\nA：誤り。片方のスレッド分だけではありません。\nB：誤り。通常のintを非同期に更新する場合のような取りこぼしは、AtomicIntegerでは起きません。\nC：正しい。2スレッドの処理結果が安全に反映されます。\nD：誤り。AtomicIntegerは複数スレッドからの更新を扱うためのクラスです。\n\n間違えやすいポイント：\nAtomic変数は「値を共有できる」だけでなく、複合的な読み取り・更新を原子的に行える点が重要です。",
+    "topic": "chapter13-atomicinteger-thread-sum-400",
+    "difficulty": "hard",
+    "id": 400
+  },
+  {
+    "chapter": 13,
+    "question": "次の状況で、app.Mainを無名モジュールとして実行するコマンドとして適切なものはどれか。\n\nディレクトリ構成:\n\nout\n└─ app\n   └─ Main.class\n\n// app/Main.java\npackage app;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"run\");\n    }\n}",
+    "choices": {
+      "A": "java --module-path out --module app.Main",
+      "B": "java -p out -m app/app.Main",
+      "C": "java --module-source-path out app.Main",
+      "D": "java -cp out app.Main"
+    },
+    "correctChoice": "D",
+    "correctText": "java -cp out app.Main",
+    "explanation": "正解：D\n\n結論：\n無名モジュールとして扱うクラスはクラスパス上に配置して実行します。module-info.javaを持つ名前付きモジュールとして実行するわけではないため、-cp out app.Mainが適切です。\n\n選択肢の切り方：\nA：誤り。--moduleにはモジュール名/メインクラスを指定しますが、ここでは名前付きモジュールではありません。\nB：誤り。-mは名前付きモジュールの実行指定です。\nC：誤り。--module-source-pathはソースモジュール探索用で、実行時の指定ではありません。\nD：正しい。クラスパス上のapp.Mainとして実行します。\n\n間違えやすいポイント：\n無名モジュールは「モジュールパス」ではなく「クラスパス」側で考えます。",
+    "topic": "chapter13-unnamed-module-classpath-401",
+    "difficulty": "hard",
+    "id": 401
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nclass Chapter13Sample10 {\n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> System.out.print(\"A\"));\n\n        t.start();\n        t.join();\n        t.start();\n\n        System.out.print(\"B\");\n    }\n}",
+    "choices": {
+      "A": "A が出力された後、IllegalThreadStateExceptionがスローされる",
+      "B": "AAB が出力される",
+      "C": "start()の2回目でコンパイルエラーになる",
+      "D": "Bだけが出力される"
+    },
+    "correctChoice": "A",
+    "correctText": "A が出力された後、IllegalThreadStateExceptionがスローされる",
+    "explanation": "正解：A\n\n結論：\n同一のThreadインスタンスに対してstart()を呼べるのは1回だけです。1回目のstartは実行され、joinで終了を待ちます。その後、同じThreadに再度start()を呼ぶとIllegalThreadStateExceptionがスローされます。\n\n選択肢の切り方：\nA：正しい。2回目のstartは実行時例外です。\nB：誤り。同じThreadを再スタートできません。\nC：誤り。コンパイル時には検出されません。\nD：誤り。1回目のstartでAは出力されます。\n\n間違えやすいポイント：\nThreadの再利用不可はコンパイルエラーではなく実行時例外として現れます。",
+    "topic": "chapter13-thread-start-once-402",
+    "difficulty": "hard",
+    "id": 402
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nclass Chapter13Sample11 {\n    public static void main(String[] args) {\n        Thread t = new Thread(() -> {\n            System.out.println(Thread.currentThread().getName());\n        }, \"worker\");\n\n        t.run();\n    }\n}",
+    "choices": {
+      "A": "worker が出力される",
+      "B": "main が出力される",
+      "C": "何も出力されない",
+      "D": "run()は直接呼び出せないためコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "main が出力される",
+    "explanation": "正解：B\n\n結論：\nThreadインスタンスのrun()を直接呼び出しても、新しいスレッドは開始されません。単なる通常メソッド呼び出しとして、呼び出し元であるmainスレッド上で処理されます。\n\n選択肢の切り方：\nA：誤り。workerという名前のスレッドを開始するにはstart()が必要です。\nB：正しい。run()を直接呼んでいるためmainスレッドで実行されます。\nC：誤り。run()の中身は通常メソッドとして実行されます。\nD：誤り。run()はpublicメソッドとして直接呼び出せます。\n\n間違えやすいポイント：\nstart()は新しいスレッドを開始しますが、run()は単なるメソッド呼び出しです。",
+    "topic": "chapter13-thread-run-direct-call-403",
+    "difficulty": "hard",
+    "id": 403
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しい説明はどれか。\n\nimport java.util.*;\n\nclass Chapter13Sample12 {\n    public static void main(String[] args) {\n        Random r = new Random(0);\n\n        for (int i = 0; i < 5; i++) {\n            int n = r.nextInt(3);\n            System.out.print(n);\n        }\n    }\n}",
+    "choices": {
+      "A": "nには1以上3以下の整数が入る",
+      "B": "nには0以上3以下の整数が入る",
+      "C": "nには0以上3未満の整数が入る",
+      "D": "nextInt(3)はdoubleを返すためコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "nには0以上3未満の整数が入る",
+    "explanation": "正解：C\n\n結論：\nRandom.nextInt(n)は0以上n未満のint値を返します。したがってnextInt(3)で返る可能性があるのは0、1、2です。3は含まれません。\n\n選択肢の切り方：\nA：誤り。0が含まれ、3は含まれません。\nB：誤り。上限3は含まれません。\nC：正しい。0以上3未満です。\nD：誤り。nextIntはintを返します。\n\n間違えやすいポイント：\n乱数APIでは上限を含むかどうかが狙われます。nextInt(n)のnは排他的上限です。",
+    "topic": "chapter13-random-nextint-bound-404",
+    "difficulty": "hard",
+    "id": 404
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.stream.*;\n\nclass Chapter13Sample13 {\n    public static void main(String[] args) {\n        StringBuilder result = IntStream.of(1, 2, 3)\n            .collect(\n                StringBuilder::new,\n                (sb, n) -> sb.append(n),\n                (left, right) -> left.append(right)\n            );\n\n        System.out.println(result);\n    }\n}",
+    "choices": {
+      "A": "IntStreamにはcollect()が存在しないためコンパイルエラーになる",
+      "B": "Collectors.joining()を使っていないためコンパイルエラーになる",
+      "C": "[1, 2, 3] が出力される",
+      "D": "123 が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "123 が出力される",
+    "explanation": "正解：D\n\n結論：\n基本型ストリームにもcollectはあります。ただし、Stream<T>で使うCollectorを渡す形ではなく、Supplier、ObjIntConsumer、BiConsumerの3引数を指定する形です。このコードではStringBuilderに1、2、3を順にappendするため123が出力されます。\n\n選択肢の切り方：\nA：誤り。IntStreamにも3引数のcollectがあります。\nB：誤り。joining専用ではありません。\nC：誤り。ListではなくStringBuilderに連結しています。\nD：正しい。各int値がappendされます。\n\n間違えやすいポイント：\n「基本型StreamにはCollectorを渡せない」ことと「collect自体がない」ことは別です。",
+    "topic": "chapter13-intstream-collect-three-args-405",
+    "difficulty": "hard",
+    "id": 405
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nclass Chapter13Sample14 {\n    public static void main(String[] args) {\n        String text = \"Java\";\n\n        System.out.println(text.reverse());\n    }\n}",
+    "choices": {
+      "A": "reverse()の行でコンパイルエラーになる",
+      "B": "NoSuchMethodExceptionがスローされる",
+      "C": "avaJ が出力される",
+      "D": "Stringは実行時にStringBuilderへ変換される"
+    },
+    "correctChoice": "A",
+    "correctText": "reverse()の行でコンパイルエラーになる",
+    "explanation": "正解：A\n\n結論：\nStringにはreverse()メソッドは存在しません。存在しないメソッド呼び出しは、リフレクションで明示的に検索している場合などを除き、通常はコンパイルエラーです。\n\n選択肢の切り方：\nA：正しい。String#reverseは存在しません。\nB：誤り。NoSuchMethodExceptionはリフレクションなどでメソッドを検索する場面の例外です。通常のメソッド呼び出しではコンパイルエラーです。\nC：誤り。Stringにはreverse()がないため出力されません。\nD：誤り。Stringが自動的にStringBuilderへ変換されるわけではありません。\n\n間違えやすいポイント：\n「存在しないメソッド」は実行時例外ではなく、まずコンパイル時に検出されます。",
+    "topic": "chapter13-no-such-method-compile-error-406",
+    "difficulty": "hard",
+    "id": 406
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行した場合の説明として最も適切なものはどれか。\n\nimport java.util.concurrent.*;\nimport java.util.concurrent.Flow.*;\nimport java.util.concurrent.SubmissionPublisher;\n\nclass Chapter13Sample15 {\n    static class Sub implements Subscriber<String> {\n        public void onSubscribe(Subscription s) {\n            s.request(0);\n        }\n\n        public void onNext(String item) {\n            System.out.print(item);\n        }\n\n        public void onError(Throwable t) {\n            System.out.print(\"error\");\n        }\n\n        public void onComplete() {\n            System.out.print(\"done\");\n        }\n    }\n\n    public static void main(String[] args) throws Exception {\n        try (SubmissionPublisher<String> publisher = new SubmissionPublisher<>()) {\n            publisher.subscribe(new Sub());\n            publisher.submit(\"A\");\n            Thread.sleep(300);\n        }\n    }\n}",
+    "choices": {
+      "A": "request(0)により、必ずAが出力される",
+      "B": "request(0)は不正な要求であり、onErrorが呼ばれ得る",
+      "C": "request(0)は無制限要求を意味する",
+      "D": "requestの引数はintだけなのでコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "request(0)は不正な要求であり、onErrorが呼ばれ得る",
+    "explanation": "正解：B\n\n結論：\nFlow.Subscription.request(long n)では、要求数nは正の値である必要があります。0以下を渡した場合、Publisherは仕様に従って例外を扱う、またはSubscriberのonErrorを呼び出す可能性があります。\n\n選択肢の切り方：\nA：誤り。0は有効な要求数ではありません。\nB：正しい。0以下のrequestは不正です。\nC：誤り。無制限に近い要求をするならLong.MAX_VALUEなどを指定します。\nD：誤り。requestの引数はlongです。intリテラル0はlongへ変換可能です。\n\n間違えやすいポイント：\nrequest(0)は「何も要求しない」ではなく、不正な要求として扱われます。",
+    "topic": "chapter13-flow-request-nonpositive-407",
+    "difficulty": "hard",
+    "id": 407
+  },
+  {
+    "chapter": 13,
+    "question": "jlinkで作成したカスタムランタイムイメージについて、次の状況がある。\n\nモジュール名: com.tool\nメインクラス: tool.Main\nランタイムイメージ: runtime\n--launcher オプションは指定していない。\n\nこの場合の説明として正しいものはどれか。",
+    "choices": {
+      "A": "--launcherを指定していないため、絶対に実行できない",
+      "B": "runtime/bin/com.tool というコマンドだけで実行できる",
+      "C": "runtime/bin/java -m com.tool/tool.Main のように実行できる",
+      "D": "--launcherを指定しない場合、module-info.javaは無視される"
+    },
+    "correctChoice": "C",
+    "correctText": "runtime/bin/java -m com.tool/tool.Main のように実行できる",
+    "explanation": "正解：C\n\n結論：\n--launcherは専用起動コマンドを作るための指定です。指定していなくても、カスタムランタイムイメージ内のjavaコマンドを使って、java -m モジュール名/メインクラス名の形式で実行できます。\n\n選択肢の切り方：\nA：誤り。--launcherなしでもjava -mで実行できます。\nB：誤り。--launcherを指定していないため、そのような専用コマンドは作成されません。\nC：正しい。runtime/bin/javaを使ってモジュール実行できます。\nD：誤り。モジュールとして扱われます。\n\n間違えやすいポイント：\n--launcherは実行可能にする必須条件ではなく、便利な起動コマンドを追加するためのものです。",
+    "topic": "chapter13-jlink-without-launcher-408",
+    "difficulty": "hard",
+    "id": 408
+  },
+  {
+    "chapter": 13,
+    "question": "次のモジュール構成がある。\n\nsrc\n└─ com.app\n   ├─ module-info.java\n   └─ app\n      └─ Main.java\n\n// src/com.app/module-info.java\nmodule com.app {\n    exports app;\n}\n\n// src/com.app/app/Main.java\npackage app;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"app\");\n    }\n}\n\nモジュールソースとしてcom.appをコンパイルするコマンドとして適切なものはどれか。",
+    "choices": {
+      "A": "javac -d out -cp src com.app",
+      "B": "javac --module-path src --module com.app",
+      "C": "java --module-source-path src --module com.app",
+      "D": "javac -d out --module-source-path src --module com.app"
+    },
+    "correctChoice": "D",
+    "correctText": "javac -d out --module-source-path src --module com.app",
+    "explanation": "正解：D\n\n結論：\nモジュール化されたソースをモジュール単位でコンパイルする場合、javacに--module-source-pathでモジュールソースの探索場所を指定し、--moduleで対象モジュールを指定します。\n\n選択肢の切り方：\nA：誤り。-cpはクラスパスであり、モジュールソースの探索指定ではありません。\nB：誤り。--module-pathはコンパイル済みモジュールの探索場所に使います。ソース探索には--module-source-pathを使います。\nC：誤り。javaではなくjavacでコンパイルします。\nD：正しい。モジュールソースパスと対象モジュール指定が適切です。\n\n間違えやすいポイント：\nmodule-info.javaを含むソースを単なるクラスパス感覚で扱うと、モジュールとしての解決が不完全になります。",
+    "topic": "chapter13-module-compile-module-source-path-409",
+    "difficulty": "hard",
+    "id": 409
+  },
+  {
+    "chapter": 13,
+    "question": "次のコマンドの説明として正しいものはどれか。\n\njavac -d out $(find src -name \"*.java\")",
+    "choices": {
+      "A": "findの結果をコマンド置換し、見つかったJavaソースをjavacの引数として渡す",
+      "B": "findコマンドはjavacの標準オプションなので、シェルは関与しない",
+      "C": "$(find ...)はJavaのラムダ式として評価される",
+      "D": "*.javaに一致するファイルは実行時にClassLoaderが自動コンパイルする"
+    },
+    "correctChoice": "A",
+    "correctText": "findの結果をコマンド置換し、見つかったJavaソースをjavacの引数として渡す",
+    "explanation": "正解：A\n\n結論：\n$(find src -name \"*.java\")はシェルのコマンド置換です。findコマンドの出力結果が展開され、その結果がjavacの引数として渡されます。\n\n選択肢の切り方：\nA：正しい。シェルがfindの実行結果を埋め込みます。\nB：誤り。findはjavacのオプションではありません。\nC：誤り。Javaコードではなくシェル構文です。\nD：誤り。ClassLoaderがソースを自動コンパイルするわけではありません。\n\n間違えやすいポイント：\nコマンドの一部がJava/JDKの機能なのか、シェルの機能なのかを分けて読む必要があります。",
+    "topic": "chapter13-shell-command-substitution-find-410",
+    "difficulty": "hard",
+    "id": 410
+  },
+  {
+    "chapter": 13,
+    "question": "次の状況がある。\n\nout\n└─ com.lib\n\nsrc\n└─ com.app\n   ├─ module-info.java\n   └─ app\n      └─ Main.java\n\n// src/com.app/module-info.java\nmodule com.app {\n    requires com.lib;\n}\n\ncom.libはすでにout配下にコンパイル済みである。com.appのコンパイル時に必要な指定として最も適切なものはどれか。",
+    "choices": {
+      "A": "-cp src を指定すれば、requires com.lib は自動解決される",
+      "B": "--module-path out または -p out で依存モジュールの検索場所を指定する",
+      "C": "--module-source-path out でコンパイル済みモジュールを指定する",
+      "D": "requiresを書いているため、追加オプションは一切不要である"
+    },
+    "correctChoice": "B",
+    "correctText": "--module-path out または -p out で依存モジュールの検索場所を指定する",
+    "explanation": "正解：B\n\n結論：\n事前にコンパイル済みの依存モジュールを解決するには、--module-pathまたは-pで、そのモジュールを検索し始める場所を指定します。問題文に「依存」という言葉がなくても、requiresがある場合は依存モジュールの探索場所を考えます。\n\n選択肢の切り方：\nA：誤り。クラスパスでは名前付きモジュール依存の解決として不適切です。\nB：正しい。コンパイル済み依存モジュールはmodule-pathで指定します。\nC：誤り。--module-source-pathはソースモジュール探索用です。\nD：誤り。requiresは依存宣言であり、物理的な探索場所までは示しません。\n\n間違えやすいポイント：\nrequiresを書けば依存関係は宣言できますが、コンパイラがどこを探すかは別途指定が必要です。",
+    "topic": "chapter13-compiled-dependency-module-path-411",
+    "difficulty": "hard",
+    "id": 411
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\n\nclass Chapter13Sample20 {\n    public static void main(String[] args) {\n        ArrayList<Long> list = new ArrayList<>();\n\n        list.add(1);\n        list.add(2L);\n\n        System.out.println(list);\n    }\n}",
+    "choices": {
+      "A": "[1, 2] が出力される",
+      "B": "list.add(1)はIntegerをLongへ自動変換して追加する",
+      "C": "list.add(1)の行でコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "list.add(1)の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\n1はintリテラルです。ArrayList<Long>へ追加するにはLong型の値が必要ですが、intからLongへの変換は、プリミティブの拡大変換とボクシングを組み合わせて自動的に行われるわけではありません。1Lのようにlongリテラルにする必要があります。\n\n選択肢の切り方：\nA：誤り。list.add(1)でコンパイルできません。\nB：誤り。intがIntegerになってからLongへ変換されることはありません。\nC：正しい。ArrayList<Long>にintリテラルをそのまま追加できません。\nD：誤り。実行時ではなくコンパイル時に検出されます。\n\n間違えやすいポイント：\nintからlongへの拡大変換は可能ですが、ジェネリクスのLongに対して「int → long → Long」のような変換は自動適用されません。",
+    "topic": "chapter13-arraylist-long-add-int-412",
+    "difficulty": "hard",
+    "id": 412
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードで、反復中の構造変更によるConcurrentModificationExceptionを避ける修正として最も適切なものはどれか。\n\nimport java.util.*;\n\nclass Chapter13Sample21 {\n    public static void main(String[] args) {\n        List<String> list = new ArrayList<>(List.of(\"A\", \"B\", \"C\"));\n\n        for (String s : list) {\n            if (s.equals(\"B\")) {\n                list.add(\"D\");\n            }\n        }\n\n        System.out.println(list);\n    }\n}",
+    "choices": {
+      "A": "ArrayListをLinkedListに変更する",
+      "B": "拡張for文を使えば構造変更しても常に安全である",
+      "C": "list.add(\"D\")をlist.set(1, \"D\")に変更しても、必ず要素数が増える",
+      "D": "listをCopyOnWriteArrayListで生成する"
+    },
+    "correctChoice": "D",
+    "correctText": "listをCopyOnWriteArrayListで生成する",
+    "explanation": "正解：D\n\n結論：\nArrayListを拡張for文で反復中にlist.addで構造変更すると、ConcurrentModificationExceptionが発生する可能性があります。CopyOnWriteArrayListは反復処理がスナップショットに対して行われるため、この種の反復中変更に強いコレクションです。\n\n選択肢の切り方：\nA：誤り。LinkedListでも反復中の構造変更問題は解決しません。\nB：誤り。拡張for文は内部でIteratorを使います。構造変更には注意が必要です。\nC：誤り。setは置き換えであり、要素数は増えません。\nD：正しい。CopyOnWriteArrayListなら反復中のaddでもConcurrentModificationExceptionを避けやすいです。\n\n間違えやすいポイント：\n構造変更とは要素数などリスト構造を変える操作です。setの置き換えとadd/removeの構造変更を区別します。",
+    "topic": "chapter13-copyonwritearraylist-concurrent-modification-413",
+    "difficulty": "hard",
+    "id": 413
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Chapter13Sample22 {\n    @SuppressWarnings({\"rawtypes\", \"unchecked\"})\n    public static void main(String[] args) {\n        Stream raw = Stream.of(\"java\", \"gold\");\n\n        var result = raw\n            .map(s -> s.toString().length())\n            .filter(n -> n > 4);\n\n        result.forEach(System.out::print);\n    }\n}\n\nこのコードの説明として正しいものはどれか。",
+    "choices": {
+      "A": "コンパイルは通るが、raw型に関する警告が出る可能性がある",
+      "B": "filterのnはInteger型として扱われるため警告なしでコンパイルできる",
+      "C": "mapの戻り値はStream<Integer>として推論される",
+      "D": "raw型のStreamにはmapを呼び出せないためコンパイルエラー"
+    },
+    "correctChoice": "A",
+    "correctText": "コンパイルは通るが、raw型に関する警告が出る可能性がある",
+    "explanation": "正解：A\n\n結論：\nraw型のStreamを使うと、後続の中間操作も型安全なStream<Integer>ではなくraw型として扱われます。そのためコンパイル自体は可能ですが、未検査またはraw型使用に関する警告が出る可能性があります。\n\n選択肢の切り方：\nA：正しい。raw型はコンパイルエラーではなく警告になりやすいです。\nB：誤り。raw型由来のため、通常のStream<Integer>として安全に扱われているわけではありません。\nC：誤り。raw型の中間操作結果もraw型寄りに扱われます。\nD：誤り。raw型でもメソッド呼び出し自体は可能です。\n\n間違えやすいポイント：\nraw型は「型情報がない」だけで、即コンパイルエラーとは限りません。警告と型安全性の低下を区別します。",
+    "topic": "chapter13-raw-stream-intermediate-414",
+    "difficulty": "hard",
+    "id": 414
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて、アプリケーションの可搬性に関する説明として最も適切なものはどれか。\n\nclass Chapter13Sample23 {\n    public static void main(String[] args) {\n        System.out.println(System.getProperty(\"os.name\"));\n    }\n}\n\nこのコードは実行環境のOS名を表示する。",
+    "choices": {
+      "A": "可搬性とは、必ず全OSで同じ文字列を出力する能力である",
+      "B": "可搬性とは、修正や最小限の手間で別環境へ移して動かせる能力である",
+      "C": "可搬性とは、モジュール化されていることだけを意味する",
+      "D": "可搬性とは、実行時にOS依存情報を一切取得できないことを意味する"
+    },
+    "correctChoice": "B",
+    "correctText": "可搬性とは、修正や最小限の手間で別環境へ移して動かせる能力である",
+    "explanation": "正解：B\n\n結論：\nアプリケーションの可搬性とは、ある環境で作成したアプリケーションを、修正なしまたは最小限の修正で別の環境へ移して動かせる能力です。\n\n選択肢の切り方：\nA：誤り。環境依存の値が変わること自体は可搬性の否定とは限りません。\nB：正しい。別環境への移行しやすさを表します。\nC：誤り。モジュール化は設計上の仕組みの1つであり、可搬性そのものではありません。\nD：誤り。OS依存情報を取得できるかどうかだけで可搬性は決まりません。\n\n間違えやすいポイント：\n可搬性は「同じ出力をすること」ではなく「別環境へ移して動かしやすいこと」です。",
+    "topic": "chapter13-portability-definition-415",
+    "difficulty": "hard",
+    "id": 415
+  },
+  {
+    "chapter": 13,
+    "question": "次のモジュール宣言がある。\n\n// module-info.java\nmodule com.sample {\n    exports sample;\n}\n\n// sample/Main.java\npackage sample;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"run\");\n    }\n}\n\nこの説明として正しいものはどれか。",
+    "choices": {
+      "A": "module-info.javaがあるだけで、アプリケーションの可搬性が必ず向上する",
+      "B": "exportsを書けば、OS差異はすべて吸収される",
+      "C": "モジュールシステムは主に依存関係や公開範囲を明確にする仕組みであり、可搬性向上そのものを保証しない",
+      "D": "モジュール化するとクラスパス実行しかできなくなる"
+    },
+    "correctChoice": "C",
+    "correctText": "モジュールシステムは主に依存関係や公開範囲を明確にする仕組みであり、可搬性向上そのものを保証しない",
+    "explanation": "正解：C\n\n結論：\nJavaのモジュールシステムは、依存関係やパッケージの公開範囲を明確にするための仕組みです。設計の整理には役立ちますが、それだけでアプリケーションの可搬性が必ず向上するわけではありません。\n\n選択肢の切り方：\nA：誤り。モジュール化だけで可搬性が保証されるわけではありません。\nB：誤り。exportsはパッケージ公開の宣言であり、OS差異を吸収するものではありません。\nC：正しい。モジュールシステムの目的を正しく説明しています。\nD：誤り。モジュール化アプリケーションはモジュールパスで実行できます。\n\n間違えやすいポイント：\nモジュールシステムの利点と、可搬性という概念を混同しないことが重要です。",
+    "topic": "chapter13-module-system-portability-416",
+    "difficulty": "hard",
+    "id": 416
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.stream.*;\n\nclass Chapter13Sample25 {\n    public static void main(String[] args) {\n        IntStream a = IntStream.of(1, 2);\n        IntStream b = IntStream.of(3, 4);\n\n        Stream.concat(a, b)\n            .forEach(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "1234 が出力される",
+      "B": "Stream<IntStream>として2要素が出力される",
+      "C": "IntStreamが自動的にStream<Integer>へ変換される",
+      "D": "Stream.concat(a, b)の行でコンパイルエラーになる"
+    },
+    "correctChoice": "D",
+    "correctText": "Stream.concat(a, b)の行でコンパイルエラーになる",
+    "explanation": "正解：D\n\n結論：\nStream.concatはStream<? extends T>を2つ受け取るメソッドです。IntStreamはStream<Integer>ではなく特殊化ストリームなので、Stream.concatに直接渡すことはできません。\n\n選択肢の切り方：\nA：誤り。IntStream同士をStream.concatで直接連結できません。\nB：誤り。Stream.of(a, b)ならStream<IntStream>を作れますが、このコードはconcatです。\nC：誤り。IntStreamは自動的にStream<Integer>へ変換されません。\nD：正しい。引数の型が一致しないためコンパイルエラーです。\n\n間違えやすいポイント：\nStream<T>とIntStreamは別物です。IntStream同士の連結にはIntStream.concatを使います。",
+    "topic": "chapter13-stream-concat-intstream-error-417",
+    "difficulty": "hard",
+    "id": 417
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.stream.*;\n\nclass Chapter13Sample26 {\n    public static void main(String[] args) {\n        IntStream a = IntStream.of(1, 2);\n        IntStream b = IntStream.of(3, 4);\n\n        Stream.of(a, b)\n            .forEach(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "1234 が出力される",
+      "B": "2つのIntStreamオブジェクトを表す文字列が出力される",
+      "C": "Stream.of(a, b)の行でコンパイルエラーになる",
+      "D": "IntStream.ofの戻り値はint[]なのでコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "2つのIntStreamオブジェクトを表す文字列が出力される",
+    "explanation": "正解：B\n\n結論：\nStream.of(a, b)は、aとbの中身を平坦化するのではなく、IntStreamオブジェクトを要素とするStream<IntStream>を作ります。そのためforEachで出力されるのは1,2,3,4ではなく、各IntStreamオブジェクトの文字列表現です。\n\n選択肢の切り方：\nA：誤り。IntStreamの中身は展開されません。\nB：正しい。Stream<IntStream>として扱われます。\nC：誤り。IntStreamオブジェクトを要素としてStreamを作ることは可能です。\nD：誤り。IntStream.ofの戻り値はIntStreamです。\n\n間違えやすいポイント：\nStream.ofはflatMapではありません。渡したものをそのまま要素にします。",
+    "topic": "chapter13-stream-of-intstream-object-418",
+    "difficulty": "hard",
+    "id": 418
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.stream.*;\n\nclass Chapter13Sample27 {\n    public static void main(String[] args) {\n        Integer[] values = {1, 2, 3};\n\n        IntStream s = IntStream.of(values);\n        s.forEach(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "123 が出力される",
+      "B": "Integer[]はint[]へ自動変換される",
+      "C": "IntStream.of(values)の行でコンパイルエラーになる",
+      "D": "実行時にClassCastExceptionがスローされる"
+    },
+    "correctChoice": "C",
+    "correctText": "IntStream.of(values)の行でコンパイルエラーになる",
+    "explanation": "正解：C\n\n結論：\nIntStream.ofはint値の可変長引数、またはint[]を受け取ります。Integer[]はint[]ではないため、IntStream.of(values)はコンパイルできません。\n\n選択肢の切り方：\nA：誤り。Integer[]はIntStream.ofに直接渡せません。\nB：誤り。Integer[]からint[]への配列全体の自動変換は行われません。\nC：正しい。引数型が合いません。\nD：誤り。実行時例外ではなくコンパイルエラーです。\n\n間違えやすいポイント：\nInteger単体のアンボクシングと、Integer[]からint[]への変換は別物です。",
+    "topic": "chapter13-intstream-of-integer-array-419",
+    "difficulty": "hard",
+    "id": 419
+  },
+  {
+    "chapter": 13,
+    "question": "次のディレクトリ構成とコードがある。\n\nsrc\n└─ com.app\n   ├─ module-info.java\n   └─ app\n      └─ Main.java\n\n// src/com.app/module-info.java\nmodule com.app {\n    exports app;\n}\n\n// src/com.app/app/Main.java\npackage app;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"ok\");\n    }\n}\n\n次のコマンドを実行した。\n\njavac -d out src/com.app/module-info.java src/com.app/app/Main.java\n\nこの説明として正しいものはどれか。",
+    "choices": {
+      "A": "out/com.app配下に必ずモジュール形式で出力される",
+      "B": "java --module-path out --module com.app/app.Main で必ず実行できる",
+      "C": "-d outだけではモジュール名ディレクトリ配下の形にならない可能性があり、モジュールパス配置として不適切になり得る",
+      "D": "module-info.javaは常に無視される"
+    },
+    "correctChoice": "C",
+    "correctText": "-d outだけではモジュール名ディレクトリ配下の形にならない可能性があり、モジュールパス配置として不適切になり得る",
+    "explanation": "正解：C\n\n結論：\nモジュールをモジュールパス上に配置するには、通常、出力先にモジュール単位のルートができるようにコンパイルします。単純に個別ファイルを-d outへ出すと、out直下にmodule-info.classやappディレクトリが置かれ、期待するout/com.app配下のモジュール配置にならない可能性があります。\n\n選択肢の切り方：\nA：誤り。個別ファイル指定と-d outだけで必ずout/com.appになるとは限りません。\nB：誤り。モジュールパス上の配置が不適切だと解決できません。\nC：正しい。モジュールの出力配置を意識する必要があります。\nD：誤り。module-info.java自体はコンパイル対象です。\n\n間違えやすいポイント：\nソースをコンパイルできることと、実行時にモジュールパス上で正しく解決できる配置になることは別です。",
+    "topic": "chapter13-module-output-root-directory-420",
+    "difficulty": "hard",
+    "id": 420
+  },
+  {
+    "chapter": 13,
+    "question": "次のコマンドについて正しいものはどれか。\n\n// module-info.java\nmodule com.app {\n    exports app;\n}\n\n// app/Main.java\npackage app;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"run\");\n    }\n}\n\n実行するコマンド：\n\njava --module-source-path src --module com.app/app.Main\n",
+    "choices": {
+      "A": "--module-source-pathはjavaコマンドでソースモジュールを実行するための必須オプションである",
+      "B": "javaコマンドでモジュールを実行する場合は、通常--module-pathでコンパイル済みモジュールの場所を指定する",
+      "C": "--module-source-pathと--module-pathは完全に同じ意味である",
+      "D": "--moduleにはメインクラスだけを書けばよい"
+    },
+    "correctChoice": "B",
+    "correctText": "javaコマンドでモジュールを実行する場合は、通常--module-pathでコンパイル済みモジュールの場所を指定する",
+    "explanation": "正解：B\n\n結論：\nモジュール化されたアプリケーションを実行する場合、通常は--module-pathまたは-pでコンパイル済みモジュールの検索場所を指定し、--moduleでモジュール名/メインクラスを指定します。--module-source-pathは主にjavacでソースモジュールを探すための指定です。\n\n選択肢の切り方：\nA：誤り。実行時の一般的な指定ではありません。\nB：正しい。実行時はモジュールパスを指定します。\nC：誤り。ソース探索場所と実行時モジュール探索場所は違います。\nD：誤り。--moduleにはモジュール名/完全修飾メインクラスを指定します。\n\n間違えやすいポイント：\njavacの--module-source-pathと、javaの--module-pathを混同しないことが重要です。",
+    "topic": "chapter13-java-module-source-path-vs-module-path-421",
+    "difficulty": "hard",
+    "id": 421
+  },
+  {
+    "chapter": 13,
+    "question": "次のコマンドについて正しい説明はどれか。\n\n// module-info.java\nmodule com.app {\n    requires com.lib;\n}\n\njlink --module-path mods --add-modules com.app,com.lib --output image\n",
+    "choices": {
+      "A": "--add-modulesで複数モジュールを指定する場合、カンマで区切る",
+      "B": "--add-modulesで複数モジュールを指定する場合、必ずセミコロンで区切る",
+      "C": "--add-modulesには1つのモジュールしか指定できない",
+      "D": "--add-modulesにはメインクラス名だけを指定する"
+    },
+    "correctChoice": "A",
+    "correctText": "--add-modulesで複数モジュールを指定する場合、カンマで区切る",
+    "explanation": "正解：A\n\n結論：\njlinkの--add-modulesで複数のモジュールを指定する場合は、com.app,com.libのようにカンマ区切りで列挙します。\n\n選択肢の切り方：\nA：正しい。複数列挙はカンマ区切りです。\nB：誤り。セミコロンは複数のモジュール名の区切りではありません。\nC：誤り。複数指定できます。\nD：誤り。指定するのはモジュール名です。\n\n間違えやすいポイント：\nモジュール名の列挙と、モジュールパス上の複数ディレクトリ指定を混同しないことが重要です。",
+    "topic": "chapter13-jlink-add-modules-comma-422",
+    "difficulty": "hard",
+    "id": 422
+  },
+  {
+    "chapter": 13,
+    "question": "次のコマンドについて正しい説明はどれか。\n\n// app/Main.java\npackage app;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"run\");\n    }\n}\n\n実行コマンド：\n\njava -p mods;libs -m com.app/app.Main\n\nWindows環境での説明として正しいものはどれか。",
+    "choices": {
+      "A": "-pでは複数のモジュールディレクトリを指定できない",
+      "B": "mods;libsは1つのモジュール名として扱われる",
+      "C": "-pはクラスパス専用なのでモジュール実行に使えない",
+      "D": "モジュールパスに複数ディレクトリを並べる場合、環境に応じたパス区切り文字を使う"
+    },
+    "correctChoice": "D",
+    "correctText": "モジュールパスに複数ディレクトリを並べる場合、環境に応じたパス区切り文字を使う",
+    "explanation": "正解：D\n\n結論：\n-pは--module-pathの短縮形です。複数のモジュールディレクトリを指定する場合は、OSに応じたパス区切り文字を使います。Windowsではセミコロンが使われます。\n\n選択肢の切り方：\nA：誤り。複数ディレクトリを指定できます。\nB：誤り。セミコロンはパスの区切りとして使われます。\nC：誤り。-pはモジュールパス指定です。\nD：正しい。環境ごとのパス区切り文字を意識します。\n\n間違えやすいポイント：\n--add-modulesの複数モジュール名はカンマ区切り、-pの複数パスはOS依存のパス区切りです。",
+    "topic": "chapter13-module-path-semicolon-423",
+    "difficulty": "hard",
+    "id": 423
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行した場合の説明として正しいものはどれか。\n\nimport java.util.*;\n\nclass Chapter13Sample32 {\n    public static void main(String[] args) throws Exception {\n        List<String> list = Collections.synchronizedList(\n            new ArrayList<>(List.of(\"A\", \"B\", \"C\"))\n        );\n\n        Thread t1 = new Thread(() -> {\n            for (String s : list) {\n                System.out.print(s);\n                try {\n                    Thread.sleep(50);\n                } catch (InterruptedException e) {\n                    Thread.currentThread().interrupt();\n                }\n            }\n        });\n\n        Thread t2 = new Thread(() -> list.add(\"D\"));\n\n        t1.start();\n        t2.start();\n        t1.join();\n        t2.join();\n    }\n}\n",
+    "choices": {
+      "A": "synchronizedListなので、反復中の外部更新でもConcurrentModificationExceptionは絶対に発生しない",
+      "B": "synchronizedListは各メソッドを同期するが、反復処理全体を自動で同期するわけではない",
+      "C": "ArrayListを使っていないため構造変更は発生しない",
+      "D": "拡張for文はコピーを作るため常に安全である"
+    },
+    "correctChoice": "B",
+    "correctText": "synchronizedListは各メソッドを同期するが、反復処理全体を自動で同期するわけではない",
+    "explanation": "正解：B\n\n結論：\nCollections.synchronizedListはメソッド単位の同期を提供しますが、イテレータによる反復処理全体を自動的に同期するわけではありません。反復中に別スレッドから構造変更が入るとConcurrentModificationExceptionが発生する可能性があります。\n\n選択肢の切り方：\nA：誤り。反復処理中は外部で明示的な同期が必要な場面があります。\nB：正しい。メソッド単位の同期と反復全体の安全性は別です。\nC：誤り。内部のリストはArrayListであり、addは構造変更です。\nD：誤り。拡張for文はイテレータを使うため、コピーを作るとは限りません。\n\n間違えやすいポイント：\nsynchronizedListという名前だけで、すべての複合操作が安全になると判断しないことが重要です。",
+    "topic": "chapter13-synchronizedlist-iteration-cme-424",
+    "difficulty": "hard",
+    "id": 424
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Chapter13Sample33 {\n    public static void main(String[] args) {\n        Set<String> set = new HashSet<>(\n            List.of(\"b\", \"a\", \"c\")\n        );\n\n        set.stream()\n            .forEachOrdered(System.out::print);\n    }\n}\n",
+    "choices": {
+      "A": "bac が必ず出力される",
+      "B": "abc が必ず出力される",
+      "C": "forEachOrderedはsequential streamでも呼び出せるが、HashSet由来の遭遇順序は固定とはいえない",
+      "D": "forEachOrderedはparallelStream専用なのでコンパイルエラーになる"
+    },
+    "correctChoice": "C",
+    "correctText": "forEachOrderedはsequential streamでも呼び出せるが、HashSet由来の遭遇順序は固定とはいえない",
+    "explanation": "正解：C\n\n結論：\nforEachOrderedはsequential streamでも使用できます。ただし、HashSet由来のストリームは遭遇順序が固定とはいえないため、出力順をbacやabcと決め打ちすることはできません。\n\n選択肢の切り方：\nA：誤り。HashSetでは挿入順が保証されません。\nB：誤り。sortedしていないため自然順序も保証されません。\nC：正しい。メソッドは使えますが、元のデータ構造の順序保証に注意します。\nD：誤り。forEachOrderedはsequential streamでも呼び出せます。\n\n間違えやすいポイント：\nforEachOrderedは「存在する遭遇順序」を尊重する操作です。順序のないソースに順序を作る操作ではありません。",
+    "topic": "chapter13-foreachordered-sequential-unordered-set-425",
+    "difficulty": "hard",
+    "id": 425
+  },
+  {
+    "chapter": 13,
+    "question": "次のコマンドについて正しい説明はどれか。\n\n// app/Main.java\npackage app;\n\nimport java.util.List;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(List.of(\"A\"));\n    }\n}\n\n分析コマンド：\n\njdeps -v out/app/Main.class\n",
+    "choices": {
+      "A": "JARファイルを作成する",
+      "B": "クラス単位の依存関係を出力する",
+      "C": "JDK内部APIを自動的に置き換える",
+      "D": "モジュールを実行する"
+    },
+    "correctChoice": "B",
+    "correctText": "クラス単位の依存関係を出力する",
+    "explanation": "正解：B\n\n結論：\njdepsは依存関係を分析するツールです。-verboseまたは-vを指定すると、より詳細なクラス単位の依存関係が出力されます。\n\n選択肢の切り方：\nA：誤り。JARファイルを作成するのはjarコマンドです。\nB：正しい。-vはクラス単位の依存関係表示に関係します。\nC：誤り。jdepsは分析ツールであり、自動修正ツールではありません。\nD：誤り。実行するのはjavaコマンドです。\n\n間違えやすいポイント：\njdepsは実行・作成・修正ではなく、依存関係の分析を行うコマンドです。",
+    "topic": "chapter13-jdeps-verbose-class-dependency-426",
+    "difficulty": "hard",
+    "id": 426
+  },
+  {
+    "chapter": 13,
+    "question": "次のコマンドについて正しい説明はどれか。\n\n// app/Main.java\npackage app;\n\nimport java.util.ArrayList;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(new ArrayList<>());\n    }\n}\n\n分析コマンド：\n\njdeps out/app/Main.class\n",
+    "choices": {
+      "A": "オプションなしのjdepsは、通常パッケージ単位の依存関係を分析して表示する",
+      "B": "オプションなしのjdepsは、必ずクラス単位だけで表示する",
+      "C": "オプションなしのjdepsは、内部APIを使っていない場合コンパイルする",
+      "D": "オプションなしのjdepsは、Mainクラスを実行する"
+    },
+    "correctChoice": "A",
+    "correctText": "オプションなしのjdepsは、通常パッケージ単位の依存関係を分析して表示する",
+    "explanation": "正解：A\n\n結論：\njdepsは指定したクラスファイル、ディレクトリ、JARなどの依存関係を分析します。オプションを指定しない場合、通常はパッケージ単位の依存関係を表示します。\n\n選択肢の切り方：\nA：正しい。オプションなしではパッケージ単位の分析として見るのが基本です。\nB：誤り。クラス単位の詳細表示には-vなどを使います。\nC：誤り。jdepsはコンパイルツールではありません。\nD：誤り。実行ツールではありません。\n\n間違えやすいポイント：\njdepsの「何を分析できるか」と「どの粒度で表示するか」を分けて考えます。",
+    "topic": "chapter13-jdeps-default-package-dependency-427",
+    "difficulty": "hard",
+    "id": 427
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.stream.*;\n\nclass Chapter13Sample36 {\n    public static void main(String[] args) {\n        String result = Stream.of(\"A\", \"B\", \"C\")\n            .parallel()\n            .reduce(\n                \"\",\n                (a, b) -> a + b,\n                (a, b) -> b + a\n            );\n\n        System.out.println(result);\n    }\n}\n",
+    "choices": {
+      "A": "ABC が必ず出力される",
+      "B": "CBA が必ず出力される",
+      "C": "第一引数と第二引数の処理が異なるため、並列実行では直感と異なる結果になる可能性がある",
+      "D": "3引数reduceはparallelでは使えないためコンパイルエラー"
+    },
+    "correctChoice": "C",
+    "correctText": "第一引数と第二引数の処理が異なるため、並列実行では直感と異なる結果になる可能性がある",
+    "explanation": "正解：C\n\n結論：\n3引数reduceでは、accumulatorとcombinerが整合していることが重要です。このコードではaccumulatorはa+b、combinerはb+aで結合方向が異なるため、並列実行時に直感的なABCとは異なる結果になる可能性があります。\n\n選択肢の切り方：\nA：誤り。parallelでcombinerが関わると、必ずABCとはいえません。\nB：誤り。CBA固定ともいえません。\nC：正しい。accumulatorとcombinerの整合性が問題です。\nD：誤り。3引数reduceはStreamで使用できます。\n\n間違えやすいポイント：\nparallel reduceでは、部分結果をどう結合するかが結果に影響します。accumulatorとcombinerの意味を揃える必要があります。",
+    "topic": "chapter13-parallel-reduce-accumulator-combiner-consistency-428",
+    "difficulty": "hard",
+    "id": 428
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Chapter13Sample37 {\n    public static void main(String[] args) {\n        List<String> result = IntStream.of(1, 2, 3)\n            .collect(\n                ArrayList::new,\n                (list, value) -> list.add(\"#\" + value),\n                ArrayList::addAll\n            );\n\n        System.out.println(result);\n    }\n}\n",
+    "choices": {
+      "A": "基本型Streamにはcollectがないためコンパイルエラーになる",
+      "B": "Collectors.toList()を渡していないためコンパイルエラーになる",
+      "C": "[1, 2, 3] が出力される",
+      "D": "[#1, #2, #3] が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "[#1, #2, #3] が出力される",
+    "explanation": "正解：D\n\n結論：\nIntStreamにもcollectはあります。ただしStream<T>のCollectorを受け取るcollectではなく、Supplier、ObjIntConsumer、BiConsumerに相当する3つの引数を受け取る形です。このコードではArrayListを可変コンテナとして作り、各int値を文字列にして追加します。\n\n選択肢の切り方：\nA：誤り。基本型Streamにも3引数のcollectがあります。\nB：誤り。Collectorsを渡す形ではありません。\nC：誤り。追加しているのは\"#\"付きのStringです。\nD：正しい。各要素が文字列としてリストに追加されます。\n\n間違えやすいポイント：\nIntStream.collectは存在しますが、Stream<T>.collect(Collector)とはシグネチャが違います。",
+    "topic": "chapter13-intstream-three-arg-collect-429",
+    "difficulty": "hard",
+    "id": 429
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行した場合の説明として正しいものはどれか。\n\nimport java.util.*;\nimport java.util.concurrent.atomic.*;\n\nclass Ch13Q430 {\n    public static void main(String[] args) {\n        AtomicInteger count = new AtomicInteger();\n\n        boolean result = List.of(1, 2, 3, 4, 5, 6, 7, 8)\n            .parallelStream()\n            .anyMatch(n -> {\n                count.incrementAndGet();\n                return n == 3;\n            });\n\n        System.out.println(result);\n        System.out.println(count.get() <= 8);\n    }\n}",
+    "choices": {
+      "A": "true と true が出力される",
+      "B": "true と false が出力される",
+      "C": "countは必ず3になる",
+      "D": "parallelStreamではanyMatchは使えない"
+    },
+    "correctChoice": "A",
+    "correctText": "true と true が出力される",
+    "explanation": "正解：A\n\n結論：\nanyMatchは条件を満たす要素があればtrueを返します。ただしparallelStreamでは、条件一致が見つかっても他の要素の評価が並行して進んでいる可能性があるため、Predicateの評価回数は固定されません。\n\n選択肢の切り方：\nA：正しい。3が存在するためresultはtrueです。評価回数は最大でも要素数以下です。\nB：誤り。count.get() <= 8はtrueです。\nC：誤り。逐次処理なら3回で終わるように見えますが、並列では評価回数を3と決め打ちできません。\nD：誤り。parallelStreamでもanyMatchは使用できます。\n\n間違えやすいポイント：\nshort-circuit操作でも、並列実行では副作用の回数や順序を前提にしないことが重要です。",
+    "topic": "chapter13-parallel-anymatch-evaluation-count-430",
+    "difficulty": "hard",
+    "id": 430
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nrecord Book(String title, int price) {}\n\nclass Ch13Q431 {\n    public static void main(String[] args) {\n        Book b = new Book(\"Java\", 3000);\n        Object o = b;\n\n        System.out.println(b);\n        System.out.println(o);\n    }\n}",
+    "choices": {
+      "A": "Book[title=Java, price=3000] と Book@... が出力される",
+      "B": "どちらも Book[title=Java, price=3000] の形式で出力される",
+      "C": "どちらも Book@... の形式で出力される",
+      "D": "Object型へ代入する行でコンパイルエラーになる"
+    },
+    "correctChoice": "B",
+    "correctText": "どちらも Book[title=Java, price=3000] の形式で出力される",
+    "explanation": "正解：B\n\n結論：\nrecordクラスではtoString()が自動生成されます。参照変数の型がObjectでも、実行時に呼ばれるのは実体であるBookのtoString()です。\n\n選択肢の切り方：\nA：誤り。Object型の変数に代入しても、ObjectのtoString()に戻るわけではありません。\nB：正しい。動的ディスパッチによりBookのtoString()が呼ばれます。\nC：誤り。recordでは通常のObject風の出力にはなりません。\nD：誤り。recordのインスタンスはObject型に代入できます。\n\n間違えやすいポイント：\n変数の宣言型ではなく、実行時オブジェクトのメソッド実装が呼ばれる点を確認します。",
+    "topic": "chapter13-record-tostring-object-reference-431",
+    "difficulty": "hard",
+    "id": 431
+  },
+  {
+    "chapter": 13,
+    "question": "次のコマンドについて正しい説明はどれか。\n\njdeps --jdk-internals out/app/Main.class\n\nただし、Main.class はJDK内部APIを使用していないものとする。",
+    "choices": {
+      "A": "内部APIを使用していなくても必ずOKと表示される",
+      "B": "内部APIを使用していないためコンパイルエラーになる",
+      "C": "内部API依存がなければ、警告や代替案が表示されないことがある",
+      "D": "このコマンドはJARファイルにしか使えない"
+    },
+    "correctChoice": "C",
+    "correctText": "内部API依存がなければ、警告や代替案が表示されないことがある",
+    "explanation": "正解：C\n\n結論：\njdeps --jdk-internalsはJDK内部APIへの依存を調べるオプションです。内部API依存がなければ、警告や代替APIの提案は表示されません。\n\n選択肢の切り方：\nA：誤り。問題がないことを必ずOKと表示するわけではありません。\nB：誤り。分析対象が正しければ、内部APIを使っていないこと自体はエラーではありません。\nC：正しい。検出対象がない場合は何も表示されないことがあります。\nD：誤り。クラスファイル、ディレクトリ、JARなどを分析対象にできます。\n\n間違えやすいポイント：\n何も表示されないことを、コマンド失敗と決めつけないようにします。",
+    "topic": "chapter13-jdeps-jdk-internals-no-output-432",
+    "difficulty": "hard",
+    "id": 432
+  },
+  {
+    "chapter": 13,
+    "question": "次のプロパティファイルとコードがある。\n\nmessages.properties\n    title=base\n\nmessages_en.properties\n    title=en\n\nmessages_en_US.properties\n    title=us\n\nimport java.util.*;\n\nclass Ch13Q433 {\n    public static void main(String[] args) {\n        ResourceBundle rb = ResourceBundle.getBundle(\n            \"messages\",\n            Locale.US\n        );\n\n        System.out.println(rb.getString(\"title\"));\n    }\n}",
+    "choices": {
+      "A": "base",
+      "B": "en",
+      "C": "MissingResourceException",
+      "D": "us"
+    },
+    "correctChoice": "D",
+    "correctText": "us",
+    "explanation": "正解：D\n\n結論：\nResourceBundle.getBundle(基底名, ロケール)は、指定した基底名とロケールに対応するリソースを探します。Locale.USに対応するmessages_en_US.propertiesが存在するため、titleはusになります。\n\n選択肢の切り方：\nA：誤り。より具体的なen_USが存在するため基底ファイルまでは落ちません。\nB：誤り。enより具体的なen_USが優先されます。\nC：誤り。対応ファイルとキーが存在します。\nD：正しい。Locale.USに対応するファイルが選択されます。\n\n間違えやすいポイント：\n基底名だけでなく、ロケールの候補順を追う必要があります。",
+    "topic": "chapter13-resourcebundle-getbundle-base-locale-433",
+    "difficulty": "hard",
+    "id": 433
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\nimport java.util.stream.*;\n\nclass Ch13Q434 {\n    record Score(double point) {}\n\n    public static void main(String[] args) {\n        var result = List.of(\n            new Score(10.0),\n            new Score(20.0)\n        ).stream()\n            .collect(Collectors.averagingDouble(Score::point));\n\n        System.out.println(result.getClass().getSimpleName());\n        System.out.println(result);\n    }\n}",
+    "choices": {
+      "A": "Double と 15.0 が出力される",
+      "B": "double と 15.0 が出力される",
+      "C": "OptionalDouble と OptionalDouble[15.0] が出力される",
+      "D": "averagingDoubleの行でコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "Double と 15.0 が出力される",
+    "explanation": "正解：A\n\n結論：\nCollectors.averagingDoubleはCollectorとして使い、結果型はDoubleです。基本型doubleそのものではないため、getClass()を呼び出せます。\n\n選択肢の切り方：\nA：正しい。戻り値はDoubleで、平均値は15.0です。\nB：誤り。ジェネリクスの結果として返るのはラッパー型Doubleです。\nC：誤り。OptionalDoubleを返すのはDoubleStream.average()です。\nD：誤り。Score::pointはdouble値を返すため利用できます。\n\n間違えやすいポイント：\nStreamのaverage系とCollectors.averaging系では戻り値型が異なります。",
+    "topic": "chapter13-collectors-averagingdouble-wrapper-434",
+    "difficulty": "hard",
+    "id": 434
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Ch13Q435 {\n    public static void main(String[] args) {\n        Map<String, Integer> map = new TreeMap<>();\n\n        map.put(\"B\", 1);\n        map.put(\"A\", 2);\n        map.put(\"B\", 3);\n\n        System.out.println(map);\n    }\n}",
+    "choices": {
+      "A": "{B=1, A=2, B=3}",
+      "B": "{A=2, B=3}",
+      "C": "{B=3, A=2}",
+      "D": "重複キーのputでIllegalArgumentExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "{A=2, B=3}",
+    "explanation": "正解：B\n\n結論：\nMapでは同じキーに再度putすると値が置き換わります。また、TreeMapはキーの自然順序で管理するため、A、Bの順で表示されます。\n\n選択肢の切り方：\nA：誤り。Mapは同一キーを複数保持しません。\nB：正しい。Bの値は3に置き換わり、キー順で表示されます。\nC：誤り。TreeMapは挿入順ではなく自然順序です。\nD：誤り。重複キーのputは例外ではなく置き換えです。\n\n間違えやすいポイント：\nTreeMapの論点は、重複キーの置き換えとキー順ソートの両方です。",
+    "topic": "chapter13-treemap-duplicate-key-replace-435",
+    "difficulty": "hard",
+    "id": 435
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードの // insert code here に記述できるものはどれか。\n\nimport java.util.function.*;\n\nclass Ch13Q436 {\n    public static void main(String[] args) {\n        // insert code here\n\n        System.out.println(f.apply(\"abc\"));\n    }\n}",
+    "choices": {
+      "A": "Function<String, Integer> f = s, -> s.length();",
+      "B": "Function<String, Integer> f = String s -> s.length();",
+      "C": "Function<String, Integer> f = s -> s.length();",
+      "D": "Function<String, Integer> f = a, b -> a.length();"
+    },
+    "correctChoice": "C",
+    "correctText": "Function<String, Integer> f = s -> s.length();",
+    "explanation": "正解：C\n\n結論：\nラムダ式の引数が1つで型を省略する場合、引数リストの()を省略できます。\n\n選択肢の切り方：\nA：誤り。不要なカンマがあり構文エラーです。\nB：誤り。型を書く場合は(String s) -> のように括弧が必要です。\nC：正しい。単一引数かつ型省略なので括弧を省略できます。\nD：誤り。複数引数では括弧を省略できません。\n\n間違えやすいポイント：\n括弧を省略できるのは、型を省略した単一引数の場合だけです。",
+    "topic": "chapter13-lambda-parentheses-single-param-436",
+    "difficulty": "hard",
+    "id": 436
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.function.*;\n\nclass Ch13Q437 {\n    public static void main(String[] args) {\n        BiFunction<Integer, Integer, Integer> f =\n            (var a, Integer b) -> a + b;\n\n        System.out.println(f.apply(1, 2));\n    }\n}",
+    "choices": {
+      "A": "3 が出力される",
+      "B": "実行時にClassCastExceptionがスローされる",
+      "C": "var aはObjectとして扱われるため1trueが出力される",
+      "D": "ラムダ引数の型指定を混在させているためコンパイルエラーになる"
+    },
+    "correctChoice": "D",
+    "correctText": "ラムダ引数の型指定を混在させているためコンパイルエラーになる",
+    "explanation": "正解：D\n\n結論：\nラムダ式の仮引数では、var、明示的な型、型省略を混在させることはできません。(var a, Integer b) のような書き方はコンパイルエラーです。\n\n選択肢の切り方：\nA：誤り。コンパイルできないため実行されません。\nB：誤り。実行時例外ではなくコンパイルエラーです。\nC：誤り。varがObject固定になるわけではありません。\nD：正しい。ラムダ引数の型指定ルールに違反しています。\n\n間違えやすいポイント：\n(var a, var b) は可能ですが、varと具体的な型を混ぜることはできません。",
+    "topic": "chapter13-lambda-var-mixed-params-437",
+    "difficulty": "hard",
+    "id": 437
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nclass Ch13Q438 {\n    class Inner {\n        void print() {\n            System.out.print(\"I\");\n        }\n    }\n\n    static class Nested {\n        static void print() {\n            System.out.print(\"N\");\n        }\n    }\n\n    void run() {\n        new Inner().print();\n        Nested.print();\n    }\n\n    public static void main(String[] args) {\n        new Ch13Q438().run();\n    }\n}",
+    "choices": {
+      "A": "IN が出力される",
+      "B": "NI が出力される",
+      "C": "new Inner()の行でコンパイルエラーになる",
+      "D": "Nested.print()の行でコンパイルエラーになる"
+    },
+    "correctChoice": "A",
+    "correctText": "IN が出力される",
+    "explanation": "正解：A\n\n結論：\nエンクロージングクラスのインスタンスメソッド内では、非static内部クラスをnew Inner()で生成できます。staticネストクラスのstaticメソッドはNested.print()で呼び出せます。\n\n選択肢の切り方：\nA：正しい。InnerのI、NestedのNの順に出力されます。\nB：誤り。呼び出し順が逆です。\nC：誤り。外側インスタンスの文脈内なので生成できます。\nD：誤り。staticネストクラスのstaticメソッド呼び出しとして正しいです。\n\n間違えやすいポイント：\n非static内部クラスは外側インスタンスが必要ですが、外側のインスタンスメソッド内なら暗黙に利用できます。",
+    "topic": "chapter13-inner-class-from-enclosing-class-438",
+    "difficulty": "hard",
+    "id": 438
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.function.*;\n\nclass Ch13Q439 {\n    public static void main(String[] args) {\n        Supplier<Function<String, Integer>> s =\n            () -> String::length;\n\n        System.out.println(s.get().apply(\"gold\"));\n    }\n}",
+    "choices": {
+      "A": "String::lengthには引数が渡らないため必ずコンパイルエラーになる",
+      "B": "4 が出力される",
+      "C": "length が出力される",
+      "D": "実行時にNullPointerExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "4 が出力される",
+    "explanation": "正解：B\n\n結論：\n() -> String::length は、Function<String, Integer>を返すSupplierとして解釈できます。get()でFunctionを取得し、apply(\"gold\")で文字列が渡されるため4が出力されます。\n\n選択肢の切り方：\nA：誤り。代入先の型がSupplier<Function<String, Integer>>なので、メソッド参照は戻り値のFunctionとして扱えます。\nB：正しい。Functionに\"gold\"を渡してlengthを呼びます。\nC：誤り。メソッド名そのものを出力するわけではありません。\nD：誤り。nullは使っていません。\n\n間違えやすいポイント：\nメソッド参照は、どの関数型インターフェースに変換されるかを左辺の型から判断します。",
+    "topic": "chapter13-supplier-returning-method-reference-439",
+    "difficulty": "hard",
+    "id": 439
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行して「AAA」と出力するために、// insert code here に記述できるものはどれか。\n\nimport java.util.stream.*;\n\nclass Ch13Q440 {\n    public static void main(String[] args) {\n        Stream.generate(// insert code here)\n            .limit(3)\n            .forEach(System.out::print);\n    }\n}",
+    "choices": {
+      "A": "\"A\"",
+      "B": "s -> \"A\"",
+      "C": "() -> \"A\"",
+      "D": "String::length"
+    },
+    "correctChoice": "C",
+    "correctText": "() -> \"A\"",
+    "explanation": "正解：C\n\n結論：\nStream.generate()の引数はSupplier<T>です。引数なしで値を返す () -> \"A\" が適切です。\n\n選択肢の切り方：\nA：誤り。文字列そのものはSupplierではありません。\nB：誤り。引数を1つ取るラムダはSupplierではありません。\nC：正しい。引数なしで値を生成するSupplierです。\nD：誤り。String::lengthは文字列を受け取ってintを返す関数型に対応します。\n\n間違えやすいポイント：\ngenerateは各要素をSupplierから作るため、ラムダに引数はありません。",
+    "topic": "chapter13-stream-generate-supplier-440",
+    "difficulty": "hard",
+    "id": 440
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Ch13Q441 {\n    public static void main(String[] args) {\n        List.of(\"ab\", \"c\")\n            .stream()\n            .<Character>mapMulti((s, out) -> {\n                for (char c : s.toCharArray()) {\n                    out.accept(c);\n                }\n            })\n            .forEach(System.out::print);\n    }\n}",
+    "choices": {
+      "A": "[a, b, c] が出力される",
+      "B": "ab c が出力される",
+      "C": "mapMultiの引数はSupplierなのでコンパイルエラーになる",
+      "D": "abc が出力される"
+    },
+    "correctChoice": "D",
+    "correctText": "abc が出力される",
+    "explanation": "正解：D\n\n結論：\nmapMultiの引数は、元要素と出力用Consumerを受け取るBiConsumerです。各文字をout.acceptで流すため、a、b、cが順に出力されます。\n\n選択肢の切り方：\nA：誤り。Listを出力しているわけではありません。\nB：誤り。空白は出力していません。\nC：誤り。mapMultiの引数はSupplierではなくBiConsumerです。\nD：正しい。各文字が1要素として後続へ流れます。\n\n間違えやすいポイント：\nmapMultiは戻り値でStreamを返すflatMapとは異なり、渡されたConsumerへ要素を流し込みます。",
+    "topic": "chapter13-mapmulti-biconsumer-441",
+    "difficulty": "hard",
+    "id": 441
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.util.*;\n\nclass Ch13Q442 {\n    public static void main(String[] args) {\n        Optional<String> opt = Optional.of(\"java\");\n\n        opt.ifPresent(v -> {\n            System.out.println(v.toUpperCase());\n            System.out.println(v instanceof String);\n        });\n    }\n}",
+    "choices": {
+      "A": "JAVA と true が出力される",
+      "B": "Optional[JAVA] と false が出力される",
+      "C": "ifPresentの引数にはOptionalが渡るためコンパイルエラーになる",
+      "D": "Optional.ofの行でNoSuchElementExceptionがスローされる"
+    },
+    "correctChoice": "A",
+    "correctText": "JAVA と true が出力される",
+    "explanation": "正解：A\n\n結論：\nOptional.ifPresent(Consumer)のConsumerに渡されるのはOptional自身ではなく、中身の値です。このコードではvはStringです。\n\n選択肢の切り方：\nA：正しい。\"java\"が渡され、大文字化できます。\nB：誤り。ConsumerにOptional[String]が渡るわけではありません。\nC：誤り。vはStringとして扱えます。\nD：誤り。Optional.of(\"java\")は正常に値を持つOptionalを作ります。\n\n間違えやすいポイント：\nOptionalをそのまま処理するのではなく、中身が存在する場合だけ中身をConsumerへ渡します。",
+    "topic": "chapter13-optional-ifpresent-consumer-value-442",
+    "difficulty": "hard",
+    "id": 442
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.*;\n\nclass Ch13Q443 {\n    public static void main(String[] args) {\n        Locale a = Locale.JAPAN;\n        Locale b = new Locale(Locale.JAPAN);\n\n        System.out.println(a);\n        System.out.println(b);\n    }\n}",
+    "choices": {
+      "A": "ja_JP が2回出力される",
+      "B": "new Locale(Locale.JAPAN)の行でコンパイルエラーになる",
+      "C": "Locale.JAPANはString型なので正常にコンパイルできる",
+      "D": "実行時にMissingResourceExceptionがスローされる"
+    },
+    "correctChoice": "B",
+    "correctText": "new Locale(Locale.JAPAN)の行でコンパイルエラーになる",
+    "explanation": "正解：B\n\n結論：\nLocale.JAPANはLocale型の定数です。new Locale(...)の代表的なコンストラクタにはStringを渡す必要があり、Localeオブジェクトをそのまま渡すことはできません。\n\n選択肢の切り方：\nA：誤り。bの生成でコンパイルエラーになります。\nB：正しい。Locale型をString引数の位置に渡しています。\nC：誤り。Locale.JAPANはStringではなくLocaleです。\nD：誤り。ResourceBundleを取得していないため、その例外は関係ありません。\n\n間違えやすいポイント：\n定数名が国名のように見えても、Locale.JAPAN自体はLocaleオブジェクトです。",
+    "topic": "chapter13-locale-constant-vs-constructor-443",
+    "difficulty": "hard",
+    "id": 443
+  },
+  {
+    "chapter": 13,
+    "question": "次の説明として正しいものはどれか。\n\nimport java.util.concurrent.*;\nimport java.util.concurrent.Flow.*;\nimport java.util.concurrent.SubmissionPublisher;\n\nclass Ch13Q444 {\n    public static void main(String[] args) {\n        SubmissionPublisher<String> publisher =\n            new SubmissionPublisher<>();\n\n        // publisher.submit(item);\n        // publisher.offer(item, (subscriber, msg) -> false);\n    }\n}",
+    "choices": {
+      "A": "submitは満杯時に必ずfalseを返す",
+      "B": "offerは満杯時に必ず空きが出るまで永久に待つ",
+      "C": "submitは満杯時にブロックし得るが、offerはドロップ処理で即時または時間制限付きの制御ができる",
+      "D": "submitもofferもSubscriberが1つの場合だけ使用できる"
+    },
+    "correctChoice": "C",
+    "correctText": "submitは満杯時にブロックし得るが、offerはドロップ処理で即時または時間制限付きの制御ができる",
+    "explanation": "正解：C\n\n結論：\nSubmissionPublisherのsubmitは、バッファが満杯でSubscriberの処理が追いつかない場合、空きが出るまでブロックし得ます。一方offerは、ドロップハンドラやタイムアウトを使って、諦める・再試行するなどの制御ができます。\n\n選択肢の切り方：\nA：誤り。submitの戻り値は推定最大遅延数であり、falseを返すAPIではありません。\nB：誤り。offerはブロック前提ではなく、ドロップ処理を制御できます。\nC：正しい。submitとofferの使い分けを表しています。\nD：誤り。複数Subscriberでも使用できます。\n\n間違えやすいポイント：\nバックプレッシャーを考える場面では、submitとofferの違いが狙われやすいです。",
+    "topic": "chapter13-submissionpublisher-submit-offer-444",
+    "difficulty": "hard",
+    "id": 444
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.util.concurrent.*;\nimport java.util.concurrent.Flow.*;\nimport java.util.concurrent.SubmissionPublisher;\n\nclass Ch13Q445 {\n    public static void main(String[] args) {\n        SubmissionPublisher<String> publisher =\n            new SubmissionPublisher<>();\n\n        int result = publisher.offer(\n            \"data\",\n            (Subscriber<? super String> s, String msg) -> false\n        );\n\n        System.out.println(result);\n        publisher.close();\n    }\n}",
+    "choices": {
+      "A": "offerの第2引数はConsumerなのでコンパイルエラーになる",
+      "B": "ラムダはStringだけを1つ受け取る必要がある",
+      "C": "falseを返すと必ず無限に再試行される",
+      "D": "第2引数のラムダはBiPredicateとして扱われ、booleanでドロップ後の挙動を制御する"
+    },
+    "correctChoice": "D",
+    "correctText": "第2引数のラムダはBiPredicateとして扱われ、booleanでドロップ後の挙動を制御する",
+    "explanation": "正解：D\n\n結論：\nSubmissionPublisher.offer(item, onDrop)のonDropはBiPredicate<Subscriber<? super T>, ? super T>です。Subscriberとアイテムを受け取り、booleanを返して再試行するか諦めるかの制御に使われます。\n\n選択肢の切り方：\nA：誤り。ConsumerではなくBiPredicateです。\nB：誤り。Subscriberとメッセージの2引数を受け取ります。\nC：誤り。falseは完全に諦める側の制御です。\nD：正しい。ラムダの型と戻り値の意味が合っています。\n\n間違えやすいポイント：\nofferのドロップハンドラは、単なる通知用Consumerではなくbooleanを返すBiPredicateです。",
+    "topic": "chapter13-submissionpublisher-offer-bipredicate-445",
+    "difficulty": "hard",
+    "id": 445
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass Chapter13Sample54 {\n    public static void main(String[] args) {\n        Locale.setDefault(Locale.US);\n\n        NumberFormat format = NumberFormat.getCurrencyInstance(\n            Locale.JAPAN\n        );\n\n        System.out.println(format.format(1200));\n    }\n}",
+    "choices": {
+      "A": "￥1,200 が出力される",
+      "B": "$1,200.00 が出力される",
+      "C": "1200 が出力される",
+      "D": "Locale.setDefaultの行でコンパイルエラー"
+    },
+    "correctChoice": "A",
+    "correctText": "￥1,200 が出力される",
+    "explanation": "正解：A\n\n結論：\ngetCurrencyInstance(Locale.JAPAN)を明示しているため、デフォルトロケールをUSにしていても日本の通貨形式で表示されます。日本円の通貨フォーマットでは通常小数部は表示されないため、￥1,200になります。\n\n選択肢の切り方：\nA：正しい。フォーマッタに指定したLocale.JAPANが使われます。\nB：誤り。デフォルトロケールはUSですが、通貨フォーマッタにはLocale.JAPANを明示しています。\nC：誤り。通貨フォーマットなので単なる数値表示ではありません。\nD：誤り。Locale.setDefault(Locale.US)は正しい呼び出しです。\n\n間違えやすいポイント：\nデフォルトロケールと、NumberFormat生成時に指定したロケールを混同しないこと。実際に使うのは生成時に明示したロケールです。",
+    "topic": "chapter13-currency-locale-japan-default-us-446",
+    "difficulty": "hard",
+    "id": 446
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass Chapter13Sample55 {\n    public static void main(String[] args) {\n        NumberFormat format = NumberFormat.getCurrencyInstance(\n            Locale.US\n        );\n\n        System.out.println(format.format(1200));\n    }\n}",
+    "choices": {
+      "A": "￥1,200 が出力される",
+      "B": "$1,200.00 が出力される",
+      "C": "$1200 が出力される",
+      "D": "1200.00 が出力される"
+    },
+    "correctChoice": "B",
+    "correctText": "$1,200.00 が出力される",
+    "explanation": "正解：B\n\n結論：\ngetCurrencyInstance(Locale.US)を指定しているため、米国の通貨形式で表示されます。米ドル形式では小数部2桁が表示され、桁区切りも入るため$1,200.00になります。\n\n選択肢の切り方：\nA：誤り。Locale.USを指定しているため日本円形式ではありません。\nB：正しい。米国の通貨形式で小数部2桁が表示されます。\nC：誤り。桁区切りと小数部2桁を落としています。\nD：誤り。通貨記号が付きます。\n\n間違えやすいポイント：\n通貨フォーマットは単なる小数点処理ではなく、通貨記号、桁区切り、小数桁数がロケールに応じて変わります。",
+    "topic": "chapter13-currency-locale-us-decimal-447",
+    "difficulty": "hard",
+    "id": 447
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードをコンパイル、実行するとどのような結果になるか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass Chapter13Sample56 {\n    public static void main(String[] args) {\n        double price = 1200.40;\n\n        NumberFormat jp = NumberFormat.getCurrencyInstance(\n            Locale.JAPAN\n        );\n        NumberFormat us = NumberFormat.getCurrencyInstance(\n            Locale.US\n        );\n\n        System.out.println(jp.format(price));\n        System.out.println(us.format(price));\n    }\n}",
+    "choices": {
+      "A": "￥1,200.40\n$1,200.40",
+      "B": "￥1,200\n$1,200",
+      "C": "￥1,200\n$1,200.40",
+      "D": "1200.4\n1200.4"
+    },
+    "correctChoice": "C",
+    "correctText": "￥1,200\n$1,200.40",
+    "explanation": "正解：C\n\n結論：\n同じ数値でも、通貨フォーマットはロケールごとの小数桁に合わせて表示されます。日本円形式では通常小数部を表示せず、米ドル形式では小数部2桁を表示します。\n\n選択肢の切り方：\nA：誤り。日本円形式で小数部を表示している点が誤りです。\nB：誤り。米ドル形式では小数部2桁が表示されます。\nC：正しい。日本円は小数部なし、米ドルは小数部2桁です。\nD：誤り。NumberFormatの通貨フォーマットなので通貨記号や桁区切りが付きます。\n\n間違えやすいポイント：\n値そのものではなく、formatを作成したロケールが表示形式を決めます。日本と米国で小数部の扱いが変わる点が狙われます。",
+    "topic": "chapter13-currency-japan-us-fraction-digits-448",
+    "difficulty": "hard",
+    "id": 448
+  },
+  {
+    "chapter": 13,
+    "question": "次のコードについて正しいものはどれか。\n\nimport java.text.*;\nimport java.util.*;\n\nclass Chapter13Sample57 {\n    public static void main(String[] args) {\n        NumberFormat format = NumberFormat.getCurrencyInstance(\n            Locale.JAPAN\n        );\n\n        String result = format.format(1200);\n        System.out.println(result);\n    }\n}",
+    "choices": {
+      "A": "formatの戻り値はNumber型である",
+      "B": "formatの戻り値はdouble型である",
+      "C": "formatは数値を変更するため、1200の値自体が通貨型になる",
+      "D": "formatの戻り値はString型である"
+    },
+    "correctChoice": "D",
+    "correctText": "formatの戻り値はString型である",
+    "explanation": "正解：D\n\n結論：\nNumberFormat#formatは、数値を指定したロケールの表示形式へ変換した文字列を返します。このコードではString resultに代入できます。\n\n選択肢の切り方：\nA：誤り。format結果はNumberではなく文字列です。\nB：誤り。小数桁を整える処理に見えても、戻り値はdoubleではありません。\nC：誤り。元の数値そのものの型が通貨型に変わるわけではありません。\nD：正しい。表示用のStringが返ります。\n\n間違えやすいポイント：\n通貨フォーマットは計算結果を返す処理ではなく、表示用文字列を作る処理です。戻り値型を見落とすと代入先の型でひっかかります。",
+    "topic": "chapter13-currency-format-return-string-449",
+    "difficulty": "hard",
+    "id": 449
   }
 ]
