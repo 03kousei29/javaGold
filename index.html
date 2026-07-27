@@ -1,1808 +1,381 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<meta name="theme-color" content="#161008" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-title" content="Java Gold SE 17 対策" />
-<title>Java Gold SE 17 対策</title>
-<style>
-:root {
-  --bg:#161008;
-  --panel:#21180c;
-  --panel2:#30230f;
-  --text:#fff8e8;
-  --muted:#d8c390;
-  --accent:#d4af37;
-  --accent2:#ffe08a;
-  --ok:#82e6bd;
-  --ng:#ff9b9b;
-  --border:rgba(255,224,138,.22);
-  --shadow:0 16px 38px rgba(0,0,0,.42);
-  --gold-glow:rgba(212,175,55,.26);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic",sans-serif;
-  background:
-    radial-gradient(circle at top right, rgba(255,224,138,.18), transparent 28%),
-    radial-gradient(circle at top left, rgba(212,175,55,.12), transparent 24%),
-    linear-gradient(135deg, #0f0b06 0%, #161008 48%, #25190a 100%);
-  color:var(--text);
-}
-.wrap{max-width:1000px;margin:0 auto;padding:24px 16px 56px}
-h1{margin:0;font-size:2rem;line-height:1.2;color:var(--text);text-shadow:0 0 24px var(--gold-glow)}
-.sub{margin-top:8px;color:var(--muted)}
-.panel{
-  background:
-    linear-gradient(180deg, rgba(255,224,138,.08), rgba(255,255,255,.025)),
-    rgba(33,24,12,.88);
-  border:1px solid var(--border);
-  border-radius:22px;
-  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.06);
-  padding:20px;
-}
-.hidden{display:none !important}
-
-.progress-shell{
-  position:sticky;top:12px;z-index:5;
-  margin:18px 0;
-  backdrop-filter:blur(12px);
-  background:rgba(22,16,8,.82);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:12px 14px;
-}
-.progress-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px}
-.progress-label{font-size:.95rem;color:var(--muted)}
-.progress-bar{height:16px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden}
-.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .25s ease}
-
-.meta-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.pill{background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:999px;padding:6px 10px;color:var(--muted);font-size:.88rem}
-.question-text{font-size:1.18rem;line-height:1.75;white-space:pre-wrap;margin:10px 0 18px}
-
-.actions{display:flex;gap:10px;flex-wrap:wrap}
-button.primary,button.secondary,.choice,.linkbtn{
-  font:inherit;
-}
-button.primary,button.secondary{
-  border:0;border-radius:14px;padding:12px 16px;font-weight:700;cursor:pointer;
-}
-button.primary{background:linear-gradient(90deg,#b88716,var(--accent2));color:#1b1205;box-shadow:0 10px 24px rgba(212,175,55,.22)}
-button.secondary{background:rgba(255,224,138,.07);color:var(--text);border:1px solid var(--border)}
-
-.choices{display:grid;grid-template-columns:1fr;gap:12px}
-.choice{
-  width:100%;
-  text-align:left;
-  border:1px solid var(--border);
-  background:rgba(255,255,255,.04);
-  color:var(--text);
-  border-radius:16px;
-  padding:14px 16px;
-  cursor:pointer;
-  display:flex;
-  gap:12px;
-  align-items:flex-start;
-}
-.choice:hover{border-color:rgba(255,224,138,.62);background:rgba(212,175,55,.10)}
-.choice[disabled]{cursor:default}
-.choice-key{width:30px;min-width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.08);display:inline-flex;align-items:center;justify-content:center;font-weight:700}
-.choice.correct{border-color:rgba(142,240,192,.55);background:rgba(142,240,192,.12)}
-.choice.incorrect{border-color:rgba(255,141,141,.55);background:rgba(255,141,141,.12)}
-
-.explanation{margin-top:18px;padding:16px;border-radius:18px;border:1px solid var(--border);background:rgba(255,255,255,.04)}
-.badge{display:inline-block;font-weight:700;padding:6px 10px;border-radius:999px;margin-bottom:10px}
-.badge.ok{background:rgba(142,240,192,.16);color:var(--ok)}
-.badge.ng{background:rgba(255,141,141,.16);color:var(--ng)}
-
-.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:18px 0 24px}
-.metric{padding:16px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--border)}
-.metric-label{color:var(--muted);font-size:.92rem;margin-bottom:8px}
-.metric-value{font-size:1.8rem;font-weight:800}
-
-.donut-wrap{display:flex;justify-content:center;align-items:center;min-height:180px}
-.donut-chart{
-  --pct:0;
-  width:150px;height:150px;border-radius:50%;
-  background:conic-gradient(var(--accent) calc(var(--pct) * 1%), rgba(255,255,255,.08) 0);
-  display:grid;place-items:center;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);
-}
-.donut-inner{width:98px;height:98px;border-radius:50%;background:var(--panel);border:1px solid var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.donut-percent{font-size:1.35rem;font-weight:800;line-height:1}
-.donut-caption{margin-top:6px;color:var(--muted);font-size:.8rem;text-transform:uppercase;letter-spacing:.06em}
-
-.table-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;margin-top:14px;background:rgba(255,255,255,.03);border-radius:16px;overflow:hidden}
-th,td{padding:12px 10px;border-bottom:1px solid rgba(255,255,255,.07);text-align:left;vertical-align:top;font-size:.95rem}
-th{color:var(--muted);font-weight:700}
-tr:last-child td{border-bottom:0}
-.status-ok{color:var(--ok);font-weight:700}
-.status-ng{color:var(--ng);font-weight:700}
-.status-mid{color:var(--warning,#ffd27a);font-weight:700}
-.linkbtn{background:none;border:0;padding:0;color:#ffe08a;text-decoration:underline;cursor:pointer}
-
-.footer-note{margin-top:20px;color:var(--muted);font-size:.9rem;line-height:1.7}
-@media (max-width:640px){
-  .wrap{padding:16px 12px 48px}
-  h1{font-size:1.65rem}
-  .question-text{font-size:1.05rem}
-  th:nth-child(3),td:nth-child(3){display:none}
-}
-
-.timer-box {
-  width: 110px;
-  min-width: 110px;
-  display: flex;
-  align-items: stretch;
-  justify-content: flex-end;
-}
-.timer-ring {
-  --pct: 100;
-  width: 110px;
-  height: 110px;
-  border-radius: 24px;
-  background:
-    conic-gradient(from -90deg, var(--accent) calc(var(--pct) * 1%), rgba(255,255,255,.08) 0);
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--border);
-  box-shadow: var(--shadow);
-}
-.timer-inner {
-  width: 78px;
-  height: 78px;
-  border-radius: 20px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.timer-seconds {
-  font-size: 1.5rem;
-  font-weight: 800;
-  line-height: 1;
-}
-.timer-unit {
-  margin-top: 4px;
-  font-size: .78rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .06em;
-}
-@media (max-width: 760px) {
-  .quiz-top-row {
-    flex-direction: column;
-  }
-  .timer-box {
-    width: 100%;
-    min-width: 0;
-    justify-content: flex-end;
-  }
-}
-
-.question-text .code-block{
-  display:block;
-  margin:14px 0 4px;
-  padding:14px 16px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.24);
-  color:#f6f8ff;
-  font-family:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
-  font-size:.95rem;
-  line-height:1.65;
-  white-space:pre;
-  overflow-x:auto;
-}
-.question-text .question-lead{display:block;}
-
-/* ===== Java module multi-file question headers ===== */
-.question-text .code-block .code-file-header{
-  display:block;
-  margin:14px -4px 10px;
-  padding:8px 12px;
-  border:1px solid rgba(255,224,138,.30);
-  border-left:4px solid var(--accent);
-  border-radius:10px;
-  background:
-    linear-gradient(90deg, rgba(212,175,55,.18), rgba(255,224,138,.06)),
-    rgba(255,255,255,.035);
-  color:var(--accent2);
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Hiragino Sans","Yu Gothic",sans-serif;
-  font-size:.86rem;
-  font-weight:800;
-  line-height:1.35;
-  letter-spacing:.01em;
-  white-space:normal;
-}
-.question-text .code-block .code-file-header:first-child{
-  margin-top:0;
-}
-.question-text .code-block .code-file-header::before{
-  content:"📄 ";
-  opacity:.95;
-}
-
-
-
-/* ===== Mobile friendly adjustments ===== */
-html {
-  -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
-}
-body {
-  min-height: 100dvh;
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
-}
-button, .choice, .linkbtn {
-  -webkit-tap-highlight-color: rgba(212,175,55,.22);
-  touch-action: manipulation;
-}
-.choice {
-  min-height: 56px;
-}
-.choice span:last-child {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-.question-text {
-  overflow-wrap: anywhere;
-}
-.question-text .code-block{
-  max-width: 100%;
-  -webkit-overflow-scrolling: touch;
-  tab-size: 2;
-}
-@media (hover: none) {
-  .choice:hover{
-    border-color: var(--border);
-    background: rgba(255,255,255,.04);
-  }
-}
-@media (max-width: 640px){
-  body{
-    background:
-      radial-gradient(circle at top right, rgba(255,224,138,.16), transparent 24%),
-      linear-gradient(135deg, #0f0b06 0%, #161008 58%, #211608 100%);
-  }
-  .wrap{
-    width: 100%;
-    max-width: none;
-    padding: 14px 10px calc(40px + env(safe-area-inset-bottom));
-  }
-  h1{
-    font-size: 1.35rem;
-    letter-spacing: .01em;
-  }
-  .sub{
-    font-size: .88rem;
-    line-height: 1.55;
-  }
-  .panel{
-    border-radius: 18px;
-    padding: 14px;
-  }
-  .progress-shell{
-    top: 6px;
-    margin: 12px 0;
-    padding: 10px;
-    border-radius: 16px;
-  }
-  .progress-head{
-    gap: 6px;
-    margin-bottom: 7px;
-  }
-  .progress-label{
-    font-size: .82rem;
-  }
-  .progress-bar{
-    height: 12px;
-  }
-  .quiz-top-row{
-    gap: 10px !important;
-    margin-bottom: 10px !important;
-  }
-  .meta-row{
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-  .pill{
-    font-size: .78rem;
-    padding: 5px 8px;
-  }
-  .actions{
-    gap: 8px;
-  }
-  button.primary, button.secondary{
-    width: 100%;
-    min-height: 46px;
-    padding: 11px 12px;
-    border-radius: 13px;
-    font-size: .95rem;
-  }
-  #shuffleBtn, #jumpQuestionBtn, #prevQuestionBtn, #nextQuestionTopBtn, #menuBtnInQuiz{
-    width: calc(50% - 4px);
-  }
-  .timer-box{
-    justify-content: center;
-  }
-  .timer-ring{
-    width: 86px;
-    height: 86px;
-    border-radius: 20px;
-  }
-  .timer-inner{
-    width: 62px;
-    height: 62px;
-    border-radius: 16px;
-  }
-  .timer-seconds{
-    font-size: 1.18rem;
-  }
-  .timer-unit{
-    font-size: .66rem;
-  }
-  .question-text{
-    font-size: 1rem;
-    line-height: 1.7;
-    margin: 10px 0 14px;
-  }
-  .question-text .code-block{
-    margin: 10px 0 2px;
-    padding: 11px 12px;
-    border-radius: 12px;
-    font-size: .78rem;
-    line-height: 1.55;
-    white-space: pre;
-    overflow-x: auto;
-  }
-  .choices{
-    gap: 9px;
-  }
-  .choice{
-    padding: 12px 12px;
-    border-radius: 14px;
-    gap: 10px;
-    font-size: .95rem;
-    line-height: 1.55;
-  }
-  .choice-key{
-    width: 28px;
-    min-width: 28px;
-    height: 28px;
-  }
-  .explanation{
-    margin-top: 14px;
-    padding: 13px;
-    border-radius: 16px;
-  }
-  #correctAnswerText{
-    font-size: .95rem;
-    line-height: 1.55;
-  }
-  #explanationText{
-    font-size: .92rem;
-    line-height: 1.75 !important;
-  }
-  .summary-grid{
-    grid-template-columns: 1fr;
-    gap: 10px;
-    margin: 14px 0 18px;
-  }
-  .metric{
-    padding: 13px;
-    border-radius: 16px;
-  }
-  .metric-value{
-    font-size: 1.45rem;
-  }
-  .donut-wrap{
-    min-height: 140px;
-  }
-  .donut-chart{
-    width: 124px;
-    height: 124px;
-  }
-  .donut-inner{
-    width: 82px;
-    height: 82px;
-  }
-  .donut-percent{
-    font-size: 1.1rem;
-  }
-  table{
-    min-width: 560px;
-  }
-  th,td{
-    padding: 10px 8px;
-    font-size: .86rem;
-  }
-  .footer-note{
-    font-size: .82rem;
-  }
-}
-@media (max-width: 380px){
-  #shuffleBtn, #jumpQuestionBtn, #prevQuestionBtn, #nextQuestionTopBtn, #menuBtnInQuiz{
-    width: 100%;
-  }
-  .question-text .code-block{
-    font-size: .72rem;
-  }
-}
-
-
-
-/* ===== Extra smartphone stability patch for Java Gold prototype ===== */
-@media (max-width: 640px){
-  .panel,
-  .progress-shell{
-    width: 100%;
-  }
-  .choices{
-    width: 100%;
-  }
-  .choice{
-    align-items: flex-start;
-  }
-  .choice span:last-child{
-    display: block;
-    width: 100%;
-    word-break: break-word;
-  }
-  .meta-row{
-    align-items: flex-start;
-  }
-  #metaQuestionNo,
-  #metaChapter,
-  #metaTopic{
-    max-width: 100%;
-    white-space: normal;
-  }
-  #questionText{
-    max-width: 100%;
-  }
-  .explanation{
-    max-width: 100%;
-    overflow-wrap: anywhere;
-  }
-  .table-wrap{
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-  #summaryActions button{
-    width: 100%;
-  }
-}
-@media (max-width: 480px){
-  .wrap{
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-  .panel{
-    padding: 12px;
-  }
-  h2{
-    font-size: 1.15rem;
-  }
-  .question-text .code-block{
-    font-size: .70rem;
-    line-height: 1.5;
-  }
-  .question-text .code-block .code-file-header{
-    margin:10px -2px 8px;
-    padding:7px 9px;
-    border-radius:9px;
-    font-size:.72rem;
-  }
-
-}
-
-
-/* ===== localStorage progress panel ===== */
-.save-box{
-  margin:14px 0 18px;
-  padding:14px;
-  border-radius:18px;
-  border:1px solid rgba(245,215,110,.22);
-  background:rgba(212,175,55,.08);
-}
-.save-title{font-weight:800;margin-bottom:6px}
-.save-text{color:var(--muted);font-size:.92rem;line-height:1.65;margin-bottom:12px}
-.save-actions{display:flex;gap:10px;flex-wrap:wrap}
-.save-mini{margin-top:10px;color:var(--muted);font-size:.8rem;line-height:1.5}
-@media (max-width:640px){
-  .save-box{padding:12px;border-radius:16px}
-  .save-actions button{width:100%}
-}
-
-/* ===== review bookmark checkbox ===== */
-.bookmark-box{
-  margin:10px 0 14px;
-  padding:12px 14px;
-  border-radius:16px;
-  border:1px solid rgba(255,224,138,.24);
-  background:rgba(255,224,138,.06);
-}
-.bookmark-label{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  cursor:pointer;
-  color:var(--text);
-  font-weight:700;
-}
-.bookmark-label input{
-  width:20px;
-  height:20px;
-  accent-color:var(--accent);
-}
-.bookmark-help{
-  margin-top:6px;
-  color:var(--muted);
-  font-size:.82rem;
-  line-height:1.5;
-}
-@media (max-width:640px){
-  .bookmark-box{padding:11px 12px;border-radius:14px}
-  .bookmark-label{font-size:.92rem}
-  .bookmark-help{font-size:.78rem}
-}
-
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#151821" />
+  <title>Anime Score Lab</title>
+  <link rel="stylesheet" href="style.css?v=5.2.0" />
 </head>
 <body>
-<div class="wrap">
-  <div>
-    <h1>Java Gold SE 17 対策</h1>
-    <div class="sub">章ごと、または全章から問題を選んで解けます</div>
-  </div>
-
-  <section id="menuView" class="panel" style="margin-top:18px;">
-    <h2 style="margin-top:0;">メインメニュー</h2>
-    <div class="sub" style="margin-bottom:18px;">出題範囲を選択してください。</div>
-
-    <div id="savedProgressBox" class="save-box hidden">
-      <div class="save-title">前回の続きがあります</div>
-      <div id="savedProgressText" class="save-text">保存済みの学習履歴を読み込みできます。</div>
-      <div class="save-actions">
-        <button id="resumeSavedBtn" class="primary" type="button">続きから再開する</button>
-        <button id="clearSavedBtn" class="secondary" type="button">保存履歴を削除する</button>
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <p class="eyebrow">CLOUD ANIME REVIEW TOOL</p>
+      <h1>Anime Score Lab</h1>
+      <p>6つの評価観点をGoogleアカウントに保存し、PCとスマートフォンで同期します。</p>
+      <button id="loginBtn" class="google-login" type="button">
+        <span class="google-mark" aria-hidden="true">G</span>
+        Googleでログイン
+      </button>
+      <p id="loginStatus" class="status-message" aria-live="polite"></p>
+      <div id="configHelp" class="config-help hidden">
+        <strong>Firebaseの設定が必要です。</strong>
+        <span><code>firebase-config.js</code> の値をFirebase Consoleの設定値へ置き換えてください。</span>
       </div>
-      <div class="save-mini">回答状況はこの端末のブラウザ内に保存されます。GitHubには送信されません。</div>
     </div>
-
-    <div id="menuButtons" class="choices"></div>
   </section>
 
-  <div id="progressShell" class="progress-shell hidden">
-    <div class="progress-head">
-      <div id="progressLabel" class="progress-label">0 / 60問 正解</div>
-      <div id="progressRight" class="progress-label">0 / 60問 回答済み</div>
-    </div>
-    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
-  </div>
-
-  <section id="quizView" class="panel hidden">
-    <div class="quiz-top-row" style="display:flex; gap:16px; align-items:stretch; margin-bottom:14px;">
-      <div style="flex:1;">
-        <div class="meta-row">
-          <div id="metaQuestionNo" class="pill">第1問 / 60問</div>
-          <div id="metaChapter" class="pill">第1章</div>
-          <div id="metaTopic" class="pill">基礎</div>
-        </div>
-
-        <div class="actions" style="margin-bottom:0">
-          <button id="finishBtn" class="secondary">回答を終了してサマリーへ</button>
-          <button id="shuffleBtn" class="secondary">シャッフル: OFF</button>
-          <button id="jumpQuestionBtn" class="secondary">指定問題へ移動</button>
-          <button id="prevQuestionBtn" class="secondary">前の問題へ</button>
-          <button id="nextQuestionTopBtn" class="secondary">次の問題へ</button>
-          <button id="menuBtnInQuiz" class="secondary">メインメニューへ戻る</button>
-        </div>
+  <div id="appScreen" class="hidden">
+    <div id="environmentBadge" class="environment-badge">ローカル開発モード</div>
+    <header class="app-header">
+      <div>
+        <p class="eyebrow">CLOUD ANIME REVIEW TOOL</p>
+        <h1>Anime Score Lab</h1>
+        <p class="subtitle">6つの観点を100点満点で評価し、作品ごとの強みを比較します。</p>
       </div>
-
-      <div id="timerBox" class="timer-box" aria-label="制限時間">
-        <div id="timerRing" class="timer-ring">
-          <div class="timer-inner">
-            <div id="timerPill" class="timer-seconds">90</div>
-            <div class="timer-unit">sec</div>
+      <div class="account-area">
+        <div id="userProfile" class="user-profile">
+          <img id="userPhoto" class="user-photo hidden" alt="" referrerpolicy="no-referrer" />
+          <div>
+            <strong id="userName">ログイン中</strong>
+            <span id="userEmail"></span>
           </div>
         </div>
+        <div class="header-actions">
+<button id="logoutBtn" class="secondary" type="button">ログアウト</button>
+        </div>
       </div>
-    </div>
+    </header>
 
-    <div id="questionText" class="question-text"></div>
-    <div id="bookmarkBox" class="bookmark-box hidden">
-      <label class="bookmark-label">
-        <input id="bookmarkCheckbox" type="checkbox" />
-        <span id="bookmarkText">あとで復習する</span>
-      </label>
-      <div class="bookmark-help">チェックした問題はこの端末のブラウザに保存され、メニューの「あとで復習」から解けます。</div>
-    </div>
-    <div id="choices" class="choices"></div>
+    <div id="syncBanner" class="sync-banner" aria-live="polite">Firestoreと同期しています…</div>
 
-    <div id="explanationBox" class="explanation hidden">
-      <div id="resultBadge" class="badge"></div>
-      <div id="correctAnswerText" style="font-weight:700;margin-bottom:8px;"></div>
-      <div id="explanationText" style="line-height:1.8;white-space:pre-wrap;"></div>
-      <div class="actions" style="margin-top:18px">
-        <button id="nextBtn" class="primary">次の問題へ</button>
-      </div>
-    </div>
-  </section>
+    <main class="dashboard-layout">
+      <section class="panel editor-panel">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">REVIEW</p>
+            <h2>作品を評価</h2>
+          </div>
+          <button id="resetBtn" class="text-button" type="button">入力をリセット</button>
+        </div>
 
-  <section id="summaryView" class="panel hidden">
-    <h2 style="margin-top:0">結果サマリー</h2>
+        <form id="animeForm">
+          <input id="editingId" type="hidden" />
 
-    <div class="summary-grid">
-      <div class="metric">
-        <div class="metric-label">正解数</div>
-        <div id="summaryCorrect" class="metric-value">0 / 60</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">正答率</div>
-        <div id="summaryRate" class="metric-value">0%</div>
-      </div>
-      <div class="metric">
-        <div class="metric-label">正解率グラフ</div>
-        <div class="donut-wrap">
-          <div id="donutChart" class="donut-chart">
-            <div class="donut-inner">
-              <div id="donutPercent" class="donut-percent">0%</div>
-              <div class="donut-caption">correct</div>
+          <div class="form-grid two">
+            <label>
+              <span>作品名</span>
+              <input id="title" type="text" placeholder="例：進撃の巨人" required maxlength="80" />
+            </label>
+            <div class="genre-multi-field">
+              <span class="field-label">ジャンル</span>
+              <div id="genreOptions" class="genre-options" role="group" aria-label="作品のジャンル"></div>
+              <p class="genre-help">複数選択できます。</p>
             </div>
           </div>
+
+          <label class="episode-field">
+            <span>話数</span>
+            <input id="episodes" type="number" min="0" max="9999" step="1" value="0" placeholder="例：24" />
+          </label>
+
+          <div id="scoreInputs" class="score-list"></div>
+
+          <label class="memo-field">
+            <span>メモ</span>
+            <textarea id="memo" rows="4" placeholder="良かった点、気になった点など"></textarea>
+          </label>
+
+          <div class="form-actions">
+            <button id="saveBtn" type="submit" class="primary">作品を保存</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="right-dashboard">
+        <section class="panel compare-panel">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">COMPARE</p>
+              <h2>比較する作品の検索</h2>
+            </div>
+            <button id="clearCompareBtn" class="text-button" type="button">比較を解除</button>
+          </div>
+
+          <section class="compare-picker" aria-labelledby="comparePickerTitle">
+            <div class="compare-picker-heading">
+              <div>
+                <h3 id="comparePickerTitle">比較対象を選択</h3>
+                <p>作品名・ジャンルで検索し、最大10作品まで比較できます。</p>
+              </div>
+              <span id="comparePickerCount" class="compare-picker-count">0 / 10</span>
+            </div>
+
+            <label class="compare-search-box">
+              <span class="sr-only">比較する作品を検索</span>
+              <input id="compareSearchInput" type="search" placeholder="作品名・ジャンルで検索" autocomplete="off" />
+            </label>
+
+            <div id="compareSearchResults" class="compare-search-results hidden" role="listbox"></div>
+            <div id="selectedCompareWorks" class="selected-compare-works"></div>
+          </section>
+        </section>
+
+        <section class="panel score-comparison-panel">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">SCORES</p>
+              <h2>比較作品の各観点の点数</h2>
+            </div>
+          </div>
+
+          <div id="scoreComparisonEmpty" class="empty-state">
+            比較する作品を選択すると、各観点の点数が表示されます。
+          </div>
+          <div id="scoreComparisonTableWrap" class="score-comparison-table-wrap hidden">
+            <table class="score-comparison-table">
+              <thead id="scoreComparisonHead"></thead>
+              <tbody id="scoreComparisonBody"></tbody>
+            </table>
+          </div>
+
+          <div id="comparisonSaveBar" class="comparison-save-bar hidden" aria-live="polite">
+            <div>
+              <strong id="comparisonSaveMessage">点数が変更されています</strong>
+              <span>保存するとランキングや集計にも反映されます。</span>
+            </div>
+            <div class="comparison-save-actions">
+              <button id="comparisonDiscardBtn" class="secondary" type="button">変更を破棄</button>
+              <button id="comparisonSaveBtn" class="primary" type="button">変更を保存</button>
+            </div>
+          </div>
+
+          <div id="chartWrap" class="chart-wrap hidden">
+            <svg id="radarChart" viewBox="0 0 760 620" role="img" aria-label="アニメ評価のレーダーチャート"></svg>
+            <div id="radarTooltip" class="radar-tooltip hidden" role="status" aria-live="polite"></div>
+            <div id="legend" class="legend"></div>
+          </div>
+        </section>
+
+        <section class="category-ranking-grid">
+          <section class="panel compact-ranking-panel">
+            <p class="eyebrow">RANKING 01</p>
+            <h3 id="categoryTitle-story">ストーリー</h3>
+            <div class="category-ranking-controls" data-category-key="story">
+              <div id="categoryOrderControls-story" class="category-order-controls">
+                <button id="categoryAsc-story" class="ranking-order-button" type="button">昇順</button>
+                <button id="categoryDesc-story" class="ranking-order-button active" type="button">降順</button>
+              </div>
+              <button id="categoryApproxClear-story" class="approx-clear-button hidden" type="button">
+                近似値表示を解除
+              </button>
+            </div>
+            <ol id="categoryList-story" class="ranking-list compact"></ol>
+            <button id="categoryToggle-story" class="show-more-button hidden" type="button">すべて表示</button>
+          </section>
+          <section class="panel compact-ranking-panel">
+            <p class="eyebrow">RANKING 02</p>
+            <h3 id="categoryTitle-visual">映像・演出</h3>
+            <div class="category-ranking-controls" data-category-key="visual">
+              <div id="categoryOrderControls-visual" class="category-order-controls">
+                <button id="categoryAsc-visual" class="ranking-order-button" type="button">昇順</button>
+                <button id="categoryDesc-visual" class="ranking-order-button active" type="button">降順</button>
+              </div>
+              <button id="categoryApproxClear-visual" class="approx-clear-button hidden" type="button">
+                近似値表示を解除
+              </button>
+            </div>
+            <ol id="categoryList-visual" class="ranking-list compact"></ol>
+            <button id="categoryToggle-visual" class="show-more-button hidden" type="button">すべて表示</button>
+          </section>
+          <section class="panel compact-ranking-panel">
+            <p class="eyebrow">RANKING 03</p>
+            <h3 id="categoryTitle-emotion">感情表現</h3>
+            <div class="category-ranking-controls" data-category-key="emotion">
+              <div id="categoryOrderControls-emotion" class="category-order-controls">
+                <button id="categoryAsc-emotion" class="ranking-order-button" type="button">昇順</button>
+                <button id="categoryDesc-emotion" class="ranking-order-button active" type="button">降順</button>
+              </div>
+              <button id="categoryApproxClear-emotion" class="approx-clear-button hidden" type="button">
+                近似値表示を解除
+              </button>
+            </div>
+            <ol id="categoryList-emotion" class="ranking-list compact"></ol>
+            <button id="categoryToggle-emotion" class="show-more-button hidden" type="button">すべて表示</button>
+          </section>
+          <section class="panel compact-ranking-panel">
+            <p class="eyebrow">RANKING 04</p>
+            <h3 id="categoryTitle-moving">感動</h3>
+            <div class="category-ranking-controls" data-category-key="moving">
+              <div id="categoryOrderControls-moving" class="category-order-controls">
+                <button id="categoryAsc-moving" class="ranking-order-button" type="button">昇順</button>
+                <button id="categoryDesc-moving" class="ranking-order-button active" type="button">降順</button>
+              </div>
+              <button id="categoryApproxClear-moving" class="approx-clear-button hidden" type="button">
+                近似値表示を解除
+              </button>
+            </div>
+            <ol id="categoryList-moving" class="ranking-list compact"></ol>
+            <button id="categoryToggle-moving" class="show-more-button hidden" type="button">すべて表示</button>
+          </section>
+          <section class="panel compact-ranking-panel">
+            <p class="eyebrow">RANKING 05</p>
+            <h3 id="categoryTitle-theme">テーマ性</h3>
+            <div class="category-ranking-controls" data-category-key="theme">
+              <div id="categoryOrderControls-theme" class="category-order-controls">
+                <button id="categoryAsc-theme" class="ranking-order-button" type="button">昇順</button>
+                <button id="categoryDesc-theme" class="ranking-order-button active" type="button">降順</button>
+              </div>
+              <button id="categoryApproxClear-theme" class="approx-clear-button hidden" type="button">
+                近似値表示を解除
+              </button>
+            </div>
+            <ol id="categoryList-theme" class="ranking-list compact"></ol>
+            <button id="categoryToggle-theme" class="show-more-button hidden" type="button">すべて表示</button>
+          </section>
+          <section class="panel compact-ranking-panel">
+            <p class="eyebrow">RANKING 06</p>
+            <h3 id="categoryTitle-addiction">中毒性</h3>
+            <div class="category-ranking-controls" data-category-key="addiction">
+              <div id="categoryOrderControls-addiction" class="category-order-controls">
+                <button id="categoryAsc-addiction" class="ranking-order-button" type="button">昇順</button>
+                <button id="categoryDesc-addiction" class="ranking-order-button active" type="button">降順</button>
+              </div>
+              <button id="categoryApproxClear-addiction" class="approx-clear-button hidden" type="button">
+                近似値表示を解除
+              </button>
+            </div>
+            <ol id="categoryList-addiction" class="ranking-list compact"></ol>
+            <button id="categoryToggle-addiction" class="show-more-button hidden" type="button">すべて表示</button>
+          </section>
+        </section>
+      </section>
+
+            <section class="panel review-analysis-panel">
+        <div class="panel-heading"><div><p class="eyebrow">Review Intelligence</p><h2>レビューAI分析</h2></div></div>
+        <div id="reviewAnalysis" class="review-analysis"></div>
+      </section>
+
+<section class="panel ai-summary-panel full-width">
+        <div class="section-title">
+          <div>
+            <p class="eyebrow">INSIGHT</p>
+            <h2>登録済み作品のAIサマリー</h2>
+          </div>
         </div>
-      </div>
-    </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>判定</th>
-            <th>章</th>
-            <th>問題</th>
-            <th>リンク</th>
-          </tr>
-        </thead>
-        <tbody id="summaryTableBody"></tbody>
-      </table>
-    </div>
-
-    <div class="actions" id="summaryActions" style="margin-top:18px">
-      <button id="retryWrongBtn" class="secondary">不正解だけ復習する</button>
-      <button id="retryWrongUnansweredBtn" class="secondary">不正解＋未回答を復習する</button>
-      <button id="restartBtn" class="secondary">最初からやり直す</button>
-      <button id="menuBtnInSummary" class="secondary">メインメニューへ戻る</button>
-    </div>
-
-    <div class="footer-note">
-      途中で「回答を終了してサマリーへ」を押すと、その時点までの結果でサマリーを表示できます。<br>
-      「問題を見る」を押すと、その問題と解説を再表示します。<br>
-      サマリー画面の「不正解だけ復習する」「不正解＋未回答を復習する」で、対象問題だけを続けて解けます。<br>
-      回答状況はlocalStorageに自動保存されるため、同じ端末・同じブラウザなら続きから再開できます。<br>
-      GitHub Pagesで公開した場合も、学習履歴はGitHubではなくスマホ側のブラウザに保存されます。
-    </div>
-  </section>
-</div>
-
-<script>
-let QUESTIONS = [];
-
-async function loadQuestions() {
-  const response = await fetch("./questions.json", { cache: "no-store" });
-  if (!response.ok) {
-    throw new Error(`questions.json の読み込みに失敗しました: ${response.status}`);
-  }
-  QUESTIONS = await response.json();
-}
-
-
-const state = {
-  currentIndex: 0,
-  answers: Array(QUESTIONS.length).fill(null),
-  order: Array.from({length: QUESTIONS.length}, (_, i) => i),
-  shuffle: false,
-  reviewOnlyWrong: false,
-  reviewWrongAndUnanswered: false,
-  baseOrderBeforeWrongReview: null,
-  reviewAnswers: {},
-  selectedChapters: [1,2,3,4,5,6,7,8],
-  allChapterQuestionCount: null,
-  bookmarkIds: [],
-  timerSeconds: 90,
-  timerId: null,
-  timerStopped: false,
-  summaryReviewMode: false,
-  lastView: "menu"
-};
-
-const menuView = document.getElementById("menuView");
-const menuButtons = document.getElementById("menuButtons");
-const savedProgressBox = document.getElementById("savedProgressBox");
-const savedProgressText = document.getElementById("savedProgressText");
-const resumeSavedBtn = document.getElementById("resumeSavedBtn");
-const clearSavedBtn = document.getElementById("clearSavedBtn");
-const quizView = document.getElementById("quizView");
-const summaryView = document.getElementById("summaryView");
-const progressShell = document.getElementById("progressShell");
-const progressLabel = document.getElementById("progressLabel");
-const progressRight = document.getElementById("progressRight");
-const progressFill = document.getElementById("progressFill");
-const metaQuestionNo = document.getElementById("metaQuestionNo");
-const metaChapter = document.getElementById("metaChapter");
-const metaTopic = document.getElementById("metaTopic");
-const timerPill = document.getElementById("timerPill");
-const timerRing = document.getElementById("timerRing");
-const questionText = document.getElementById("questionText");
-const bookmarkBox = document.getElementById("bookmarkBox");
-const bookmarkCheckbox = document.getElementById("bookmarkCheckbox");
-const bookmarkText = document.getElementById("bookmarkText");
-const choicesEl = document.getElementById("choices");
-const explanationBox = document.getElementById("explanationBox");
-const resultBadge = document.getElementById("resultBadge");
-const correctAnswerText = document.getElementById("correctAnswerText");
-const explanationText = document.getElementById("explanationText");
-const nextBtn = document.getElementById("nextBtn");
-const finishBtn = document.getElementById("finishBtn");
-const shuffleBtn = document.getElementById("shuffleBtn");
-const jumpQuestionBtn = document.getElementById("jumpQuestionBtn");
-const prevQuestionBtn = document.getElementById("prevQuestionBtn");
-const nextQuestionTopBtn = document.getElementById("nextQuestionTopBtn");
-const summaryCorrect = document.getElementById("summaryCorrect");
-const summaryRate = document.getElementById("summaryRate");
-const donutChart = document.getElementById("donutChart");
-const donutPercent = document.getElementById("donutPercent");
-const summaryTableBody = document.getElementById("summaryTableBody");
-const restartBtn = document.getElementById("restartBtn");
-const retryWrongBtn = document.getElementById("retryWrongBtn");
-const retryWrongUnansweredBtn = document.getElementById("retryWrongUnansweredBtn");
-const summaryActions = document.getElementById("summaryActions");
-
-const STORAGE_KEY = "javaGoldSe17StudyProgress.v2";
-const BOOKMARK_STORAGE_KEY = "javaGoldSe17Bookmarks.v1";
-
-const CHAPTER_TITLES = {
-  1: "コレクションとジェネリクス",
-  2: "関数型インターフェースとラムダ式",
-  3: "ストリームAPI",
-  4: "モジュールシステム",
-  5: "並列処理",
-  6: "ファイルI/O",
-  7: "JDBC",
-  8: "ローカライズ",
-  9: "基礎知識編",
-  10: "あとで復習",
-  11: "模擬試験1",
-  12: "練習問題まとめ",
-  13: "模擬試験2"
-};
-const GOLD_CHAPTERS = [1,2,3,4,5,6,7,8];
-
-
-function questionSignature() {
-  return QUESTIONS.map(q => `${q.id}:${q.chapter}`).join(",");
-}
-
-function safeReadBookmarkIds() {
-  try {
-    const raw = localStorage.getItem(BOOKMARK_STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed : [];
-  } catch (e) {
-    console.warn("復習チェックの読み込みに失敗しました", e);
-    return [];
-  }
-}
-
-function saveBookmarkIds() {
-  try {
-    localStorage.setItem(BOOKMARK_STORAGE_KEY, JSON.stringify(state.bookmarkIds));
-  } catch (e) {
-    console.warn("復習チェックの保存に失敗しました", e);
-  }
-}
-
-function loadBookmarkIds() {
-  const validIds = new Set(QUESTIONS.map(q => String(q.id)));
-  state.bookmarkIds = safeReadBookmarkIds()
-    .map(id => String(id))
-    .filter((id, idx, arr) => validIds.has(id) && arr.indexOf(id) === idx);
-  saveBookmarkIds();
-}
-
-function questionIdAt(actualIndex) {
-  const q = QUESTIONS[actualIndex];
-  return q ? String(q.id) : null;
-}
-
-function isBookmarked(actualIndex) {
-  const id = questionIdAt(actualIndex);
-  return id !== null && state.bookmarkIds.includes(id);
-}
-
-function setBookmarked(actualIndex, checked) {
-  const id = questionIdAt(actualIndex);
-  if (id === null) return;
-  if (checked && !state.bookmarkIds.includes(id)) {
-    state.bookmarkIds.push(id);
-  }
-  if (!checked) {
-    state.bookmarkIds = state.bookmarkIds.filter(savedId => savedId !== id);
-  }
-  saveBookmarkIds();
-  updateBookmarkBox(actualIndex);
-}
-
-function getBookmarkQuestionIndexes() {
-  const bookmarked = new Set(state.bookmarkIds);
-  return QUESTIONS
-    .map((q, i) => bookmarked.has(String(q.id)) ? i : null)
-    .filter(i => i !== null);
-}
-
-function isBookmarkModeSelected() {
-  return state.selectedChapters.length === 1 && state.selectedChapters[0] === 10;
-}
-
-function updateBookmarkBox(actualIndex) {
-  if (!QUESTIONS[actualIndex]) {
-    bookmarkBox.classList.add("hidden");
-    return;
-  }
-  bookmarkBox.classList.remove("hidden");
-  bookmarkCheckbox.checked = isBookmarked(actualIndex);
-  bookmarkText.textContent = bookmarkCheckbox.checked ? "あとで復習に追加済み" : "あとで復習する";
-}
-
-function safeReadSavedProgress() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch (e) {
-    console.warn("保存済みデータの読み込みに失敗しました", e);
-    return null;
-  }
-}
-
-function saveStudyProgress(view = "quiz") {
-  try {
-    if (!QUESTIONS.length) return;
-    const payload = {
-      version: 1,
-      savedAt: new Date().toISOString(),
-      questionCount: QUESTIONS.length,
-      signature: questionSignature(),
-      view,
-      currentIndex: state.currentIndex,
-      answers: state.answers,
-      order: state.order,
-      shuffle: state.shuffle,
-      reviewOnlyWrong: state.reviewOnlyWrong,
-      reviewWrongAndUnanswered: state.reviewWrongAndUnanswered,
-      baseOrderBeforeWrongReview: state.baseOrderBeforeWrongReview,
-      reviewAnswers: state.reviewAnswers,
-      selectedChapters: state.selectedChapters,
-      allChapterQuestionCount: state.allChapterQuestionCount
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    updateSavedProgressBox();
-  } catch (e) {
-    console.warn("学習履歴の保存に失敗しました", e);
-  }
-}
-
-function clearStudyProgress() {
-  localStorage.removeItem(STORAGE_KEY);
-  updateSavedProgressBox();
-  updatePrevNextNavigationButtons();
-}
-
-function isSavedProgressCompatible(saved) {
-  return saved
-    && saved.version === 1
-    && saved.questionCount === QUESTIONS.length
-    && saved.signature === questionSignature()
-    && Array.isArray(saved.answers)
-    && Array.isArray(saved.order);
-}
-
-function updateSavedProgressBox() {
-  const saved = safeReadSavedProgress();
-  if (!isSavedProgressCompatible(saved)) {
-    savedProgressBox.classList.add("hidden");
-    return;
-  }
-  const answered = saved.answers.filter(v => v !== null).length;
-  const correct = saved.answers.filter(v => v && v.isCorrect).length;
-  const total = saved.order.length || QUESTIONS.length;
-  const savedDate = new Date(saved.savedAt);
-  const dateText = Number.isNaN(savedDate.getTime()) ? "保存日時不明" : savedDate.toLocaleString("ja-JP");
-  savedProgressText.textContent = `${answered} / ${total}問 回答済み、${correct}問 正解。最終保存: ${dateText}`;
-  savedProgressBox.classList.remove("hidden");
-}
-
-function restoreStudyProgress() {
-  const saved = safeReadSavedProgress();
-  if (!isSavedProgressCompatible(saved)) {
-    alert("保存済みデータが現在の問題データと一致しないため、読み込めませんでした。");
-    clearStudyProgress();
-    return;
-  }
-  state.currentIndex = Math.min(saved.currentIndex || 0, Math.max(0, saved.order.length - 1));
-  state.answers = saved.answers;
-  state.order = saved.order;
-  state.shuffle = !!saved.shuffle;
-  state.reviewOnlyWrong = !!saved.reviewOnlyWrong;
-  state.reviewWrongAndUnanswered = !!saved.reviewWrongAndUnanswered;
-  state.baseOrderBeforeWrongReview = saved.baseOrderBeforeWrongReview || null;
-  state.reviewAnswers = saved.reviewAnswers || {};
-  state.selectedChapters = Array.isArray(saved.selectedChapters) ? saved.selectedChapters : [1,2,3,4,5,6,7,8];
-  state.allChapterQuestionCount = Number.isInteger(saved.allChapterQuestionCount) ? saved.allChapterQuestionCount : null;
-  updateShuffleButton();
-  renderQuestion(state.currentIndex);
-}
-
-function answeredCount() {
-  return state.answers.filter(v => v !== null).length;
-}
-function correctCount() {
-  return state.answers.filter(v => v && v.isCorrect).length;
-}
-function shuffledArray(arr) {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-function isAllGoldChaptersSelected() {
-  return state.selectedChapters.length === GOLD_CHAPTERS.length
-    && GOLD_CHAPTERS.every(n => state.selectedChapters.includes(n));
-}
-function getChapterQuestionIndexes(chapter) {
-  return QUESTIONS
-    .map((q, i) => q.chapter === chapter ? i : null)
-    .filter(i => i !== null);
-}
-function maxBalancedAllChapterQuestionCount() {
-  const minCount = Math.min(...GOLD_CHAPTERS.map(chapter => getChapterQuestionIndexes(chapter).length));
-  return minCount * GOLD_CHAPTERS.length;
-}
-function buildBalancedAllChapterOrder(totalCount) {
-  const perChapter = totalCount / GOLD_CHAPTERS.length;
-  const order = [];
-  GOLD_CHAPTERS.forEach(chapter => {
-    const indexes = getChapterQuestionIndexes(chapter);
-    order.push(...shuffledArray(indexes).slice(0, perChapter));
-  });
-  return shuffledArray(order);
-}
-function resetOrder() {
-  if (isBookmarkModeSelected()) {
-    state.order = getBookmarkQuestionIndexes();
-    if (state.shuffle) {
-      state.order = shuffledArray(state.order);
-    }
-    return;
-  }
-
-  if (isAllGoldChaptersSelected() && Number.isInteger(state.allChapterQuestionCount)) {
-    state.order = buildBalancedAllChapterOrder(state.allChapterQuestionCount);
-    return;
-  }
-
-  state.order = Array.from({length: QUESTIONS.length}, (_, i) => i)
-    .filter(i => state.selectedChapters.includes(QUESTIONS[i].chapter));
-  if (state.shuffle) {
-    state.order = shuffledArray(state.order);
-  }
-}
-function orderedQuestionAt(displayIndex) {
-  return QUESTIONS[state.order[displayIndex]];
-}
-function actualIndexAt(displayIndex) {
-  return state.order[displayIndex];
-}
-function updateShuffleButton() {
-  shuffleBtn.textContent = `シャッフル: ${state.shuffle ? "ON" : "OFF"}`;
-  updateJumpQuestionButton();
-  updatePrevNextNavigationButtons();
-}
-function canUseQuestionJump() {
-  return !state.shuffle && !isAnyReviewMode() && currentVisibleQuestionsLength() > 0;
-}
-function updateJumpQuestionButton() {
-  if (!jumpQuestionBtn) return;
-  const canUse = canUseQuestionJump();
-  jumpQuestionBtn.classList.toggle("hidden", !canUse);
-  jumpQuestionBtn.disabled = !canUse;
-  jumpQuestionBtn.title = canUse ? "シャッフルOFF時に指定した問題番号へ移動できます" : "シャッフルOFF時のみ使用できます";
-}
-function jumpToQuestionNumber() {
-  if (!canUseQuestionJump()) {
-    alert("指定問題への移動はシャッフルOFFの通常出題時のみ使用できます。");
-    return;
-  }
-
-  const total = currentVisibleQuestionsLength();
-  const input = prompt(`移動したい問題番号を入力してください。\n指定可能範囲: 1〜${total}問`, String(state.currentIndex + 1));
-  if (input === null) return;
-
-  const targetNo = Number(input);
-  if (!Number.isInteger(targetNo) || targetNo < 1 || targetNo > total) {
-    alert(`問題番号は1〜${total}の範囲で入力してください。`);
-    return;
-  }
-
-  renderQuestion(targetNo - 1);
-}
-function canUsePrevNextNavigation() {
-  return !state.summaryReviewMode && currentVisibleQuestionsLength() > 0;
-}
-function updatePrevNextNavigationButtons() {
-  if (!prevQuestionBtn || !nextQuestionTopBtn) return;
-  const canUse = canUsePrevNextNavigation();
-  const isFirst = state.currentIndex <= 0;
-  const isLast = state.currentIndex >= currentVisibleQuestionsLength() - 1;
-
-  prevQuestionBtn.disabled = !canUse || isFirst;
-  nextQuestionTopBtn.disabled = !canUse || isLast;
-  prevQuestionBtn.title = isFirst ? "現在は最初の問題です" : "前の問題へ移動します";
-  nextQuestionTopBtn.title = isLast ? "現在は最後の問題です" : "次の問題へ移動します";
-}
-function moveQuestionRelative(delta) {
-  if (!canUsePrevNextNavigation()) return;
-  const targetIndex = state.currentIndex + delta;
-  if (targetIndex < 0 || targetIndex >= currentVisibleQuestionsLength()) return;
-  renderQuestion(targetIndex);
-}
-function currentVisibleQuestionsLength() {
-  return state.order.length;
-}
-function visibleAnsweredCount() {
-  if (isAnyReviewMode()) {
-    return state.order.filter(idx => state.reviewAnswers[idx] != null).length;
-  }
-  return state.order.filter(idx => state.answers[idx] !== null).length;
-}
-function visibleCorrectCount() {
-  if (isAnyReviewMode()) {
-    return state.order.filter(idx => state.reviewAnswers[idx] && state.reviewAnswers[idx].isCorrect).length;
-  }
-  return state.order.filter(idx => state.answers[idx] && state.answers[idx].isCorrect).length;
-}
-function buildWrongOnlyOrder() {
-  return state.order.filter(idx => state.answers[idx] && !state.answers[idx].isCorrect);
-}
-function buildWrongAndUnansweredOrder() {
-  return state.order.filter(idx => state.answers[idx] === null || (state.answers[idx] && !state.answers[idx].isCorrect));
-}
-function isWrongReviewMode() {
-  return state.reviewOnlyWrong;
-}
-function isWrongUnansweredReviewMode() {
-  return state.reviewWrongAndUnanswered;
-}
-function isAnyReviewMode() {
-  return state.reviewOnlyWrong || state.reviewWrongAndUnanswered;
-}
-function chapterLabel(chapter) {
-  if (chapter === 9) return "基礎知識編";
-  if (chapter === 10) return "あとで復習";
-  const title = CHAPTER_TITLES[chapter];
-  return title ? `第${chapter}章：${title}` : `第${chapter}章`;
-}
-function currentModeTitle() {
-  if (isAllGoldChaptersSelected()) {
-    return state.allChapterQuestionCount ? `全章（${state.allChapterQuestionCount}問）` : "全章";
-  }
-  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 9) {
-    return "基礎知識編";
-  }
-  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 10) {
-    return "あとで復習";
-  }
-  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 11) {
-    return "模擬試験1";
-  }
-  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 12) {
-    return "練習問題まとめ";
-  }
-  if (state.selectedChapters.length === 1 && state.selectedChapters[0] === 13) {
-    return "模擬試験2";
-  }
-  return state.selectedChapters.map(n => chapterLabel(n)).join("・");
-}
-function showMenu() {
-  stopTimer();
-  buildMenu();
-  timerPill.textContent = "90";
-  timerRing.style.setProperty("--pct", 100);
-  menuView.classList.remove("hidden");
-  quizView.classList.add("hidden");
-  summaryView.classList.add("hidden");
-  progressShell.classList.add("hidden");
-  updateSavedProgressBox();
-}
-function startMode(chapters, options = {}) {
-  state.selectedChapters = [...chapters];
-  state.allChapterQuestionCount = Number.isInteger(options.allChapterQuestionCount) ? options.allChapterQuestionCount : null;
-  state.answers = Array(QUESTIONS.length).fill(null);
-  state.currentIndex = 0;
-  state.reviewOnlyWrong = false;
-  state.reviewWrongAndUnanswered = false;
-  state.baseOrderBeforeWrongReview = null;
-  state.reviewAnswers = {};
-  resetOrder();
-  if (state.order.length === 0) {
-    alert(isBookmarkModeSelected() ? "あとで復習する問題がまだ登録されていません。各問題画面でチェックを付けてください。" : "この出題範囲にはまだ問題が登録されていません。");
-    showMenu();
-    return;
-  }
-  updateShuffleButton();
-  renderQuestion(0);
-  saveStudyProgress("quiz");
-}
-function startAllChaptersMode() {
-  const maxCount = maxBalancedAllChapterQuestionCount();
-  const defaultCount = Math.min(80, maxCount);
-  const input = prompt(`全章から出題する問題数を入力してください。\n8章から均等に出題するため、8の倍数で指定してください。\n指定可能範囲: 8〜${maxCount}問`, String(defaultCount));
-  if (input === null) return;
-
-  const count = Number(input);
-  if (!Number.isInteger(count) || count < GOLD_CHAPTERS.length || count > maxCount || count % GOLD_CHAPTERS.length !== 0) {
-    alert(`問題数は8〜${maxCount}の範囲で、8の倍数を指定してください。`);
-    return;
-  }
-
-  startMode(GOLD_CHAPTERS, { allChapterQuestionCount: count });
-}
-function buildMenu() {
-  const bookmarkCount = getBookmarkQuestionIndexes().length;
-  const items = [
-    { label: "基礎知識編", chapters: [9], desc: "Java Gold学習前に押さえる基礎知識" },
-    { label: "あとで復習", chapters: [10], desc: `${bookmarkCount}問登録中。チェックした問題だけを出題` },
-    { label: "全章", chapters: GOLD_CHAPTERS, desc: "問題数を指定し、通常8章から均等ランダム出題", isAllChapters: true },
-    { label: "第1章", chapters: [1], desc: "コレクションとジェネリクス" },
-    { label: "第2章", chapters: [2], desc: "関数型インターフェースとラムダ式" },
-    { label: "第3章", chapters: [3], desc: "ストリームAPI" },
-    { label: "第4章", chapters: [4], desc: "モジュールシステム" },
-    { label: "第5章", chapters: [5], desc: "並列処理" },
-    { label: "第6章", chapters: [6], desc: "ファイルI/O" },
-    { label: "第7章", chapters: [7], desc: "JDBC" },
-    { label: "第8章", chapters: [8], desc: "ローカライズ" },
-    { label: "模擬試験1", chapters: [11], desc: "第1回の本番形式演習" },
-    { label: "練習問題まとめ", chapters: [12], desc: "練習問題まとめ" },
-    { label: "模擬試験2", chapters: [13], desc: "第3回の本番形式演習" },
-  ];
-  menuButtons.innerHTML = "";
-  items.forEach(item => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "choice";
-    btn.innerHTML = `<span class="choice-key">▶</span><span><strong>${item.label}</strong><br><span style="color:var(--muted)">${item.desc}</span></span>`;
-    btn.addEventListener("click", () => item.isAllChapters ? startAllChaptersMode() : startMode(item.chapters));
-    menuButtons.appendChild(btn);
-  });
-}
-
-function stopTimer() {
-  if (state.timerId) {
-    clearInterval(state.timerId);
-    state.timerId = null;
-  }
-}
-function updateTimerDisplay() {
-  timerPill.textContent = String(Math.max(0, state.timerSeconds));
-  const pct = Math.max(0, (state.timerSeconds / 90) * 100);
-  timerRing.style.setProperty("--pct", pct);
-}
-function startTimer() {
-  stopTimer();
-  state.timerStopped = false;
-  state.timerSeconds = 90;
-  updateTimerDisplay();
-  state.timerId = setInterval(() => {
-    state.timerSeconds -= 1;
-    updateTimerDisplay();
-
-    if (state.timerSeconds > 0) return;
-
-    stopTimer();
-    const keepGoing = confirm("制限時間が経過しました。このまま回答を続けますか");
-    if (keepGoing) {
-      state.timerStopped = true;
-      timerPill.textContent = "停止";
-      timerRing.style.setProperty("--pct", 0);
-      return;
-    }
-
-    state.timerStopped = true;
-    timerPill.textContent = "停止";
-    timerRing.style.setProperty("--pct", 0);
-    autoRevealCorrectAnswer();
-  }, 1000);
-}
-function resetTimerForQuestion() {
-  startTimer();
-}
-function autoRevealCorrectAnswer() {
-  const actualIndex = actualIndexAt(state.currentIndex);
-  const isCorrect = false;
-
-  if (isAnyReviewMode()) {
-    state.reviewAnswers[actualIndex] = {
-      selected: null,
-      isCorrect,
-      timedOut: true
-    };
-  } else {
-    state.answers[actualIndex] = {
-      selected: null,
-      isCorrect,
-      timedOut: true
-    };
-  }
-
-  renderQuestion(state.currentIndex);
-}
-function updateProgress() {
-  const total = currentVisibleQuestionsLength();
-  const answered = visibleAnsweredCount();
-  const correct = visibleCorrectCount();
-  progressLabel.textContent = `${correct} / ${total}問 正解`;
-  progressRight.textContent = `${answered} / ${total}問 回答済み`;
-  progressFill.style.width = total === 0 ? "0%" : `${(answered / total) * 100}%`;
-  progressShell.classList.toggle("hidden", summaryView.classList.contains("hidden") === false);
-}
-
-function prettyJavaCode(code) {
-  const lines = String(code ?? "")
-    .replace(/\r\n/g, "\n")
-    .replace(/\r/g, "\n")
-    .trim()
-    .split("\n");
-
-  const fixed = [];
-
-  for (const line of lines) {
-    const onlyNumbering = line.trim().match(/^\/\/\s*\((\d+)\)$/);
-    if (onlyNumbering && fixed.length > 0) {
-      const prev = fixed.pop().replace(/\s*\/\/\s*\(\d+\)\s*$/, "").trimEnd();
-      fixed.push(`${prev} // (${onlyNumbering[1]})`);
-      continue;
-    }
-
-    fixed.push(line.replace(/\s*\/\/\s*\((\d+)\)\s*$/, " // ($1)"));
-  }
-
-  return fixed.join("\n");
-}
-function isCodeFileHeaderLine(line) {
-  const trimmed = String(line ?? "").trim();
-
-  if (!trimmed.startsWith("//")) return false;
-
-  const label = trimmed.replace(/^\/\/\s*/, "").trim();
-
-  if (!label) return false;
-
-  return (
-    /^(?:src|out|work|ex\d+|com\.[\w.:-]+|META-INF|[\w$.-]+)\//.test(label) ||
-    /(?:^|\/)(?:module-info\.java|MANIFEST\.MF|MANIFEST\.txt|[\w$]+\.java|[\w$]+\.properties|[\w$]+\.class|[\w$]+\.jar)$/.test(label)
-  );
-}
-
-function isDirectoryTreeLine(line, nextLine = "") {
-  const current = String(line ?? "");
-  const next = String(nextLine ?? "");
-  return (
-    /[├└│─]/.test(current) ||
-    (current.trim() !== "" && /[├└│─]/.test(next))
-  );
-}
-
-function isJavaCodeLine(line) {
-  const trimmed = String(line ?? "").trim();
-
-  if (trimmed === "") return true;
-  if (isCodeFileHeaderLine(trimmed)) return true;
-  if (/^(?:package|import|module|open\s+module)\b/.test(trimmed)) return true;
-  if (/^(?:public|protected|private|static|final|abstract|sealed|non-sealed|class|interface|record|enum)\b/.test(trimmed)) return true;
-  if (/^(?:requires|exports|opens|uses|provides|to|with)\b/.test(trimmed)) return true;
-  if (/^(?:try|catch|finally|if|else|for|while|switch|case|default|return|throw|throws|new|var)\b/.test(trimmed)) return true;
-  if (/^[{}()[\];,@.]/.test(trimmed)) return true;
-  if (/^[A-Za-z_$][\w$<>\[\]., ?]*\s+[A-Za-z_$][\w$]*\s*[=;(]/.test(trimmed)) return true;
-  if (/^[A-Za-z_$][\w$.]*\s*\(/.test(trimmed)) return true;
-  if (/^(?:System\.out|List\.of|Arrays\.|Stream\.|IntStream\.|Thread\.|ExecutorService\b)/.test(trimmed)) return true;
-
-  return false;
-}
-
-function isQuestionProseLine(line) {
-  const trimmed = String(line ?? "").trim();
-  if (trimmed === "") return false;
-
-  return /[ぁ-んァ-ヶ一-龠]/.test(trimmed) && !trimmed.startsWith("//") && !/[├└│─]/.test(trimmed);
-}
-
-function renderJavaCodeWithFileHeaders(code) {
-  return prettyJavaCode(code)
-    .split("\n")
-    .map(line => {
-      if (isCodeFileHeaderLine(line)) {
-        const label = line.trim().replace(/^\/\/\s*/, "").trim();
-        return `<span class="code-file-header">${escapeHtml(label)}</span>`;
-      }
-      return escapeHtml(line);
-    })
-    .join("\n");
-}
-
-function renderQuestionTextParts(parts) {
-  return parts.map(part => {
-    if (part.type === "code") {
-      return `<pre class="code-block"><code>${renderJavaCodeWithFileHeaders(part.text)}</code></pre>`;
-    }
-    return `<span class="question-lead">${escapeHtml(part.text.trim())}</span>`;
-  }).join("");
-}
-
-function formatQuestionText(text) {
-  const source = String(text ?? "").replace(/\r\n/g, "\n").replace(/\r/g, "\n");
-  const lines = source.split("\n");
-  const parts = [];
-  let buffer = [];
-  let mode = "text";
-
-  function flush() {
-    const text = buffer.join("\n").replace(/\n+$/g, "");
-    if (text.trim() !== "") {
-      parts.push({ type: mode, text });
-    }
-    buffer = [];
-  }
-
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i];
-    const next = i + 1 < lines.length ? lines[i + 1] : "";
-    const startsCode =
-      isCodeFileHeaderLine(line) ||
-      isDirectoryTreeLine(line, next) ||
-      (mode === "code" && isJavaCodeLine(line)) ||
-      (mode === "text" && isJavaCodeLine(line) && !isQuestionProseLine(line));
-
-    if (mode === "text") {
-      if (startsCode) {
-        flush();
-        mode = "code";
-        buffer.push(line);
-      } else {
-        buffer.push(line);
-      }
-      continue;
-    }
-
-    if (mode === "code") {
-      if (isQuestionProseLine(line) && !isJavaCodeLine(line) && !isDirectoryTreeLine(line, next)) {
-        flush();
-        mode = "text";
-        buffer.push(line);
-      } else {
-        buffer.push(line);
-      }
-    }
-  }
-
-  flush();
-
-  if (parts.length === 0) return escapeHtml(source);
-  return renderQuestionTextParts(parts);
-}
-
-function renderQuestion(index) {
-  state.summaryReviewMode = false;
-  const q = orderedQuestionAt(index);
-  const actualIndex = actualIndexAt(index);
-  state.currentIndex = index;
-
-  menuView.classList.add("hidden");
-  quizView.classList.remove("hidden");
-  summaryView.classList.add("hidden");
-  progressShell.classList.remove("hidden");
-
-  const total = currentVisibleQuestionsLength();
-  metaQuestionNo.textContent = `第${index + 1}問 / ${total}問` + (isWrongReviewMode() ? "（不正解復習）" : isWrongUnansweredReviewMode() ? "（不正解＋未回答復習）" : "");
-  metaChapter.textContent = `${currentModeTitle()} / ${chapterLabel(q.chapter)}`;
-  metaTopic.textContent = q.topic || "基礎";
-  questionText.innerHTML = formatQuestionText(q.question);
-  updateBookmarkBox(actualIndex);
-
-  let ans = isAnyReviewMode()
-    ? state.reviewAnswers[actualIndex] || null
-    : state.answers[actualIndex];
-  choicesEl.innerHTML = "";
-  ["A", "B", "C", "D"].forEach(key => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "choice";
-    btn.innerHTML = `<span class="choice-key">${key}</span><span>${escapeHtml(q.choices[key])}</span>`;
-    if (ans) {
-      btn.disabled = true;
-      if (key === q.correctChoice) btn.classList.add("correct");
-      if (ans.selected && key === ans.selected && key !== q.correctChoice) btn.classList.add("incorrect");
-    } else {
-      btn.addEventListener("click", () => submitAnswer(key));
-    }
-    choicesEl.appendChild(btn);
-  });
-
-  if (ans) {
-    showExplanation(ans.isCorrect, q, false);
-  } else {
-    explanationBox.classList.add("hidden");
-  }
-  nextBtn.textContent = index === currentVisibleQuestionsLength() - 1 ? "結果を見る" : "次の問題へ";
-  updateProgress();
-  updateJumpQuestionButton();
-  updatePrevNextNavigationButtons();
-
-  if (!ans) {
-    resetTimerForQuestion();
-  } else {
-    stopTimer();
-    state.timerStopped = true;
-    timerPill.textContent = "停止";
-    timerRing.style.setProperty("--pct", 0);
-  }
-  saveStudyProgress("quiz");
-}
-
-function submitAnswer(selected) {
-  const actualIndex = actualIndexAt(state.currentIndex);
-  const q = QUESTIONS[actualIndex];
-  const isCorrect = selected === q.correctChoice;
-
-  if (isAnyReviewMode()) {
-    state.reviewAnswers[actualIndex] = {
-      selected,
-      isCorrect
-    };
-  } else {
-    state.answers[actualIndex] = {
-      selected,
-      isCorrect
-    };
-  }
-
-  renderQuestion(state.currentIndex);
-}
-
-function showExplanation(isCorrect, q, reviewMode) {
-  stopTimer();
-  state.timerStopped = true;
-  timerPill.textContent = "停止";
-  timerRing.style.setProperty("--pct", 0);
-
-  explanationBox.classList.remove("hidden");
-  const actualIndex = state.order[state.currentIndex];
-  const currentAnswer = isAnyReviewMode()
-    ? state.reviewAnswers[actualIndex] || null
-    : state.answers[actualIndex];
-
-  if (!currentAnswer) {
-    resultBadge.textContent = "未回答";
-    resultBadge.className = "badge ng";
-  } else if (isCorrect) {
-    resultBadge.textContent = "正解";
-    resultBadge.className = "badge ok";
-  } else {
-    resultBadge.textContent = "不正解";
-    resultBadge.className = "badge ng";
-  }
-
-  correctAnswerText.textContent = `正解: ${q.correctChoice}. ${q.correctText}`;
-  explanationText.textContent = q.explanation;
-}
-
-function renderSummary() {
-  state.summaryReviewMode = false;
-  stopTimer();
-  menuView.classList.add("hidden");
-  quizView.classList.add("hidden");
-  summaryView.classList.remove("hidden");
-  progressShell.classList.add("hidden");
-
-  const total = currentVisibleQuestionsLength();
-  const answered = visibleAnsweredCount();
-  const correct = visibleCorrectCount();
-  const rate = total === 0 ? 0 : Math.round((correct / total) * 1000) / 10;
-
-  summaryCorrect.textContent = `${correct} / ${total}`;
-  summaryRate.textContent = `${rate}%`;
-  donutChart.style.setProperty("--pct", rate);
-  donutPercent.textContent = `${rate}%`;
-
-  summaryTableBody.innerHTML = "";
-  state.order.forEach((actualIdx, visibleIdx) => {
-    const q = QUESTIONS[actualIdx];
-    const ans = isAnyReviewMode()
-      ? state.reviewAnswers[actualIdx] || null
-      : state.answers[actualIdx];
-    const tr = document.createElement("tr");
-
-    const td1 = document.createElement("td");
-    td1.textContent = String(visibleIdx + 1);
-
-    const td2 = document.createElement("td");
-    if (!ans) {
-      td2.textContent = "未回答";
-    } else if (ans.isCorrect) {
-      td2.textContent = "正解";
-      td2.className = "status-ok";
-    } else {
-      td2.textContent = "不正解";
-      td2.className = "status-ng";
-    }
-
-    const td3 = document.createElement("td");
-    td3.textContent = chapterLabel(q.chapter);
-
-    const td4 = document.createElement("td");
-    td4.textContent = q.question;
-
-    const td5 = document.createElement("td");
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "linkbtn";
-    btn.textContent = "問題を見る";
-    btn.addEventListener("click", () => renderReview(actualIdx, visibleIdx));
-    td5.appendChild(btn);
-
-    tr.appendChild(td1);
-    tr.appendChild(td2);
-    tr.appendChild(td3);
-    tr.appendChild(td4);
-    tr.appendChild(td5);
-    summaryTableBody.appendChild(tr);
-  });
-
-  if (isAnyReviewMode()) {
-    retryWrongBtn.style.display = "none";
-    retryWrongUnansweredBtn.style.display = "none";
-  } else {
-    retryWrongBtn.style.display = "";
-    retryWrongUnansweredBtn.style.display = "";
-
-    retryWrongBtn.textContent = "不正解だけ復習する";
-    retryWrongUnansweredBtn.textContent = "不正解＋未回答を復習する";
-  }
-  saveStudyProgress("summary");
-}
-function renderReview(actualIndex, displayIndex = state.order.indexOf(actualIndex)) {
-  state.summaryReviewMode = true;
-  state.currentIndex = displayIndex;
-  const q = QUESTIONS[actualIndex];
-  let ans = isAnyReviewMode()
-    ? state.reviewAnswers[actualIndex] || null
-    : state.answers[actualIndex];
-
-  quizView.classList.remove("hidden");
-  summaryView.classList.add("hidden");
-  progressShell.classList.add("hidden");
-
-  metaQuestionNo.textContent = `第${displayIndex + 1}問 / ${currentVisibleQuestionsLength()}（復習）`;
-  metaChapter.textContent = `${currentModeTitle()} / ${chapterLabel(q.chapter)}`;
-  metaTopic.textContent = q.topic || "基礎";
-  timerPill.textContent = "解説";
-  timerRing.style.setProperty("--pct", 0);
-  questionText.innerHTML = formatQuestionText(q.question);
-  updateBookmarkBox(actualIndex);
-
-  choicesEl.innerHTML = "";
-  ["A", "B", "C", "D"].forEach(key => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "choice";
-    btn.disabled = true;
-    btn.innerHTML = `<span class="choice-key">${key}</span><span>${escapeHtml(q.choices[key])}</span>`;
-    if (key === q.correctChoice) btn.classList.add("correct");
-    if (ans && ans.selected && key === ans.selected && key !== q.correctChoice) btn.classList.add("incorrect");
-    choicesEl.appendChild(btn);
-  });
-
-  showExplanation(ans ? ans.isCorrect : false, q, true);
-  nextBtn.textContent = "サマリーへ戻る";
-  updatePrevNextNavigationButtons();
-}
-
-function escapeHtml(str) {
-  return String(str)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-resumeSavedBtn.addEventListener("click", restoreStudyProgress);
-
-bookmarkCheckbox.addEventListener("change", () => {
-  const actualIndex = actualIndexAt(state.currentIndex);
-  setBookmarked(actualIndex, bookmarkCheckbox.checked);
-});
-
-clearSavedBtn.addEventListener("click", () => {
-  const ok = confirm("保存されている学習履歴を削除します。よろしいですか？");
-  if (!ok) return;
-  clearStudyProgress();
-});
-
-nextBtn.addEventListener("click", () => {
-  if (!summaryView.classList.contains("hidden")) return;
-
-  const isReview = progressShell.classList.contains("hidden") && !quizView.classList.contains("hidden") && metaQuestionNo.textContent.includes("復習");
-  if (isReview) {
-    renderSummary();
-    return;
-  }
-  if (state.currentIndex >= currentVisibleQuestionsLength() - 1) {
-    renderSummary();
-    return;
-  }
-  renderQuestion(state.currentIndex + 1);
-});
-
-finishBtn.addEventListener("click", () => {
-  renderSummary();
-  saveStudyProgress("summary");
-});
-
-jumpQuestionBtn.addEventListener("click", jumpToQuestionNumber);
-prevQuestionBtn.addEventListener("click", () => moveQuestionRelative(-1));
-nextQuestionTopBtn.addEventListener("click", () => moveQuestionRelative(1));
-
-menuBtnInQuiz.addEventListener("click", () => {
-  const ok = confirm("現在の回答状況を保存したまま、メインメニューへ戻りますか？");
-  if (!ok) return;
-  saveStudyProgress("menu");
-  showMenu();
-});
-
-menuBtnInSummary.addEventListener("click", () => {
-  saveStudyProgress("menu");
-  showMenu();
-});
-
-shuffleBtn.addEventListener("click", () => {
-  if (answeredCount() > 0) {
-    const ok = confirm("現在の回答状況をリセットして、出題順を切り替えます。よろしいですか？");
-    if (!ok) return;
-    state.answers = Array(QUESTIONS.length).fill(null);
-    state.currentIndex = 0;
-  }
-  state.reviewOnlyWrong = false;
-  state.reviewWrongAndUnanswered = false;
-  state.baseOrderBeforeWrongReview = null;
-  state.reviewAnswers = {};
-  state.shuffle = !state.shuffle;
-  resetOrder();
-  updateShuffleButton();
-  renderQuestion(0);
-});
-
-retryWrongBtn.addEventListener("click", () => {
-  if (!isWrongReviewMode()) {
-    const wrongOrder = buildWrongOnlyOrder();
-    if (wrongOrder.length === 0) {
-      alert("現在、不正解の問題はありません。");
-      return;
-    }
-    state.baseOrderBeforeWrongReview = [...state.order];
-    state.order = wrongOrder;
-    state.reviewOnlyWrong = true;
-    state.reviewWrongAndUnanswered = false;
-    state.reviewAnswers = {};
-    state.currentIndex = 0;
-    renderQuestion(0);
-    return;
-  }
-
-  if (state.baseOrderBeforeWrongReview && state.baseOrderBeforeWrongReview.length > 0) {
-    state.order = [...state.baseOrderBeforeWrongReview];
-  } else {
-    resetOrder();
-  }
-  state.baseOrderBeforeWrongReview = null;
-  state.reviewOnlyWrong = false;
-  state.reviewWrongAndUnanswered = false;
-  state.reviewAnswers = {};
-  state.currentIndex = 0;
-  renderSummary();
-});
-
-retryWrongUnansweredBtn.addEventListener("click", () => {
-  if (!isWrongUnansweredReviewMode()) {
-    const targetOrder = buildWrongAndUnansweredOrder();
-    if (targetOrder.length === 0) {
-      alert("現在、不正解または未回答の問題はありません。");
-      return;
-    }
-    state.baseOrderBeforeWrongReview = [...state.order];
-    state.order = targetOrder;
-    state.reviewOnlyWrong = false;
-    state.reviewWrongAndUnanswered = true;
-    state.reviewAnswers = {};
-    state.currentIndex = 0;
-    renderQuestion(0);
-    return;
-  }
-
-  if (state.baseOrderBeforeWrongReview && state.baseOrderBeforeWrongReview.length > 0) {
-    state.order = [...state.baseOrderBeforeWrongReview];
-  } else {
-    resetOrder();
-  }
-  state.baseOrderBeforeWrongReview = null;
-  state.reviewOnlyWrong = false;
-  state.reviewWrongAndUnanswered = false;
-  state.reviewAnswers = {};
-  state.currentIndex = 0;
-  renderSummary();
-});
-
-restartBtn.addEventListener("click", () => {
-  state.answers = Array(QUESTIONS.length).fill(null);
-  state.currentIndex = 0;
-  state.reviewOnlyWrong = false;
-  state.reviewWrongAndUnanswered = false;
-  state.baseOrderBeforeWrongReview = null;
-  state.reviewAnswers = {};
-  resetOrder();
-  updateShuffleButton();
-  renderQuestion(0);
-  saveStudyProgress("quiz");
-});
-
-async function initApp() {
-  try {
-    await loadQuestions();
-    loadBookmarkIds();
-    state.answers = Array(QUESTIONS.length).fill(null);
-    state.order = Array.from({length: QUESTIONS.length}, (_, i) => i);
-    buildMenu();
-    resetOrder();
-    updateShuffleButton();
-    showMenu();
-    updateSavedProgressBox();
-  } catch (error) {
-    console.error(error);
-    document.getElementById("menuButtons").innerHTML = `
-      <div class="explanation">
-        <div class="badge ng">読み込みエラー</div>
-        <div style="line-height:1.8;">
-          questions.json を読み込めませんでした。<br>
-          HTMLファイルを直接開いている場合は、READMEの手順に沿って localhost で開いてください。<br>
-          詳細: ${error.message}
+        <div id="aiSummary" class="ai-summary-content">
+          作品を登録すると、評価傾向の要約が表示されます。
         </div>
-      </div>`;
-    showMenu();
-  }
-}
+      </section>
 
-initApp();
-</script>
+      <section class="stats-grid full-width">
+        <article class="panel stat-card">
+          <span>総視聴作品数</span>
+          <strong id="totalWorksStat">0</strong>
+          <small>作品</small>
+        </article>
+        <article class="panel stat-card">
+          <span>総視聴話数</span>
+          <strong id="totalEpisodesStat">0</strong>
+          <small>話</small>
+        </article>
+        <article class="panel stat-card">
+          <span>推定総視聴時間</span>
+          <strong id="totalWatchTimeStat">0時間</strong>
+          <small>1話25分換算</small>
+        </article>
+      </section>
+
+      <section class="genre-stats-grid full-width">
+        <section class="panel">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">GENRES 01–10</p>
+              <h2>ジャンル別作品数</h2>
+            </div>
+          </div>
+          <div id="genreStatsFirst" class="genre-count-list"></div>
+        </section>
+        <section class="panel">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">GENRES 11–20</p>
+              <h2>ジャンル別作品数</h2>
+            </div>
+          </div>
+          <div id="genreStatsSecond" class="genre-count-list"></div>
+        </section>
+      </section>
+
+      <section class="ranking-bottom-grid full-width">
+        <section class="panel">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">OVERALL</p>
+              <h2>総合ランキング</h2>
+            </div>
+            <span id="overallRankingCount">0作品</span>
+          </div>
+          <ol id="overallRanking" class="ranking-list"></ol>
+          <div id="overallRankingEmpty" class="ranking-empty">作品を登録するとランキングが表示されます。</div>
+          <button id="overallRankingToggle" class="show-more-button hidden" type="button">すべて表示</button>
+        </section>
+
+        <section class="panel">
+          <div class="section-title">
+            <div>
+              <p class="eyebrow">BY GENRE</p>
+              <h2>ジャンル別ランキング</h2>
+            </div>
+            <label class="genre-filter">
+              <span class="sr-only">ジャンルを選択</span>
+              <select id="genreRankingSelect" aria-label="ランキングのジャンルを選択"></select>
+            </label>
+          </div>
+          <span id="genreRankingCount">0作品</span>
+          <ol id="genreRanking" class="ranking-list"></ol>
+          <div id="genreRankingEmpty" class="ranking-empty">ジャンルを設定した作品を登録してください。</div>
+          <button id="genreRankingToggle" class="show-more-button hidden" type="button">すべて表示</button>
+        </section>
+      </section>
+
+      <section class="panel library-panel full-width">
+        <div class="section-title library-section-title">
+          <div>
+            <p class="eyebrow">LIBRARY</p>
+            <h2>作品一覧</h2>
+          </div>
+          <div class="library-toolbar">
+            <label class="search-box">
+              <span class="sr-only">作品を検索</span>
+              <input id="searchInput" type="search" placeholder="作品名・ジャンルで検索" />
+            </label>
+            <label class="library-genre-filter">
+              <span class="sr-only">ジャンルで絞り込み</span>
+              <select id="libraryGenreFilter"><option value="">すべてのジャンル</option></select>
+            </label>
+          </div>
+        </div>
+        <div id="librarySpreadsheetWrap" class="library-spreadsheet-wrap">
+          <table id="librarySpreadsheet" class="library-spreadsheet">
+            <thead id="librarySpreadsheetHead"></thead>
+            <tbody id="librarySpreadsheetBody"></tbody>
+          </table>
+        </div>
+        <div id="libraryCards" class="library-cards"></div>
+        <div id="libraryEmpty" class="empty-state">まだ作品が登録されていません。</div>
+        <div id="librarySaveBar" class="comparison-save-bar hidden" aria-live="polite">
+          <div><strong id="librarySaveMessage">作品一覧に未保存の変更があります</strong><span>変更した作品だけ保存されます。</span></div>
+          <div class="comparison-save-actions">
+            <button id="libraryDiscardBtn" class="secondary" type="button">変更を破棄</button>
+            <button id="librarySaveBtn" class="primary" type="button">変更を保存</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+
+  <script type="module" src="app.js?v=5.2.0"></script>
 </body>
 </html>
